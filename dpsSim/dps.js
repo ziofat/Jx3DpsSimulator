@@ -26,9 +26,13 @@ app.directive('icheck', ['$timeout', '$parse', function($timeout, $parse) {
 				$scope.$watch($attrs['ngModel'], function(newValue){
 					$(element).icheck('updated');
 				})
+				$scope.$watch($attrs['ngDisabled'], function(newValue){
+					if(newValue==true) $(element).icheck('disabled');
+					else if(newValue==false) $(element).icheck('enabled');
+				})
 
 				return $(element).icheck({
-					checkboxClass: 'icheckbox_square-blue',
+					checkboxClass: 'icheckbox_flat-blue',
 					radioClass: 'iradio_square-blue'
 
 				}).on('ifChanged', function(event) {
