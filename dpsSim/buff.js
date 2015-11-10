@@ -1,5 +1,5 @@
-var Buff = {
-	createNew:function(buffData) {
+app.service('Buff', ['$rootScope','Utils', function($rootScope,Utils){
+	this.createNew=function(buffData) {
 		var buff = {};
 		var buffTypeList = ["dot","buff"];
 		/* 数据 */
@@ -55,13 +55,14 @@ var Buff = {
 			}
 			// 涓流buff斩杀控制
 			if((!flag.miss)&&(target.curLife/target.life)<0.35){
+				var juanLiuBuff = $rootScope.originalBuffList.juanLiuBuff;
 				if(juanLiuBuff.id in buffController){
 					buffController[juanLiuBuff.id].level--;
 					if(buffController[juanLiuBuff.id].level==0){
 						delete buffController[juanLiuBuff.id];
 					}
 				}else{
-					addBuff(juanLiuBuff,buffController,onFightAttr)
+					Utils.addBuff(juanLiuBuff,onFightAttr)
 					buffController.selfBuffs[juanLiuBuff.id].level = 10;
 				}
 			}
@@ -69,10 +70,27 @@ var Buff = {
 			damage = damage * (1 + onFightAttr.overcome/3616.925) * (1 - target.shield/100) * (1 + onFightAttr.damageAddPercent/100);
 			damage = damage.toFixed(0) * level;
 			var s = buff.name+"(buff) " + (flag.insight>0?"识破 ":"")+(flag.crit>0?"会心 ":"")+(flag.hit>0?"命中 ":"") + damage;
-			logln(s);
-			calcDamage(damage);
+			Utils.logln(s);
+			Utils.calcDamage(damage);
 			return damage;
 		}
 		return buff;
 	}
-};
+	this.getBuffByName = function(name){
+		var buffList = $rootScope.originalBuffList;
+		angular.forEach(buffList,function(value,key){
+			if(value.name == name) return value;
+		})
+	}
+
+	this.getBuffById = function(id){
+		var buffList = $rootScope.originalBuffList;
+		var returnObj;
+		angular.forEach(buffList,function(value,key){
+			if(value.id == id){
+				returnObj = value;
+			}
+		});
+		return returnObj;
+	}
+}]);

@@ -1,5 +1,5 @@
-var skillList = {};
-app.controller('SkillCtrl', ['$scope','$rootScope','$timeout', function($scope,$rootScope,$timeout){
+app.controller('SkillCtrl', ['$scope','$rootScope','Utils','Skill','Buff', function($scope,$rootScope,Utils,Skill,Buff){
+	$rootScope.originalSkillList=[];
 	var yangMingZhi_WH = Skill.createNew({
 		id:0,
 		icon:1527,
@@ -15,58 +15,59 @@ app.controller('SkillCtrl', ['$scope','$rootScope','$timeout', function($scope,$
 		target:true,
 		hasRecipes:true,
 		recipeName:"yangMing",
+		cdRemain:0,
 		onSkillHitEvent:function(attr, target, buffController, recipes, options){
 			// 阳明指命中后添加一层恣游buff
-			addBuff(ziYouBuff, buffController, attr);
+			Utils.addBuff($rootScope.originalBuffList.ziYouBuff,attr);
 			// 乱撒添加DOT
-			if(luanSaBuff.id in buffController.selfBuffs){
+			if($rootScope.originalBuffList.luanSaBuff.id in buffController.selfBuffs){
 				// 添加钟林毓秀
-				var dot = angular.copy(zhongLinDot);
+				var dot = angular.copy($rootScope.originalBuffList.zhongLinDot);
 				for (var i = 0; i < recipes.zhongLin.length; i++) {
 					if(recipes.zhongLin[i].active&&recipes.zhongLin[i].effect=="durationAdd"){
 						dot.duration = dot.duration+recipes.zhongLin[i].value;
 					}
 					if(recipes.zhongLin[i].active&&recipes.zhongLin[i].effect=="debuffAdd"){
-						addDebuff(angular.copy(buffList[recipes.zhongLin[i].value]),buffController,attr)
+						Utils.addDebuff(angular.copy(Buff.getBuffById(recipes.zhongLin[i].value)),attr)
 					}
 				};
-				addDot(dot,buffController,attr);
+				Utils.addDot(dot,attr);
 				// 添加兰摧玉折
-				var dot = angular.copy(lanCuiDot);
+				var dot = angular.copy($rootScope.originalBuffList.lanCuiDot);
 				for (var i = 0; i < recipes.lanCui.length; i++) {
 					if(recipes.lanCui[i].active&&recipes.lanCui[i].effect=="durationAdd"){
 						dot.duration = dot.duration+recipes.lanCui[i].value;
 					}
 				};
-				addDot(dot,buffController,attr);
+				Utils.addDot(dot,attr);
 			}
 			// 寒碧奇穴：若目标身上没有“钟林毓秀”效果，则阳明指附带“钟林毓秀”，该效果每12秒触发一次。
 			if(options[2][0].active){
-				if(!(hanBiCD.id in buffController.selfBuffs)&&!(zhongLinDot.id in buffController.targetBuffs)){
-					var dot = angular.copy(zhongLinDot);
+				if(!($rootScope.originalBuffList.hanBiCD.id in buffController.selfBuffs)&&!($rootScope.originalBuffList.zhongLinDot.id in buffController.targetBuffs)){
+					var dot = angular.copy($rootScope.originalBuffList.zhongLinDot);
 					for (var i = 0; i < recipes.zhongLin.length; i++) {
 						if(recipes.zhongLin[i].active&&recipes.zhongLin[i].effect=="durationAdd"){
 							dot.duration = dot.duration+recipes.zhongLin[i].value;
 						}
 						if(recipes.zhongLin[i].active&&recipes.zhongLin[i].effect=="debuffAdd"){
-							addDebuff(angular.copy(buffList[recipes.zhongLin[i].value]),buffController,attr)
+							Utils.addDebuff(angular.copy(Buff.getBuffById(recipes.zhongLin[i].value)),attr)
 						}
 					};
-					addDot(dot,buffController,attr);
-					addBuff(hanBiCD, buffController, attr);
+					Utils.addDot(dot,attr);
+					Utils.addBuff($rootScope.originalBuffList.hanBiCD,attr);
 				}
 			}
 			// 梦歌奇穴：施展“阳明指”或“快雪时晴”运功结束时均获得“梦歌”气劲，每层使加速率提高1%，持续30秒，最多叠加5层。
 			if(options[10][0].active){
-				addBuff(mengGeBuff,buffController,attr);
+				Utils.addBuff($rootScope.originalBuffList.mengGeBuff,attr);
 			}
 		},
 		onSkillCritEvent:function(attr, target, buffController, recipes, options){
 			// 雪中行奇穴：“阳明指”会心后刷新目标身上所有混元持续伤害效果。
 			if(options[11][0].active){
-				dotRefresh(shangYangDot,buffController,attr);
-				dotRefresh(lanCuiDot,buffController,attr);
-				dotRefresh(zhongLinDot,buffController,attr);
+				Utils.dotRefresh($rootScope.originalBuffList.shangYangDot,attr);
+				Utils.dotRefresh($rootScope.originalBuffList.lanCuiDot,attr);
+				Utils.dotRefresh($rootScope.originalBuffList.zhongLinDot,attr);
 			}
 			this.onSkillHitEvent(attr, target, buffController, recipes, options);
 		},
@@ -77,26 +78,26 @@ app.controller('SkillCtrl', ['$scope','$rootScope','$timeout', function($scope,$
 				this.extraAttr.critEffAddPercent+=10;
 			}
 			// 放歌奇穴：“商阳指”“钟林毓秀”“兰摧玉折”每跳有25%几率使下一个阳明指无需运功，持续30秒，可叠加3层。
-			if(fangGeBuff.id in buffController.selfBuffs){
+			if($rootScope.originalBuffList.fangGeBuff.id in buffController.selfBuffs){
 				this.ota = 0;
 				this.type = "instant";
-				buffController.selfBuffs[fangGeBuff.id].level--;
-				if(buffController.selfBuffs[fangGeBuff.id].level==0){
-					delete buffController.selfBuffs[fangGeBuff.id];
+				buffController.selfBuffs[$rootScope.originalBuffList.fangGeBuff.id].level--;
+				if(buffController.selfBuffs[$rootScope.originalBuffList.fangGeBuff.id].level==0){
+					delete buffController.selfBuffs[$rootScope.originalBuffList.fangGeBuff.id];
 				}
 			}
 			// 焚玉buff使阳明指提高10%伤害
-			if(fenYuBuff.id in buffController.selfBuffs){
-				if(buffController.selfBuffs[fenYuBuff.id].remain>=this.ota){
+			if($rootScope.originalBuffList.fenYuBuff.id in buffController.selfBuffs){
+				if(buffController.selfBuffs[$rootScope.originalBuffList.fenYuBuff.id].remain>=this.ota){
 					this.extraAttr.damage += 10;
 				}
 			}
 			// 青冠奇穴：“阳明指”命中有自身混元持续伤害效果的目标，每个效果使“阳明指”会心几率提高5%。
 			if(options[6][2].active){
 				var dotCount = 0;
-				if(shangYangDot.id in buffController.targetBuffs&&buffController.targetBuffs[shangYangDot.id].remain>=this.ota) dotCount++;
-				if(zhongLinDot.id in buffController.targetBuffs&&buffController.targetBuffs[zhongLinDot.id].remain>=this.ota) dotCount++;
-				if(lanCuiDot.id in buffController.targetBuffs&&buffController.targetBuffs[lanCuiDot.id].remain>=this.ota) dotCount++;
+				if($rootScope.originalBuffList.shangYangDot.id in buffController.targetBuffs&&buffController.targetBuffs[$rootScope.originalBuffList.shangYangDot.id].remain>=this.ota) dotCount++;
+				if($rootScope.originalBuffList.zhongLinDot.id in buffController.targetBuffs&&buffController.targetBuffs[$rootScope.originalBuffList.zhongLinDot.id].remain>=this.ota) dotCount++;
+				if($rootScope.originalBuffList.lanCuiDot.id in buffController.targetBuffs&&buffController.targetBuffs[$rootScope.originalBuffList.lanCuiDot.id].remain>=this.ota) dotCount++;
 				this.extraAttr.critAddPercent += parseInt(5*dotCount);
 			}
 			// 落凤
@@ -105,7 +106,7 @@ app.controller('SkillCtrl', ['$scope','$rootScope','$timeout', function($scope,$
 		onSkillFinish:function(attr, target, buffController, recipes, options){
 		}
 	});
-	skillList[0]=yangMingZhi_WH;
+	$rootScope.originalSkillList[0]=yangMingZhi_WH;
 	
 	var shangYangZhi_WH = Skill.createNew({
 		id:1,
@@ -122,22 +123,23 @@ app.controller('SkillCtrl', ['$scope','$rootScope','$timeout', function($scope,$
 		target:true,
 		hasRecipes:true,
 		recipeName:"shangYang",
+		cdRemain:0,
 		onSkillHitEvent:function(attr, target, buffController, recipes, options){
 			//添加商阳指dot
-			var dot = angular.copy(shangYangDot);
+			var dot = angular.copy($rootScope.originalBuffList.shangYangDot);
 			for (var i = 0; i < recipes.shangYang.length; i++) {
 				if(recipes.shangYang[i].active&&recipes.shangYang[i].effect=="durationAdd"){
 					dot.duration = dot.duration+recipes.shangYang[i].value;
 				}
 				if(recipes.shangYang[i].active&&recipes.shangYang[i].effect=="debuffAdd"){
-					addDebuff(angular.copy(buffList[recipes.shangYang[i].value]),buffController,attr)
+					Utils.addDebuff(angular.copy(Buff.getBuffById(recipes.shangYang[i].value)),attr)
 				}
 			};
 			// 生息奇穴：混元性持续伤害提高10%，持续伤害效果被卸除后，每个持续伤害使目标1.5秒内无法受到治疗效果，最多叠加4.5秒。
 			if(options[9][0].active){
 				dot.extraAttr.damage += 10;
 			}
-			addDot(dot,buffController,attr);
+			Utils.addDot(dot,attr);
 		},
 		onSkillCritEvent:function(attr, target, buffController, recipes, options){
 			this.onSkillHitEvent(attr, target, buffController, recipes, options);
@@ -151,7 +153,7 @@ app.controller('SkillCtrl', ['$scope','$rootScope','$timeout', function($scope,$
 		onSkillFinish:function(attr, target, buffController, recipes, options){
 		}
 	})
-	skillList[1]=shangYangZhi_WH;
+	$rootScope.originalSkillList[1]=shangYangZhi_WH;
 	
 	var yuShiJuFen_WH = Skill.createNew({
 		id:2,
@@ -167,35 +169,36 @@ app.controller('SkillCtrl', ['$scope','$rootScope','$timeout', function($scope,$
 		interval:0,
 		target:true,
 		hasRecipes:false,
+		cdRemain:0,
 		onSkillHitEvent:function(attr, target, buffController, recipes, options){
 			//吞噬dot
 			var dotCount = 0;
-			if(shangYangDot.id in buffController.targetBuffs){
-				var dot = buffController.targetBuffs[shangYangDot.id];
+			if($rootScope.originalBuffList.shangYangDot.id in buffController.targetBuffs){
+				var dot = buffController.targetBuffs[$rootScope.originalBuffList.shangYangDot.id];
 				var remainHit = Math.floor(dot.remain/dot.interval)+1;
 				var damage = dot.calc($rootScope.myself,target,buffController,remainHit, recipes, options);
-				delete buffController.targetBuffs[shangYangDot.id];
+				delete buffController.targetBuffs[$rootScope.originalBuffList.shangYangDot.id];
 				dotCount++;
 			}
-			if(zhongLinDot.id in buffController.targetBuffs){
-				var dot = buffController.targetBuffs[zhongLinDot.id];
+			if($rootScope.originalBuffList.zhongLinDot.id in buffController.targetBuffs){
+				var dot = buffController.targetBuffs[$rootScope.originalBuffList.zhongLinDot.id];
 				var remainHit = Math.floor(dot.remain/dot.interval)+1;
 				var damage = dot.calc($rootScope.myself,target,buffController,remainHit, recipes, options);
-				delete buffController.targetBuffs[zhongLinDot.id];
+				delete buffController.targetBuffs[$rootScope.originalBuffList.zhongLinDot.id];
 				dotCount++;
 			}
-			if(lanCuiDot.id in buffController.targetBuffs){
-				var dot = buffController.targetBuffs[lanCuiDot.id];
+			if($rootScope.originalBuffList.lanCuiDot.id in buffController.targetBuffs){
+				var dot = buffController.targetBuffs[$rootScope.originalBuffList.lanCuiDot.id];
 				var remainHit = Math.floor(dot.remain/dot.interval)+1;
 				var damage = dot.calc($rootScope.myself,target,buffController,remainHit, recipes, options);
-				delete buffController.targetBuffs[lanCuiDot.id];
+				delete buffController.targetBuffs[$rootScope.originalBuffList.lanCuiDot.id];
 				dotCount++;
 			}
 			// 焚玉奇穴：“玉石俱焚”成功吞噬持续伤害效果，使阳明指伤害提高10%，每额外吞噬一个效果，持续时间增加5秒。
 			if(options[5][0].active&&dotCount>0){
-				var buff = angular.copy(fenYuBuff);
+				var buff = angular.copy($rootScope.originalBuffList.fenYuBuff);
 				buff.duration = dotCount * 80;
-				addBuff(buff, buffController, attr);
+				Utils.addBuff(buff, attr);
 			}
 			// 旋落奇穴：“玉石俱焚”每吞噬一个持续伤害效果，调息时间降低1.5秒。
 			if(options[8][0].active&&dotCount>0){
@@ -203,7 +206,7 @@ app.controller('SkillCtrl', ['$scope','$rootScope','$timeout', function($scope,$
 			}
 			// 流离奇穴：“玉石俱焚”命中目标后使自身下一个“兰摧玉折”无需运功。
 			if(options[9][1].active){
-				var buff = angular.copy(liuLiBuff);
+				var buff = angular.copy($rootScope.originalBuffList.liuLiBuff);
 
 			}
 		},
@@ -216,7 +219,7 @@ app.controller('SkillCtrl', ['$scope','$rootScope','$timeout', function($scope,$
 		onSkillFinish:function(attr, target, buffController, recipes, options){
 		}
 	});
-	skillList[2]=yuShiJuFen_WH;
+	$rootScope.originalSkillList[2]=yuShiJuFen_WH;
 	
 	var kuaiXueShiQing_WH = Skill.createNew({
 		id:3,
@@ -233,10 +236,11 @@ app.controller('SkillCtrl', ['$scope','$rootScope','$timeout', function($scope,$
 		target:true,
 		hasRecipes:true,
 		recipeName:"kuaiXue",
+		cdRemain:0,
 		onSkillHitEvent:function(attr, target, buffController, recipes, options){
 			for (var i = 0; i < recipes.kuaiXue.length; i++) {
 				if(recipes.kuaiXue[i].active&&recipes.kuaiXue[i].effect=="debuffAdd"){
-					addDebuff(angular.copy(buffList[recipes.kuaiXue[i].value]),buffController,attr)
+					Utils.addDebuff(angular.copy(Buff.getBuffById(recipes.kuaiXue[i].value)),attr)
 				}
 			};
 		},
@@ -262,11 +266,11 @@ app.controller('SkillCtrl', ['$scope','$rootScope','$timeout', function($scope,$
 		onSkillFinish:function(attr, target, buffController, recipes, options){
 			// 梦歌奇穴：施展“阳明指”或“快雪时晴”运功结束时均获得“梦歌”气劲，每层使加速率提高1%，持续30秒，最多叠加5层。
 			if(options[10][0].active){
-				addBuff(mengGeBuff,buffController,attr);
+				Utils.addBuff(mengGeBuff,attr);
 			}
 		}
 	});
-	skillList[3]=kuaiXueShiQing_WH;
+	$rootScope.originalSkillList[3]=kuaiXueShiQing_WH;
 	
 	var zhongLinYuXiu_WH = Skill.createNew({
 		id:4,
@@ -283,22 +287,23 @@ app.controller('SkillCtrl', ['$scope','$rootScope','$timeout', function($scope,$
 		target:true,
 		hasRecipes:true,
 		recipeName:"zhongLin",
+		cdRemain:0,
 		onSkillHitEvent:function(attr, target, buffController, recipes, options){
 			//添加钟林毓琇dot
-			var dot = angular.copy(zhongLinDot);
+			var dot = angular.copy($rootScope.originalBuffList.zhongLinDot);
 			for (var i = 0; i < recipes.zhongLin.length; i++) {
 				if(recipes.zhongLin[i].active&&recipes.zhongLin[i].effect=="durationAdd"){
 					dot.duration = dot.duration+recipes.zhongLin[i].value;
 				}
 				if(recipes.zhongLin[i].active&&recipes.zhongLin[i].effect=="debuffAdd"){
-					addDebuff(angular.copy(buffList[recipes.zhongLin[i].value]),buffController,attr)
+					Utils.addDebuff(angular.copy(Buff.getBuffById(recipes.zhongLin[i].value)),attr)
 				}
 			};
 			// 生息奇穴：混元性持续伤害提高10%，持续伤害效果被卸除后，每个持续伤害使目标1.5秒内无法受到治疗效果，最多叠加4.5秒。
 			if(options[9][0].active){
 				dot.extraAttr.damage += 10;
 			}
-			addDot(dot,buffController,attr);
+			Utils.addDot(dot,attr);
 		},
 		onSkillCritEvent:function(attr, target, buffController, recipes, options){
 			this.onSkillHitEvent(attr, target, buffController, recipes, options);
@@ -308,7 +313,7 @@ app.controller('SkillCtrl', ['$scope','$rootScope','$timeout', function($scope,$
 		onSkillFinish:function(attr, target, buffController, recipes, options){
 		}
 	});
-	skillList[4]=zhongLinYuXiu_WH;
+	$rootScope.originalSkillList[4]=zhongLinYuXiu_WH;
 	
 	var lanCuiYuZhe_WH = Skill.createNew({
 		id:5,
@@ -325,9 +330,10 @@ app.controller('SkillCtrl', ['$scope','$rootScope','$timeout', function($scope,$
 		target:true,
 		hasRecipes:true,
 		recipeName:"lanCui",
+		cdRemain:0,
 		onSkillHitEvent:function(attr, target, buffController, recipes, options){
 			//添加兰摧dot
-			var dot = angular.copy(lanCuiDot);
+			var dot = angular.copy($rootScope.originalBuffList.lanCuiDot);
 			for (var i = 0; i < recipes.lanCui.length; i++) {
 				if(recipes.lanCui[i].active&&recipes.lanCui[i].effect=="durationAdd"){
 					dot.duration = dot.duration+recipes.lanCui[i].value;
@@ -337,24 +343,24 @@ app.controller('SkillCtrl', ['$scope','$rootScope','$timeout', function($scope,$
 			if(options[9][0].active){
 				dot.extraAttr.damage += 10;
 			}
-			addDot(dot,buffController,attr);
+			Utils.addDot(dot,attr);
 		},
 		onSkillCritEvent:function(attr, target, buffController, recipes, options){
 			this.onSkillHitEvent(attr, target, buffController, recipes, options);
 		},
 		onSkillPrepare:function(attr, target, buffController, recipes, options){
 			// 流离奇穴使兰摧不需运功
-			if(liuLiBuff.id in buffController.selfBuffs){
+			if($rootScope.originalBuffList.liuLiBuff.id in buffController.selfBuffs){
 				this.ota = 0;
 				this.type = "instant";
-				delete buffController.selfBuffs[liuLiBuff.id];
+				delete buffController.selfBuffs[$rootScope.originalBuffList.liuLiBuff.id];
 			}
 			
 		},
 		onSkillFinish:function(attr, target, buffController, recipes, options){
 		}
 	});
-	skillList[5]=lanCuiYuZhe_WH;
+	$rootScope.originalSkillList[5]=lanCuiYuZhe_WH;
 
 	var fuRongBingDi_WH = Skill.createNew({
 		id:6,
@@ -371,12 +377,13 @@ app.controller('SkillCtrl', ['$scope','$rootScope','$timeout', function($scope,$
 		target:true,
 		hasRecipes:false,
 		recipeName:"",
+		cdRemain:0,
 		onSkillHitEvent:function(attr, target, buffController, recipes, options){
 			// 轻弃奇穴：“芙蓉并蒂”的伤害提高100%，命中目标后刷新目标身上的所有混元持续伤害效果。
 			if(options[5][2].active){
-				dotRefresh(shangYangDot,buffController,attr);
-				dotRefresh(lanCuiDot,buffController,attr);
-				dotRefresh(zhongLinDot,buffController,attr);
+				Utils.dotRefresh(shangYangDot,attr);
+				Utils.dotRefresh(lanCuiDot,attr);
+				Utils.dotRefresh(zhongLinDot,attr);
 			}
 		},
 		onSkillCritEvent:function(attr, target, buffController, recipes, options){
@@ -395,7 +402,7 @@ app.controller('SkillCtrl', ['$scope','$rootScope','$timeout', function($scope,$
 		onSkillFinish:function(attr, target, buffController, recipes, options){
 		}
 	});
-	skillList[6]=fuRongBingDi_WH;
+	$rootScope.originalSkillList[6]=fuRongBingDi_WH;
 
 	var shuiYueWuJian_WH = Skill.createNew({
 		id:7,
@@ -412,19 +419,20 @@ app.controller('SkillCtrl', ['$scope','$rootScope','$timeout', function($scope,$
 		target:false,
 		hasRecipes:false,
 		recipeName:"",
+		cdRemain:0,
 		onSkillHitEvent:function(attr, target, buffController, recipes, options){
-			var buff = shuiYueBuff;
+			var buff = $rootScope.originalBuffList.shuiYueBuff;
 			// 夜思奇穴：“水月无间”额外使1个招式无需运功，并立刻回复自身10%内力值。 
 			if(options[7][0].active){
 				buff.canStack = true;
 				buff.maxLevel = true;
 				buff.level = 2;
 			}
-			addBuff(buff, buffController, attr);
-			addBuff(buSanBuff, buffController, attr);
+			Utils.addBuff(buff, attr);
+			Utils.addBuff($rootScope.originalBuffList.buSanBuff, attr);
 			// 砚悬奇穴：“水月无间”效果期间下一个伤害或治疗招式必定会心。 
 			if(options[10][2].active){
-				addBuff(yanXuanBuff, buffController, attr);
+				Utils.addBuff($rootScope.originalBuffList.yanXuanBuff, attr);
 			}
 		},
 		onSkillCritEvent:function(attr, target, buffController, recipes, options){
@@ -435,7 +443,7 @@ app.controller('SkillCtrl', ['$scope','$rootScope','$timeout', function($scope,$
 		onSkillFinish:function(attr, target, buffController, recipes, options){
 		}
 	});
-	skillList[7]=shuiYueWuJian_WH;
+	$rootScope.originalSkillList[7]=shuiYueWuJian_WH;
 
 	var luanSaQingHe_WH = Skill.createNew({
 		id:8,
@@ -452,11 +460,12 @@ app.controller('SkillCtrl', ['$scope','$rootScope','$timeout', function($scope,$
 		target:false,
 		hasRecipes:false,
 		recipeName:"",
+		cdRemain:0,
 		onSkillHitEvent:function(attr, target, buffController, recipes, options){
 			// 重置玉石俱焚CD
 			$rootScope.skillController.list[2].cdRemain = 0;
 			// 添加乱撒buff
-			addBuff(luanSaBuff,buffController,attr);
+			Utils.addBuff($rootScope.originalBuffList.luanSaBuff,attr);
 		},
 		onSkillCritEvent:function(attr, target, buffController, recipes, options){
 			this.onSkillHitEvent(attr, target, buffController, recipes, options);
@@ -470,6 +479,11 @@ app.controller('SkillCtrl', ['$scope','$rootScope','$timeout', function($scope,$
 		onSkillFinish:function(attr, target, buffController, recipes, options){
 		}
 	});
-	skillList[8]=luanSaQingHe_WH;
+	$rootScope.originalSkillList[8]=luanSaQingHe_WH;
+
+	$rootScope.skillController = {
+		list:$rootScope.originalSkillList,
+		curSkill:null
+	};
 }]);
 

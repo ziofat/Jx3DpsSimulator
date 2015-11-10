@@ -1,5 +1,5 @@
-var Skill = {
-	createNew:function(skillData) {
+app.service('Skill',['$rootScope','Utils',function($rootScope,Utils){
+	this.createNew = function(skillData){
 		var skill = {};
 		var skillTypeList = ["ota","instant","channel"];
 		/* 数据 */
@@ -92,16 +92,17 @@ var Skill = {
 				skill.onSkillHitEvent(onFightAttr,target,buffController,recipes,options);
 			}
 			// 删除砚悬buff
-			if(yanXuanBuff.id in buffController) delete buffController[yanXuanBuff.id];
+			if($rootScope.originalBuffList.yanXuanBuff.id in buffController) delete buffController[$rootScope.originalBuffList.yanXuanBuff.id];
 			// 涓流buff斩杀控制
 			if((!flag.miss)&&(target.curLife/target.life)<0.35){
+				var juanLiuBuff = $rootScope.originalBuffList.juanLiuBuff;
 				if(juanLiuBuff.id in buffController){
 					buffController[juanLiuBuff.id].level--;
 					if(buffController[juanLiuBuff.id].level==0){
 						delete buffController[juanLiuBuff.id];
 					}
 				}else{
-					addBuff(juanLiuBuff,buffController,onFightAttr)
+					Utils.addBuff(juanLiuBuff,buffController,onFightAttr)
 					buffController.selfBuffs[juanLiuBuff.id].level = 10;
 				}
 			}
@@ -111,16 +112,15 @@ var Skill = {
 				damage = damage * (1 + onFightAttr.overcome/3616.925) * (1 - target.shield/100) * (1 + onFightAttr.damageAddPercent/100);
 				damage = damage.toFixed(0);
 				var s = skill.name+" " + (flag.miss>0?"偏离 ":"")+(flag.insight>0?"识破 ":"")+(flag.crit>0?"会心 ":"")+(flag.hit>0?"命中 ":"") + damage;
-				logln(s);
-				calcDamage(damage);
+				Utils.logln(s);
+				Utils.calcDamage(damage);
 				return damage;
 			}else{
 				var s = skill.name+" " + (flag.miss>0?"偏离 ":"")+(flag.insight>0?"识破 ":"")+(flag.crit>0?"会心 ":"")+(flag.hit>0?"命中 ":"");
-				logln(s);
+				Utils.logln(s);
 				return 0;
 			}
 		}
 		return skill;
 	}
-};
-
+}]);
