@@ -1,4 +1,4 @@
-app.controller('MainCtrl', ['$scope','$rootScope','$timeout','$interval', function($scope,$rootScope,$timeout,$interval){
+app.controller('MainCtrl', ['$scope','$rootScope','$timeout','$interval','Utils','Buff','Skill','$modal', function($scope,$rootScope,$timeout,$interval,Utils,Buff,Skill,$modal){
 	$rootScope.target = {
 		life:5000000,
 		curLife:5000000,
@@ -50,13 +50,9 @@ app.controller('MainCtrl', ['$scope','$rootScope','$timeout','$interval', functi
 	}
 	$rootScope.skillRecipe = angular.copy(whRecipes);
 	$rootScope.skillOption = angular.copy(whOptions);
-	$rootScope.skillController = {
-		list:skillList,
-		curSkill:null
-	};
 	$rootScope.macroMode = false;
 	$scope.digest = function(){
-		if($rootScope.macroMode&&frameCount%(Math.ceil($rootScope.myself.attributes.delay/1000*16)+1)==0){
+		if($rootScope.macroMode&&$rootScope.time%(Math.ceil($rootScope.myself.attributes.delay/1000*16)+1)==0){
 			$scope.macro();
 		}
 		// 读条 时间控制
@@ -140,8 +136,8 @@ app.controller('MainCtrl', ['$scope','$rootScope','$timeout','$interval', functi
 		// dps 计算
 		$rootScope.time++;
 		if($rootScope.time%16==0){
-			$rootScope.dps = globalDamage/$rootScope.time*16;
-			$rootScope.target.curLife = $rootScope.target.life-globalDamage;
+			$rootScope.dps = $rootScope.globalDamage/$rootScope.time*16;
+			$rootScope.target.curLife = $rootScope.target.life-$rootScope.globalDamage;
 			if($rootScope.target.curLife<=0){
 				$scope.stop();
 			}
@@ -149,17 +145,15 @@ app.controller('MainCtrl', ['$scope','$rootScope','$timeout','$interval', functi
 		if(!$rootScope.kill&&$rootScope.time%80==0){
 			$rootScope.target.curLife = $rootScope.target.life;
 		}
-		frameCount++;
 	}
 	var loopInterval;
-	var frameCount = 0;
 	$rootScope.time = 0;
 	$rootScope.debug = true;
 	$rootScope.kill = true;
+	$rootScope.globalDamage = 0;
 	$scope.start = function(){
 		$scope.clear();
-		globalDamage = 0;
-		frameCount = 0;
+		$rootScope.globalDamage = 0;
 		$rootScope.time = 0;
 		var b = new Date();
 		$rootScope.buffController = {
@@ -167,7 +161,7 @@ app.controller('MainCtrl', ['$scope','$rootScope','$timeout','$interval', functi
 			targetBuffs:{}
 		};
 		$rootScope.skillController = {
-			list:skillList,
+			list:$rootScope.originalSkillList,
 			curSkill:null
 		};
 		$rootScope.myself.states = {
@@ -178,20 +172,30 @@ app.controller('MainCtrl', ['$scope','$rootScope','$timeout','$interval', functi
 			curOta:0,
 			gcd:0
 		}
+		angular.forEach($rootScope.skillController.list,function(value,key){
+			value.cdRemain = 0;
+		})
 		if($rootScope.debug){
 			$interval.cancel(loopInterval);
 			loopInterval = $interval($scope.digest,62.5);
 		}else{
-			function updateLater() {
-				for (; $rootScope.time < 3600; ) {
-					$scope.digest();
-					$timeout(updateLater,0);
-				};
-			}
-			updateLater();
+			for (; $rootScope.time < 3600; ) {
+				$scope.digest();
+			};
 		}
 		var e = new Date();
-		console.log(e.getTime()-b.getTime());
+		// console.log(e.getTime()-b.getTime());
+		return $rootScope.dps;
+	}
+	$scope.aveStart = function(){
+		var b = new Date();
+		var totalDps = 0;
+		for (var i = 0; i < 100; i++) {
+			totalDps += $scope.start();
+		};
+		console.log("平均DPS："+totalDps/100);
+		var e = new Date();
+		console.log("耗时："+(e.getTime()-b.getTime())+" ms");
 	}
 	$scope.stop = function(){
 		$interval.cancel(loopInterval);
@@ -210,30 +214,30 @@ app.controller('MainCtrl', ['$scope','$rootScope','$timeout','$interval', functi
 		if(skill.cdRemain>0) return;
 		skill.onSkillPrepare($rootScope.myself,$rootScope.target,$rootScope.buffController,$rootScope.skillRecipe,$rootScope.skillOption);
 		// 水月免读条
-		if(shuiYueBuff.id in $rootScope.buffController.selfBuffs&&skill.type=="ota"){
+		if($rootScope.originalBuffList.shuiYueBuff.id in $rootScope.buffController.selfBuffs&&skill.type=="ota"){
 			skill.ota = 0;
 			skill.type = "instant";
-			$rootScope.buffController.selfBuffs[shuiYueBuff.id].level--;
-			if($rootScope.buffController.selfBuffs[shuiYueBuff.id].level==0) delete $rootScope.buffController.selfBuffs[shuiYueBuff.id];
+			$rootScope.buffController.selfBuffs[$rootScope.originalBuffList.shuiYueBuff.id].level--;
+			if($rootScope.buffController.selfBuffs[$rootScope.originalBuffList.shuiYueBuff.id].level==0) delete $rootScope.buffController.selfBuffs[$rootScope.originalBuffList.shuiYueBuff.id];
 		}
 		if(skill.hasRecipes) skill.applyRecipe($rootScope.skillRecipe[skill.recipeName],$rootScope.buffController);
 		if(skill.type=="ota"&&!$rootScope.myself.states.ota&&$rootScope.myself.states.gcd==0){
 			$rootScope.myself.states.ota = true;
 			$rootScope.skillController.curSkill = skill;
-			$rootScope.myself.states.curOta = hasteCalc($rootScope.myself.attributes.haste,$rootScope.myself.extra.haste,skill.ota);
-			$rootScope.myself.states.otaRemain = hasteCalc($rootScope.myself.attributes.haste,$rootScope.myself.extra.haste,skill.ota);
-			$rootScope.myself.states.gcd = hasteCalc($rootScope.myself.attributes.haste,$rootScope.myself.extra.haste,24);
+			$rootScope.myself.states.curOta = Utils.hasteCalc($rootScope.myself.attributes.haste,$rootScope.myself.extra.haste,skill.ota);
+			$rootScope.myself.states.otaRemain = Utils.hasteCalc($rootScope.myself.attributes.haste,$rootScope.myself.extra.haste,skill.ota);
+			$rootScope.myself.states.gcd = Utils.hasteCalc($rootScope.myself.attributes.haste,$rootScope.myself.extra.haste,24);
 		}else if(skill.type=="instant"&&!$rootScope.myself.states.ota&&$rootScope.myself.states.gcd==0){
 			$rootScope.myself.states.ota = false;
-			$rootScope.myself.states.gcd = hasteCalc($rootScope.myself.attributes.haste,$rootScope.myself.extra.haste,24);
+			$rootScope.myself.states.gcd = Utils.hasteCalc($rootScope.myself.attributes.haste,$rootScope.myself.extra.haste,24);
 			var damage = skill.calc($rootScope.myself,$rootScope.target,$rootScope.buffController,$rootScope.skillRecipe,$rootScope.skillOption);
 		}else if(skill.type=="channel"&&!$rootScope.myself.states.ota&&$rootScope.myself.states.gcd==0){
 			$rootScope.myself.states.ota = true;
 			$rootScope.skillController.curSkill = skill;
-			$rootScope.myself.states.curOta = hasteCalc($rootScope.myself.attributes.haste,$rootScope.myself.extra.haste,skill.interval)*(skill.ota/skill.interval);
+			$rootScope.myself.states.curOta = Utils.hasteCalc($rootScope.myself.attributes.haste,$rootScope.myself.extra.haste,skill.interval)*(skill.ota/skill.interval);
 			$rootScope.myself.states.otaRemain = $rootScope.myself.states.curOta;
-			$rootScope.myself.states.curInterval = hasteCalc($rootScope.myself.attributes.haste,$rootScope.myself.extra.haste,skill.interval);
-			$rootScope.myself.states.gcd = hasteCalc($rootScope.myself.attributes.haste,$rootScope.myself.extra.haste,24);
+			$rootScope.myself.states.curInterval = Utils.hasteCalc($rootScope.myself.attributes.haste,$rootScope.myself.extra.haste,skill.interval);
+			$rootScope.myself.states.gcd = Utils.hasteCalc($rootScope.myself.attributes.haste,$rootScope.myself.extra.haste,24);
 		}
 	}
 
@@ -268,7 +272,7 @@ app.controller('MainCtrl', ['$scope','$rootScope','$timeout','$interval', functi
 		}
 		$scope.cast("阳明指");
 	}
-
+	// 宏命令
 	$scope.tbuff = function(buffName,level,sign){
 		// 判断目标身上是否存在某增益或减益buff
 		// 或者判断目标身上的某增益或减益buff是否大于，小于或等于几层
@@ -315,7 +319,6 @@ app.controller('MainCtrl', ['$scope','$rootScope','$timeout','$interval', functi
 		});
 		return returnValue;
 	}
-
 	$scope.tnobuff = function(buffName){
 		// 判断目标身上无某增益或减益buff
 		var returnValue = true;
@@ -326,7 +329,6 @@ app.controller('MainCtrl', ['$scope','$rootScope','$timeout','$interval', functi
 		});
 		return returnValue;
 	}
-
 	$scope.nobuff = function(buffName){
 		// 判断自己身上无某增益或减益buff
 		var returnValue = true;
@@ -337,7 +339,6 @@ app.controller('MainCtrl', ['$scope','$rootScope','$timeout','$interval', functi
 		});
 		return returnValue;
 	}
-
 	$scope.tbufftime = function(buffName,seconds,sign){
 		// 判断目标身上某增益或减益buff 持续时间大于，小于或等于多少秒
 		var returnValue = false;
@@ -359,7 +360,6 @@ app.controller('MainCtrl', ['$scope','$rootScope','$timeout','$interval', functi
 		});
 		return returnValue;
 	}
-
 	$scope.bufftime = function(buffName,seconds,sign){
 		// 判断自己身上某增益或减益buff 持续时间大于，小于或等于多少秒
 		var returnValue = false;
@@ -381,7 +381,6 @@ app.controller('MainCtrl', ['$scope','$rootScope','$timeout','$interval', functi
 		});
 		return returnValue;
 	}
-
 	$scope.nocd = function(skillName){
 		// 判断自身技能是否没有CD
 		var returnValue = true;
@@ -392,25 +391,32 @@ app.controller('MainCtrl', ['$scope','$rootScope','$timeout','$interval', functi
 		})
 		return returnValue;
 	}
+	// 设置开关
 	$rootScope.settings = false;
-	$scope.settings = function(){
-		$rootScope.settings = !$rootScope.settings;
+	$scope.qixueSettings = function(){
+		var modalInstance = $modal.open({
+			animation: true,
+			templateUrl: 'dpsSim/template/qixueSetting.html',
+			controller: 'QixueCtrl',
+			size:'lg'
+		});
+	}
+	$scope.recipeSettings = function(){
+		var modalInstance = $modal.open({
+			animation: true,
+			templateUrl: 'dpsSim/template/recipeSetting.html',
+			controller: 'RecipeCtrl',
+			size:'lg'
+		});
 	}
 }]);
 
-app.controller('SettingsCtrl', ['$rootScope','$scope', function($rootScope,$scope){
-	$scope.recipeList = [
-		{name:"阳明指",id:"yangMing"},
-		{name:"商阳指",id:"shangYang"},
-		{name:"兰摧玉折",id:"lanCui"},
-		{name:"钟林毓秀",id:"zhongLin"},
-		{name:"快雪时晴",id:"kuaiXue"}
-	];
+app.controller('QixueCtrl', ['$rootScope','$scope','$modalInstance', function($rootScope,$scope,$modalInstance){
 	$scope.options = [];
 	angular.forEach($rootScope.skillOption,function(value,key){
 		for (var i = 0; i < value.length; i++) {
 			if(value[i].active){
-				var opt = {id:key,name:value[i].name};
+				var opt = {id:key,name:value[i].name,icon:value[i].icon,desc:value[i].desc};
 				$scope.options.push(opt);
 			}
 		};
@@ -424,8 +430,22 @@ app.controller('SettingsCtrl', ['$rootScope','$scope', function($rootScope,$scop
 				subid = i;
 			}
 		};
-		$scope.options[id-1] = {id:id,name:$rootScope.skillOption[id][subid].name};
+		var value = $rootScope.skillOption[id][subid];
+		$scope.options[id-1] = {id:id,name:value.name,icon:value.icon,desc:value.desc};
 	}
+	$scope.close = function() {
+		$modalInstance.dismiss();
+	}
+}]);
+
+app.controller('RecipeCtrl', ['$rootScope','$scope','$modalInstance', function($rootScope,$scope,$modalInstance){
+	$scope.recipeList = [
+		{name:"阳明指",id:"yangMing"},
+		{name:"商阳指",id:"shangYang"},
+		{name:"兰摧玉折",id:"lanCui"},
+		{name:"钟林毓秀",id:"zhongLin"},
+		{name:"快雪时晴",id:"kuaiXue"}
+	];
 	$scope.recipeLCtrl = {
 		yangMing:0,
 		shangYang:0,
@@ -449,5 +469,8 @@ app.controller('SettingsCtrl', ['$rootScope','$scope', function($rootScope,$scop
 			}
 			
 		};
+	}
+	$scope.close = function() {
+		$modalInstance.dismiss();
 	}
 }]);	

@@ -5,7 +5,7 @@ var whOptions = {
 		{name:"少阳指",desc:"少阳指",skill:"少阳指",icon:1517,active:false}
 	],
 	2:[
-		{name:"寒碧",desc:"若目标身上没有“钟林毓秀”效果，则阳明指附带“钟林毓秀”，该效果每12秒触发一次。",skill:"阳明指",icon:5773,active:true},
+		{name:"寒碧",desc:"若目标身上没有“钟林毓秀”效果，则阳明指附带“钟林毓秀”，该效果每12秒触发一次。",skill:"阳明指",icon:408,active:true},
 		{name:"寒血",desc:"“施展“商阳指”立刻造成伤害",skill:"商阳指",icon:1514,active:false},
 		{name:"花语酥心",desc:"花语酥心",skill:"花语酥心",icon:407,active:false}
 	],

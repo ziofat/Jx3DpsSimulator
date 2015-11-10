@@ -8,7 +8,7 @@
 	<title>剑网3全职业配装器 - DPS 模拟计算器</title>
 	<link href="css/bootstrap.min.css" rel="stylesheet">
 	<link href="css/all.css" rel="stylesheet">
-	<link href="css/square/_all.css" rel="stylesheet">
+	<link href="css/flat/_all.css" rel="stylesheet">
 	<link href="css/angular-toastr.min.css" rel="stylesheet">
 </head>
 <script>
@@ -121,7 +121,7 @@
 				战斗时间: {{(time/16).toFixed(2)}}s<br>
 				DPS: {{dps.toFixed(0)}}
 			</div>
-			<div class="row" style="margin-bottom:16px;">
+			<div class="row" style="margin-bottom:16px;" ng-controller="BuffCtrl">
 				目标Buff：
 				<span ng-repeat="buff in buffController.targetBuffs">
 					<b>{{buff.name}}</b>
@@ -146,7 +146,12 @@
 				<button class="btn" ng-click="start()">开始循环</button>
 				<button class="btn" ng-click="stop()">结束循环</button>
 				<button class="btn" ng-click="clear()">清空log</button>
-				<button class="btn" ng-click="settings()">设置秘籍与奇穴</button>
+				<!-- <button class="btn" ng-click="aveStart()">10次循环</button> -->
+			</div>
+			<div class="row" style="margin-bottom:16px;">
+				<button class="btn" ng-click="qixueSettings()">奇穴设置</button>
+				<button class="btn" ng-click="recipeSettings()">秘籍设置</button>
+				<!-- <button class="btn" ng-click="settings()">目标设置</button> -->
 			</div>
 			<div class="row" style="margin-bottom:16px;" ng-controller="SkillCtrl">
 				<button class="btn btn-primary col-md-3 m-a-1" ng-click="cast('兰摧玉折')" ng-disabled="myself.states.gcd>0||skillController.list[5].cdRemain>0">兰摧玉折({{(skillController.list[5].cdRemain/16).toFixed(0)}})</button>
@@ -169,7 +174,7 @@
 		</div>
 		
 	</div>
-	<div class="row" ng-controller="SettingsCtrl" ng-show="$root.settings" style="margin-top:16px">
+	<!-- <div class="row" ng-show="$root.settings" style="margin-top:16px">
 		<div>
 			<label>自动模式</label>
 			<input icheck type="checkbox" ng-model="$root.macroMode">
@@ -178,27 +183,7 @@
 			<label>木桩掉血开关</label>
 			<input icheck type="checkbox" ng-model="$root.kill">
 		</div>
-		<label>奇穴</label>
-		<div class="row">
-			<div class="col-sm-1" ng-repeat="option in options">
-				<div class="qixue" dropdown>
-					<button id="add-buff" type="button" class="btn btn-default" dropdown-toggle>{{option.name}}
-						<span class="caret"></span>
-					</button>
-					<ul class="dropdown-menu" role="menu" aria-labelledby="qixue">
-						<li role="menuitem" ng-repeat="opts in $root.skillOption[option.id]" ng-click="toggleOption(opts.name,option.id)"><a href>{{opts.name}}</a></li>
-					</ul>
-				</div>
-			</div>
-		</div>
-		<label>秘籍</label>
-		<div class="row">
-			<div class="col-sm-2" ng-repeat="recipe in recipeList">
-				<label>{{recipe.name}}</label>
-				<div ng-repeat="item in $root.skillRecipe[recipe.id]" ><input type="checkbox" ng-model="item.active" ng-click="toggleRecipe(recipe.id)" ng-disabled="!item.active&&recipeLCtrl[recipe.id]==4">  {{item.desc}} </div>
-			</div>
-		</div>
-	</div>
+	</div> -->
 </div>
 <footer style="margin-top:20px;">
 	<div id="footer" class="footer">
@@ -239,9 +224,9 @@
 <script src="js/angular-toastr.tpls.min.js"></script>
 <script src="js/jquery.min.js"></script>
 <script src="js/icheck.min.js"></script>
+<script src="dpsSim/dps.js"></script>
 <script src="dpsSim/skill.js"></script>
 <script src="dpsSim/buff.js"></script>
-<script src="dpsSim/dps.js"></script>
 <script src="dpsSim/utils.js"></script>
 <script src="dpsSim/buffs.js"></script>
 <script src="dpsSim/skills.js"></script>
