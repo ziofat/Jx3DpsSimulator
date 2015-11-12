@@ -101,7 +101,9 @@ app.controller('SkillCtrl', ['$scope','$rootScope','Utils','Skill','Buff', funct
 				this.extraAttr.critAddPercent += parseInt(5*dotCount);
 			}
 			// 落凤
-			this.extraAttr.damage += 5;
+			if($rootScope.effects.cw==2) this.extraAttr.damage += 5;
+			// 小橙武
+			if($rootScope.effects.cw==1) this.extraAttr.critAddPercent += 5;
 		},
 		onSkillFinish:function(attr, target, buffController, recipes, options){
 		}
@@ -243,6 +245,24 @@ app.controller('SkillCtrl', ['$scope','$rootScope','Utils','Skill','Buff', funct
 					Utils.addDebuff(angular.copy(Buff.getBuffById(recipes.kuaiXue[i].value)),attr)
 				}
 			};
+			// 踏歌奇穴：“快雪时晴”命中有自身持续伤害效果的目标，每次伤害有15%几率使持续伤害效果增加2跳，每个持续效果最多作用一次
+			if(options[6][1].active){
+				var roll = Math.random()*100;
+				if($rootScope.originalBuffList.shangYangDot.id in buffController.targetBuffs&&roll<15){
+					var dot = buffController.targetBuffs[$rootScope.originalBuffList.shangYangDot.id];
+					Utils.dotAddInterval(dot,attr,2);
+				}
+				var roll = Math.random()*100;
+				if($rootScope.originalBuffList.zhongLinDot.id in buffController.targetBuffs&&roll<15){
+					var dot = buffController.targetBuffs[$rootScope.originalBuffList.zhongLinDot.id];
+					Utils.dotAddInterval(dot,attr,2);
+				}
+				var roll = Math.random()*100;
+				if($rootScope.originalBuffList.lanCuiDot.id in buffController.targetBuffs&&roll<15){
+					var dot = buffController.targetBuffs[$rootScope.originalBuffList.lanCuiDot.id];
+					Utils.dotAddInterval(dot,attr,2);
+				}
+			}
 		},
 		onSkillCritEvent:function(attr, target, buffController, recipes, options){
 			this.onSkillHitEvent(attr, target, buffController, recipes, options);
@@ -262,11 +282,15 @@ app.controller('SkillCtrl', ['$scope','$rootScope','Utils','Skill','Buff', funct
 			if(options[8][1].active){
 				this.extraAttr.damage+=20;
 			}
+			// 落凤
+			if($rootScope.effects.cw==2) this.extraAttr.damage += 5;
+			// 小橙武
+			if($rootScope.effects.cw==1) this.extraAttr.critAddPercent += 5;
 		},
 		onSkillFinish:function(attr, target, buffController, recipes, options){
 			// 梦歌奇穴：施展“阳明指”或“快雪时晴”运功结束时均获得“梦歌”气劲，每层使加速率提高1%，持续30秒，最多叠加5层。
 			if(options[10][0].active){
-				Utils.addBuff(mengGeBuff,attr);
+				Utils.addBuff($rootScope.originalBuffList.mengGeBuff,attr);
 			}
 		}
 	});
@@ -381,9 +405,9 @@ app.controller('SkillCtrl', ['$scope','$rootScope','Utils','Skill','Buff', funct
 		onSkillHitEvent:function(attr, target, buffController, recipes, options){
 			// 轻弃奇穴：“芙蓉并蒂”的伤害提高100%，命中目标后刷新目标身上的所有混元持续伤害效果。
 			if(options[5][2].active){
-				Utils.dotRefresh(shangYangDot,attr);
-				Utils.dotRefresh(lanCuiDot,attr);
-				Utils.dotRefresh(zhongLinDot,attr);
+				Utils.dotRefresh($rootScope.originalBuffList.shangYangDot,attr);
+				Utils.dotRefresh($rootScope.originalBuffList.lanCuiDot,attr);
+				Utils.dotRefresh($rootScope.originalBuffList.zhongLinDot,attr);
 			}
 		},
 		onSkillCritEvent:function(attr, target, buffController, recipes, options){

@@ -1,0 +1,32 @@
+<div class="modal-content">
+	<div class="modal-header">
+		<button type="button" class="close" ng-click="close()"><span aria-hidden="true">&times;</span><span class="sr-only">关闭</span></button>
+		<h4 class="modal-title">特效设置</h4>
+	</div>
+	<div class="modal-body">
+		<div class="row">
+			<div class="col-sm-4">
+				<label>橙武特效</label><br>
+				<label ng-click="$root.effects.cw = texiao.id" ng-repeat-start="texiao in cw">
+					<input icheck type="radio" ng-model="$root.effects.cw" ng-value="texiao.id"> {{texiao.name}}
+				</label><br ng-repeat-end>
+			</div>
+			<div class="col-sm-4">
+				<label>水特效</label><br>
+				<label ng-click="$root.effects.water = texiao.id" ng-repeat-start="texiao in water">
+					<input icheck type="radio" ng-model="$root.effects.water" ng-value="texiao.id"> {{texiao.name}}
+				</label><br ng-repeat-end>
+			</div>
+			<div class="col-sm-4">
+				<label>雷特效</label><br>
+				<label ng-click="$root.effects.thunder = texiao.id" ng-repeat-start="texiao in thunder">
+					<input icheck type="radio" ng-model="$root.effects.thunder" ng-value="texiao.id"> {{texiao.name}}
+				</label><br ng-repeat-end>
+			</div>
+		</div>
+		<small>腰坠特效请在宏中使用/use 命令开启</small>
+	</div>
+	<div class="modal-footer">
+		<button type="button" class="btn btn-default" ng-click="close()">关闭</button>
+	</div>
+</div>

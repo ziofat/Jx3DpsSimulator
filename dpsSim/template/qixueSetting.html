@@ -11,9 +11,10 @@
 						<span class="caret right"></span>
 					</button>
 					<ul class="dropdown-menu" role="menu" aria-labelledby="qixue">
-						<li role="menuitem" ng-repeat="opts in $root.skillOption[option.id]" ng-click="toggleOption(opts.name,option.id)" tooltip="{{opts.desc}}" tooltip-append-to-body="true"><a href style="display:inline"><img ng-src="{{'http://icons.j3pz.com/'+opts.icon+'.png'}}" style="width:24px;height:24px"></img><span>{{opts.name}}</span></a></li>
+						<li role="menuitem" ng-repeat="opts in $root.skillOption[option.id]" ng-click="toggleOption(opts.name,option.id)" tooltip="{{opts.desc}}" tooltip-append-to-body="true" tooltip-placement="left"><a href style="display:inline"><img ng-src="{{'http://icons.j3pz.com/'+opts.icon+'.png'}}" style="width:24px;height:24px"></img><span>{{opts.name}}</span></a></li>
 					</ul>
 				</div>
+				<span>{{option.name}}</span>
 			</div>
 		</div>
 	</div>

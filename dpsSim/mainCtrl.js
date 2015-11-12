@@ -1,5 +1,8 @@
 app.controller('MainCtrl', ['$scope','$rootScope','$timeout','$interval','Utils','Buff','Skill','$modal', function($scope,$rootScope,$timeout,$interval,Utils,Buff,Skill,$modal){
 	$rootScope.target = {
+		id:1,
+		level:97,
+		name:"中级试炼木桩",
 		life:5000000,
 		curLife:5000000,
 		mana:1000000,
@@ -50,7 +53,12 @@ app.controller('MainCtrl', ['$scope','$rootScope','$timeout','$interval','Utils'
 	}
 	$rootScope.skillRecipe = angular.copy(whRecipes);
 	$rootScope.skillOption = angular.copy(whOptions);
-	$rootScope.macroMode = false;
+	$rootScope.macroMode = true;
+	$rootScope.effects = {
+		cw:2,
+		water:0,
+		thunder:0,
+	}
 	$scope.digest = function(){
 		if($rootScope.macroMode&&$rootScope.time%(Math.ceil($rootScope.myself.attributes.delay/1000*16)+1)==0){
 			$scope.macro();
@@ -148,13 +156,17 @@ app.controller('MainCtrl', ['$scope','$rootScope','$timeout','$interval','Utils'
 	}
 	var loopInterval;
 	$rootScope.time = 0;
-	$rootScope.debug = true;
+	$rootScope.debug = false;
 	$rootScope.kill = true;
 	$rootScope.globalDamage = 0;
 	$scope.start = function(){
 		$scope.clear();
 		$rootScope.globalDamage = 0;
 		$rootScope.time = 0;
+		$rootScope.dpsLog = {
+			skillList:[],
+			skillDetails:[]
+		};
 		var b = new Date();
 		$rootScope.buffController = {
 			selfBuffs:{},
@@ -185,6 +197,10 @@ app.controller('MainCtrl', ['$scope','$rootScope','$timeout','$interval','Utils'
 		}
 		var e = new Date();
 		// console.log(e.getTime()-b.getTime());
+		if($rootScope.dpsLog.skillDetails[0]){
+			$rootScope.curSkillStats = $rootScope.dpsLog.skillDetails[0];
+			$rootScope.skillHighlight = $rootScope.dpsLog.skillDetails[0].name;
+		}
 		return $rootScope.dps;
 	}
 	$scope.aveStart = function(){
@@ -203,7 +219,90 @@ app.controller('MainCtrl', ['$scope','$rootScope','$timeout','$interval','Utils'
 	$scope.clear = function(){
 		$('#log').html("");
 	}
+	$scope.macro = function(){
+		for (var i = 0; i < $rootScope.macroProgram.length; i++) {
+			var success = macroTranslate($rootScope.macroProgram[i]);
+			if(success) break;
+		};
+		// if($scope.tnobuff("兰摧玉折")&&$scope.tnobuff("钟林毓秀")&&$scope.nocd("乱洒青荷")){
+		// 	$scope.cast("乱洒青荷");
+		// 	return;
+		// }
+		// if($scope.tnobuff("兰摧玉折")&&$scope.tnobuff("钟林毓秀")&&$scope.buff("乱洒青荷")){
+		// 	$scope.cast("阳明指");
+		// 	return;
+		// }
+		// if($scope.tnobuff("兰摧玉折")&&$scope.nocd("兰摧玉折")){
+		// 	$scope.cast("兰摧玉折");
+		// 	return;
+		// }
+		// if($scope.tnobuff("商阳指")&&$scope.nocd("商阳指")){
+		// 	$scope.cast("商阳指");
+		// 	return;
+		// }
+		// if($scope.tnobuff("钟林毓秀")){
+		// 	$scope.cast("阳明指");
+		// 	return;
+		// }
+		// if($scope.tbuff("钟林毓秀")&&$scope.tbuff("兰摧玉折")&&$scope.tbuff("商阳指")&&$scope.nocd("水月无间")&&$scope.nocd("玉石俱焚")&&($scope.bufftime("焚玉",2,"<")||$scope.nobuff("焚玉"))){
+		// 	$scope.cast("水月无间");
+		// 	return;
+		// }
+		// if($scope.tbuff("钟林毓秀")&&$scope.tbuff("兰摧玉折")&&$scope.tbuff("商阳指")&&$scope.nocd("玉石俱焚")&&($scope.bufftime("焚玉",2,"<")||$scope.nobuff("焚玉"))){
+		// 	$scope.cast("玉石俱焚");
+		// 	return;
+		// }
+		// $scope.cast("阳明指");
+	}
 
+	function macroTranslate(s){
+		var lineArr = s.split(" ");
+		var action = lineArr[0];
+		if(lineArr[1].indexOf("[")<0){
+			// 无条件
+			var condition = true;
+			var skill = lineArr[1];
+		}else{
+			// 有条件
+			var conditions = lineArr[1].slice(lineArr[1].indexOf("[")+1,lineArr.indexOf("]"));
+			var skill = lineArr[2];
+			var conditionArr = conditions.split(/(\&|\|)/);
+			conditionArr.push("&");
+			conditionArr.unshift("&");
+			var condition = true;
+			for (var i = 1; i < conditionArr.length; i=i+2) {
+				var checkArr = conditionArr[i].split(/:|>=|<=|=|>|</);
+				var funcName = checkArr[0];
+				var logic = conditionArr[i-1];
+				var sign = undefined;
+				if(conditionArr[i].indexOf(">=")>=0) sign = ">=";
+				else if(conditionArr[i].indexOf("<=")>=0) sign = "<=";
+				else if(conditionArr[i].indexOf("<")>=0) sign = "<";
+				else if(conditionArr[i].indexOf(">")>=0) sign = ">";
+				else if(conditionArr[i].indexOf("=")>=0) sign = "=";
+				if(checkArr.length==3){
+					var result = eval("$scope."+funcName+"(checkArr[1],checkArr[2],sign)");
+				}else if(checkArr.length==2){
+					var result = eval("$scope."+funcName+"(checkArr[1],sign)");
+				}else if(checkArr.length==1){
+					var result = eval("$scope."+funcName+"()");
+				}
+				if(logic == "&") condition = condition&&result;
+				else if(logic == "|") condition = condition||result;
+				if(!condition&&conditionArr[i+1]=="&"){
+					return false;
+				}
+			};
+		}
+		if(action=="/cast"&&$scope.nocd(skill)){
+			$scope.cast(skill);
+			return true;
+		}else{
+			return false;
+		}
+	}
+	// 宏命令
+	// 动作指令
 	$scope.cast = function(skillName){
 		var skill;
 		angular.forEach($rootScope.skillController.list,function(value,key){
@@ -240,62 +339,7 @@ app.controller('MainCtrl', ['$scope','$rootScope','$timeout','$interval','Utils'
 			$rootScope.myself.states.gcd = Utils.hasteCalc($rootScope.myself.attributes.haste,$rootScope.myself.extra.haste,24);
 		}
 	}
-
-	$scope.macro = function(){
-		if($scope.tnobuff("兰摧玉折")&&$scope.tnobuff("钟林毓秀")&&$scope.nocd("乱洒青荷")){
-			$scope.cast("乱洒青荷");
-			return;
-		}
-		if($scope.tnobuff("兰摧玉折")&&$scope.tnobuff("钟林毓秀")&&$scope.buff("乱洒青荷")){
-			$scope.cast("阳明指");
-			return;
-		}
-		if($scope.tnobuff("兰摧玉折")&&$scope.nocd("兰摧玉折")){
-			$scope.cast("兰摧玉折");
-			return;
-		}
-		if($scope.tnobuff("商阳指")&&$scope.nocd("商阳指")){
-			$scope.cast("商阳指");
-			return;
-		}
-		if($scope.tnobuff("钟林毓秀")){
-			$scope.cast("阳明指");
-			return;
-		}
-		if($scope.tbuff("钟林毓秀")&&$scope.tbuff("兰摧玉折")&&$scope.tbuff("商阳指")&&$scope.nocd("水月无间")&&$scope.nocd("玉石俱焚")&&($scope.bufftime("焚玉",2,"<")||$scope.nobuff("焚玉"))){
-			$scope.cast("水月无间");
-			return;
-		}
-		if($scope.tbuff("钟林毓秀")&&$scope.tbuff("兰摧玉折")&&$scope.tbuff("商阳指")&&$scope.nocd("玉石俱焚")&&($scope.bufftime("焚玉",2,"<")||$scope.nobuff("焚玉"))){
-			$scope.cast("玉石俱焚");
-			return;
-		}
-		$scope.cast("阳明指");
-	}
-	// 宏命令
-	$scope.tbuff = function(buffName,level,sign){
-		// 判断目标身上是否存在某增益或减益buff
-		// 或者判断目标身上的某增益或减益buff是否大于，小于或等于几层
-		if(!level) level = 1;
-		if(!sign) sign = "=";
-		var returnValue = false;
-		angular.forEach($rootScope.buffController.targetBuffs,function(value,key){
-			if(value.name==buffName){
-				switch(sign){
-					case ">":
-						if(value.level>level) returnValue = true;
-						break;
-					case "<":
-						if(value.level<level) returnValue = true;
-						break;
-					case "=":
-						if(value.level==level) returnValue = true;
-						break;
-				}
-			}
-		});
-		return returnValue;
-	}
+	// 自身条件
 	$scope.buff = function(buffName,level,sign){
 		// 判断自己身上是否存在某增益或减益buff
 		// 或者判断自己身上的某增益或减益buff是否大于，小于或等于几层
@@ -314,6 +358,98 @@ app.controller('MainCtrl', ['$scope','$rootScope','$timeout','$interval','Utils'
 					case "=":
 						if(value.level==level) returnValue = true;
 						break;
+					case "<=":
+						if(value.level<=level) returnValue = true;
+						break;
+					case ">=":
+						if(value.level>=level) returnValue = true;
+						break;
+				}
+			}
+		});
+		return returnValue;
+	}
+	$scope.nobuff = function(buffName){
+		// 判断自己身上无某增益或减益buff
+		var returnValue = true;
+		angular.forEach($rootScope.buffController.selfBuffs,function(value,key){
+			if(value.name==buffName){
+				returnValue = false;
+			}
+		});
+		return returnValue;
+	}
+	$scope.bufftime = function(buffName,seconds,sign){
+		// 判断自己身上某增益或减益buff 持续时间大于，小于或等于多少秒
+		var returnValue = false;
+		angular.forEach($rootScope.buffController.selfBuffs,function(value,key){
+			if(value.name==buffName){
+				var timeRemain = Math.floor(value.remain/16);
+				switch(sign){
+					case ">":
+						if(timeRemain>seconds) returnValue = true;
+						break;
+					case "<":
+						if(timeRemain<seconds) returnValue = true;
+						break;
+					case "=":
+						if(timeRemain==seconds) returnValue = true;
+						break;
+					case "<=":
+						if(timeRemain<=seconds) returnValue = true;
+						break;
+					case ">=":
+						if(timeRemain>=seconds) returnValue = true;
+						break;
+				}
+			}
+		});
+		return returnValue;
+	}
+	$scope.life = function(percent,sign){
+		// 生命值大于，小于或等于最大血量的百分之多少
+		if(sign==">"&&$rootScope.myself.states.life>percent) return true;
+		if(sign=="<"&&$rootScope.myself.states.life<percent) return true;
+		if(sign=="="&&$rootScope.myself.states.life==percent) return true;
+		if(sign=="<="&&$rootScope.myself.states.life<=percent) return true;
+		if(sign==">="&&$rootScope.myself.states.life>=percent) return true;
+		return false;
+	}
+	$scope.mana = function(percent,sign){
+		// 内力值大于，小于或等于最大血量的百分之多少
+		if(sign==">"&&$rootScope.myself.states.mana>percent) return true;
+		if(sign=="<"&&$rootScope.myself.states.mana<percent) return true;
+		if(sign=="="&&$rootScope.myself.states.mana==percent) return true;
+		if(sign=="<="&&$rootScope.myself.states.mana<=percent) return true;
+		if(sign==">="&&$rootScope.myself.states.mana>=percent) return true;
+		return false;
+		return false;
+	}
+	// 目标条件
+	$scope.tbuff = function(buffName,level,sign){
+		// 判断目标身上是否存在某增益或减益buff
+		// 或者判断目标身上的某增益或减益buff是否大于，小于或等于几层
+		if(!level) level = 1;
+		if(!sign) sign = "=";
+		var returnValue = false;
+		angular.forEach($rootScope.buffController.targetBuffs,function(value,key){
+			if(value.name==buffName){
+				switch(sign){
+					case ">":
+						if(value.level>level) returnValue = true;
+						break;
+					case "<":
+						if(value.level<level) returnValue = true;
+						break;
+					case "=":
+						if(value.level==level) returnValue = true;
+						break;
+					case "<=":
+						if(value.level<=level) returnValue = true;
+						break;
+					case ">=":
+						if(value.level>=level) returnValue = true;
+						break;
 				}
 			}
 		});
@@ -323,16 +459,6 @@ app.controller('MainCtrl', ['$scope','$rootScope','$timeout','$interval','Utils'
 		// 判断目标身上无某增益或减益buff
 		var returnValue = true;
 		angular.forEach($rootScope.buffController.targetBuffs,function(value,key){
-			if(value.name==buffName){
-				returnValue = false;
-			}
-		});
-		return returnValue;
-	}
-	$scope.nobuff = function(buffName){
-		// 判断自己身上无某增益或减益buff
-		var returnValue = true;
-		angular.forEach($rootScope.buffController.selfBuffs,function(value,key){
 			if(value.name==buffName){
 				returnValue = false;
 			}
@@ -355,32 +481,35 @@ app.controller('MainCtrl', ['$scope','$rootScope','$timeout','$interval','Utils'
 					case "=":
 						if(timeRemain==seconds) returnValue = true;
 						break;
-				}
-			}
-		});
-		return returnValue;
-	}
-	$scope.bufftime = function(buffName,seconds,sign){
-		// 判断自己身上某增益或减益buff 持续时间大于，小于或等于多少秒
-		var returnValue = false;
-		angular.forEach($rootScope.buffController.selfBuffs,function(value,key){
-			if(value.name==buffName){
-				var timeRemain = Math.floor(value.remain/16);
-				switch(sign){
-					case ">":
-						if(timeRemain>seconds) returnValue = true;
+					case "<=":
+						if(timeRemain<=seconds) returnValue = true;
 						break;
-					case "<":
-						if(timeRemain<seconds) returnValue = true;
-						break;
-					case "=":
-						if(timeRemain==seconds) returnValue = true;
+					case ">=":
+						if(timeRemain>=seconds) returnValue = true;
 						break;
 				}
 			}
 		});
 		return returnValue;
 	}
+	$scope.target = function(type){
+		// 目标是否为 npc 或者 玩家
+		// DPS 测试器中，目标只能是NPC
+		if(type=="npc"||type=="all") return true;
+		else return false;
+	}
+	$scope.notarget = function(){
+		// 目标是否存在
+		// DPS 测试器中，目标只要血量高于0均存在
+		if($rootScope.target.curLife>0) return false;
+		else return true;
+	}
+	$scope.distance = function(distance,sign){
+		// 离目标的距离大于，小于或等于多少尺
+		// DPS 测试器中，不判定距离
+		return true;
+	}
+	// 测试器条件
 	$scope.nocd = function(skillName){
 		// 判断自身技能是否没有CD
 		var returnValue = true;
@@ -409,68 +538,57 @@ app.controller('MainCtrl', ['$scope','$rootScope','$timeout','$interval','Utils'
 			size:'lg'
 		});
 	}
+	$scope.targetSettings = function(){
+		var modalInstance = $modal.open({
+			animation: true,
+			templateUrl: 'dpsSim/template/targetSetting.html',
+			controller: 'TargetCtrl',
+			size:'md'
+		});
+	}
+	$scope.macroSettings = function(){
+		var modalInstance = $modal.open({
+			animation: true,
+			templateUrl: 'dpsSim/template/macroSetting.html',
+			controller: 'MacroCtrl',
+			size:'lg'
+		});
+	}
+	$scope.effectSettings = function(){
+		var modalInstance = $modal.open({
+			animation: true,
+			templateUrl: 'dpsSim/template/effectSetting.html',
+			controller: 'EffectCtrl',
+			size:'md'
+		});
+	}
+	$rootScope.macroText = 
+		"/cast [tnobuff:兰摧玉折&tnobuff:钟林毓秀] 乱洒青荷" + "\n" +
+		"/cast [tnobuff:兰摧玉折&tnobuff:钟林毓秀&buff:乱洒青荷] 阳明指" + "\n" +
+		"/cast [tnobuff:兰摧玉折] 兰摧玉折" + "\n" +
+		"/cast [tnobuff:商阳指] 商阳指" + "\n" +
+		"/cast [tnobuff:钟林毓秀] 阳明指" + "\n" +
+		"/cast [bufftime:焚玉<2|nobuff:焚玉&tbuff:钟林毓秀&tbuff:兰摧玉折&tbuff:商阳指] 水月无间" + "\n" +
+		"/cast [bufftime:焚玉<2|nobuff:焚玉&tbuff:钟林毓秀&tbuff:兰摧玉折&tbuff:商阳指] 玉石俱焚" + "\n" +
+		"/cast 阳明指";
+	$rootScope.macroProgram = $rootScope.macroText.split("\n");
 }]);
 
-app.controller('QixueCtrl', ['$rootScope','$scope','$modalInstance', function($rootScope,$scope,$modalInstance){
-	$scope.options = [];
-	angular.forEach($rootScope.skillOption,function(value,key){
-		for (var i = 0; i < value.length; i++) {
-			if(value[i].active){
-				var opt = {id:key,name:value[i].name,icon:value[i].icon,desc:value[i].desc};
-				$scope.options.push(opt);
-			}
-		};
-	})
-	$scope.toggleOption = function(name, id){
-		var subid = 0;
-		for (var i = 0; i < $rootScope.skillOption[id].length; i++) {
-			$rootScope.skillOption[id][i].active=false;
-			if($rootScope.skillOption[id][i].name == name){
-				$rootScope.skillOption[id][i].active=true;
-				subid = i;
-			}
-		};
-		var value = $rootScope.skillOption[id][subid];
-		$scope.options[id-1] = {id:id,name:value.name,icon:value.icon,desc:value.desc};
-	}
-	$scope.close = function() {
-		$modalInstance.dismiss();
-	}
-}]);
-
-app.controller('RecipeCtrl', ['$rootScope','$scope','$modalInstance', function($rootScope,$scope,$modalInstance){
-	$scope.recipeList = [
-		{name:"阳明指",id:"yangMing"},
-		{name:"商阳指",id:"shangYang"},
-		{name:"兰摧玉折",id:"lanCui"},
-		{name:"钟林毓秀",id:"zhongLin"},
-		{name:"快雪时晴",id:"kuaiXue"}
-	];
-	$scope.recipeLCtrl = {
-		yangMing:0,
-		shangYang:0,
-		lanCui:0,
-		zhongLin:0,
-		kuaiXue:0
+app.controller('StatsCtrl', ['$rootScope','$scope', function($rootScope,$scope){
+	$scope.typeList=["hit","crit","insight","miss"];
+	$scope.typeDesc={
+		hit:"命中",
+		crit:"会心",
+		insight:"识破",
+		miss:"偏离"
 	};
-	angular.forEach($rootScope.skillRecipe,function(value,key){
-		for (var i = 0; i < value.length; i++) {
-			if(value[i].active){
-				$scope.recipeLCtrl[key]++;
+	$scope.tabSwitch = function(name){
+		for (var i = 0; i < $rootScope.dpsLog.skillList.length; i++) {
+			if($rootScope.dpsLog.skillList[i] == name){
+				$rootScope.curSkillStats = $rootScope.dpsLog.skillDetails[i];
+				$rootScope.skillHighlight = name;
+				break;
 			}
-			
-		};
-	})
-	$scope.toggleRecipe = function(id){
-		$scope.recipeLCtrl[id] = 0;
-		for (var i = 0; i < $rootScope.skillRecipe[id].length; i++) {
-			if($rootScope.skillRecipe[id][i].active){
-				$scope.recipeLCtrl[id]++;
-			}
-			
 		};
 	}
-	$scope.close = function() {
-		$modalInstance.dismiss();
-	}
-}]);	
+}]);

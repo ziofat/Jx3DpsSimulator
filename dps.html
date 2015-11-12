@@ -117,9 +117,9 @@
 		</div>
 		<div class="col-md-5">
 			<div class="row" style="margin-bottom:16px;">
-				目标状态：木武童({{target.curLife}}/{{target.life}})<br>
-				战斗时间: {{(time/16).toFixed(2)}}s<br>
-				DPS: {{dps.toFixed(0)}}
+				目标状态：{{$root.target.name}}({{$root.target.curLife}}/{{$root.target.life}})<br>
+				战斗时间: {{($root.time/16).toFixed(2)}}s<br>
+				DPS: {{$root.dps.toFixed(0)}}
 			</div>
 			<div class="row" style="margin-bottom:16px;" ng-controller="BuffCtrl">
 				目标Buff：
@@ -151,7 +151,9 @@
 			<div class="row" style="margin-bottom:16px;">
 				<button class="btn" ng-click="qixueSettings()">奇穴设置</button>
 				<button class="btn" ng-click="recipeSettings()">秘籍设置</button>
-				<!-- <button class="btn" ng-click="settings()">目标设置</button> -->
+				<button class="btn" ng-click="effectSettings()">特效设置</button>
+				<button class="btn" ng-click="targetSettings()">目标设置</button>
+				<button class="btn" ng-click="macroSettings()">宏设置</button>
 			</div>
 			<div class="row" style="margin-bottom:16px;" ng-controller="SkillCtrl">
 				<button class="btn btn-primary col-md-3 m-a-1" ng-click="cast('兰摧玉折')" ng-disabled="myself.states.gcd>0||skillController.list[5].cdRemain>0">兰摧玉折({{(skillController.list[5].cdRemain/16).toFixed(0)}})</button>
@@ -167,23 +169,49 @@
 				<button class="btn btn-primary col-md-3 m-a-1" ng-click="cast('芙蓉并蒂')" ng-disabled="myself.states.gcd>0||skillController.list[6].cdRemain>0">芙蓉并蒂({{(skillController.list[6].cdRemain/16).toFixed(0)}})</button>
 				<br>
 			</div>
-			
+			<div class="row">
+				<label>自动模式</label>
+				<input icheck type="checkbox" ng-model="$root.macroMode">
+				<label>调试开关</label>
+				<input icheck type="checkbox" ng-model="$root.debug">
+				<label>木桩掉血开关</label>
+				<input icheck type="checkbox" ng-model="$root.kill">
+			</div>
 		</div>
-		<div class="col-md-4" id="log" style="max-height:350px;overflow-y:scroll;">
-
+		<div class="col-md-4">
+			<div ng-controller="StatsCtrl">
+				<table class="table table-hover">
+					<thead>
+						<tr><th>技能</th><th>计数</th><th>伤害</th><th>占比</th></tr>
+					</thead>
+					<tbody>
+						<tr ng-repeat="skill in dpsLog.skillDetails" ng-click="tabSwitch(skill.name)" ng-class="skill.name==skillHighlight?'info':''">
+							<td>{{skill.name}}</td>
+							<td>{{skill.count}}</td>
+							<td>{{skill.damage}}</td>
+							<td>{{(skill.damage/$root.globalDamage*100).toFixed(1)}}%</td>
+						</tr>
+					</tbody>
+				</table>
+				<table class="table">
+					<thead>
+						<tr><th>类别</th><th>计数</th><th>最大/最小伤害</th><th>平均伤害</th><th>占比</th></tr>
+					</thead>
+					<tbody>
+						<tr ng-repeat="type in typeList" ng-if="$root.curSkillStats[type].count>0">
+							<td>{{typeDesc[type]}}</td>
+							<td>{{$root.curSkillStats[type].count}}</td>
+							<td>{{$root.curSkillStats[type].max}}/{{$root.curSkillStats[type].min}}</td>
+							<td>{{($root.curSkillStats[type].damage/($root.curSkillStats[type].count)).toFixed(0)}}</span></td>
+							<td>{{($root.curSkillStats[type].damage/$root.curSkillStats.damage*100).toFixed(1)}}%</td>
+						</tr>
+					</tbody>
+				</table>
+			</div>
+			<div id="log" style="max-height:350px;overflow-y:scroll;" ng-show="$root.debug"></div>
 		</div>
 		
 	</div>
-	<!-- <div class="row" ng-show="$root.settings" style="margin-top:16px">
-		<div>
-			<label>自动模式</label>
-			<input icheck type="checkbox" ng-model="$root.macroMode">
-			<label>调试开关</label>
-			<input icheck type="checkbox" ng-model="$root.debug">
-			<label>木桩掉血开关</label>
-			<input icheck type="checkbox" ng-model="$root.kill">
-		</div>
-	</div> -->
 </div>
 <footer style="margin-top:20px;">
 	<div id="footer" class="footer">
@@ -233,5 +261,6 @@
 <script src="dpsSim/recipes.js"></script>
 <script src="dpsSim/options.js"></script>
 <script src="dpsSim/mainCtrl.js"></script>
+<script src="dpsSim/settingsCtrl.js"></script>
 </body>
 </html>

@@ -1,4 +1,4 @@
-app.service('Skill',['$rootScope','Utils',function($rootScope,Utils){
+app.service('Skill',['$rootScope','Utils','Buff',function($rootScope,Utils,Buff){
 	this.createNew = function(skillData){
 		var skill = {};
 		var skillTypeList = ["ota","instant","channel"];
@@ -57,7 +57,7 @@ app.service('Skill',['$rootScope','Utils',function($rootScope,Utils){
 				strain: self.attributes.strain + (this.extraAttr.strainAddBase + self.extra.strainAddBase)/25.6835 + this.extraAttr.strainAddPercent + self.extra.strainAddPercent,
 				haste: self.attributes.haste,
 				extraHaste: self.extra.haste,
-				overcome: self.attributes.overcome + (self.attributes.overcome - self.attributes.spunk * 0.34) * (this.extraAttr.overcomeAddPercent/100 + self.extra.overcomeAddPercent),
+				overcome: self.attributes.overcome + (self.attributes.overcome - self.attributes.spunk * 0.34) * (this.extraAttr.overcomeAddPercent/100 + self.extra.overcomeAddPercent) + this.extraAttr.overcomeAddBase + self.extra.overcomeAddBase,
 				damageAddPercent: this.extraAttr.damage + self.extra.damage
 			}
 			var damage = 0;
@@ -92,18 +92,37 @@ app.service('Skill',['$rootScope','Utils',function($rootScope,Utils){
 				skill.onSkillHitEvent(onFightAttr,target,buffController,recipes,options);
 			}
 			// 删除砚悬buff
-			if($rootScope.originalBuffList.yanXuanBuff.id in buffController) delete buffController[$rootScope.originalBuffList.yanXuanBuff.id];
+			if($rootScope.originalBuffList.yanXuanBuff.id in buffController.selfBuffs) delete buffControlle.selfBuffs[$rootScope.originalBuffList.yanXuanBuff.id];
 			// 涓流buff斩杀控制
 			if((!flag.miss)&&(target.curLife/target.life)<0.35){
 				var juanLiuBuff = $rootScope.originalBuffList.juanLiuBuff;
-				if(juanLiuBuff.id in buffController){
+				if(juanLiuBuff.id in buffController.selfBuffs){
 					buffController[juanLiuBuff.id].level--;
 					if(buffController[juanLiuBuff.id].level==0){
-						delete buffController[juanLiuBuff.id];
+						delete buffController.selfBuffs[juanLiuBuff.id];
 					}
 				}else{
-					Utils.addBuff(juanLiuBuff,buffController,onFightAttr)
+					Utils.addBuff(juanLiuBuff,onFightAttr)
 					buffController.selfBuffs[juanLiuBuff.id].level = 10;
+				}
+			}
+			// 水雷特效触发
+			if(!flag.miss&&this.damageInstant){
+				// 水特效触发
+				if($rootScope.effects.water!=0){
+					Utils.addBuff(Buff.getBuffById($rootScope.effects.water),onFightAttr);
+				}
+				// 雷特效触发
+				if($rootScope.effects.thunder!=0){
+					var leiCD = $rootScope.originalBuffList.leiCD;
+					if(leiCD.id in buffController.selfBuffs){}
+					else{
+						var roll = Math.random()*100;
+						if(roll<10){
+							Utils.addBuff(Buff.getBuffById($rootScope.effects.thunder),onFightAttr);
+							Utils.addBuff(leiCD,onFightAttr);
+						}
+					}
 				}
 			}
 			skill.cdRemain = skill.cd;
@@ -111,12 +130,12 @@ app.service('Skill',['$rootScope','Utils',function($rootScope,Utils){
 				damage = (onFightAttr.attack * skill.cof + (skill.max-skill.min)*Math.random() + skill.min) * (0 * flag.miss + 0.25 * flag.insight + onFightAttr.critEff/100 * flag.crit + 1 * flag.hit);
 				damage = damage * (1 + onFightAttr.overcome/3616.925) * (1 - target.shield/100) * (1 + onFightAttr.damageAddPercent/100);
 				damage = damage.toFixed(0);
-				var s = skill.name+" " + (flag.miss>0?"偏离 ":"")+(flag.insight>0?"识破 ":"")+(flag.crit>0?"会心 ":"")+(flag.hit>0?"命中 ":"") + damage;
+				var s = skill.name+" " + (flag.miss>0?"偏离":"")+(flag.insight>0?"识破":"")+(flag.crit>0?"会心":"")+(flag.hit>0?"命中":"") +" "+ damage;
 				Utils.logln(s);
 				Utils.calcDamage(damage);
 				return damage;
 			}else{
-				var s = skill.name+" " + (flag.miss>0?"偏离 ":"")+(flag.insight>0?"识破 ":"")+(flag.crit>0?"会心 ":"")+(flag.hit>0?"命中 ":"");
+				var s = skill.name+" " + (flag.miss>0?"偏离":"")+(flag.insight>0?"识破":"")+(flag.crit>0?"会心":"")+(flag.hit>0?"命中":"");
 				Utils.logln(s);
 				return 0;
 			}

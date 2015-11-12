@@ -33,7 +33,7 @@ app.directive('icheck', ['$timeout', '$parse', function($timeout, $parse) {
 
 				return $(element).icheck({
 					checkboxClass: 'icheckbox_flat-blue',
-					radioClass: 'iradio_square-blue'
+					radioClass: 'iradio_flat-blue'
 
 				}).on('ifChanged', function(event) {
 					if ($(element).attr('type') === 'checkbox' && $attrs['ngModel']) {

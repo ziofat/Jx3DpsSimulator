@@ -31,7 +31,7 @@ app.service('Buff', ['$rootScope','Utils', function($rootScope,Utils){
 				strain: self.attributes.strain + (this.extraAttr.strainAddBase + self.extra.strainAddBase)/25.6835 + this.extraAttr.strainAddPercent + self.extra.strainAddPercent,
 				haste: self.attributes.haste,
 				extraHaste: self.extra.haste,
-				overcome: self.attributes.overcome + (self.attributes.overcome - self.attributes.spunk * 0.34) * (this.extraAttr.overcomeAddPercent/100 + self.extra.overcomeAddPercent),
+				overcome: self.attributes.overcome + (self.attributes.overcome - self.attributes.spunk * 0.34) * (this.extraAttr.overcomeAddPercent/100 + self.extra.overcomeAddPercent) + this.extraAttr.overcomeAddBase + self.extra.overcomeAddBase,
 				damageAddPercent: this.extraAttr.damage + self.extra.damage
 			}
 			var damage = 0;
@@ -56,16 +56,17 @@ app.service('Buff', ['$rootScope','Utils', function($rootScope,Utils){
 			// 涓流buff斩杀控制
 			if((!flag.miss)&&(target.curLife/target.life)<0.35){
 				var juanLiuBuff = $rootScope.originalBuffList.juanLiuBuff;
-				if(juanLiuBuff.id in buffController){
+				if(juanLiuBuff.id in buffController.selfBuffs){
 					buffController[juanLiuBuff.id].level--;
 					if(buffController[juanLiuBuff.id].level==0){
-						delete buffController[juanLiuBuff.id];
+						delete buffController.selfBuffs[juanLiuBuff.id];
 					}
 				}else{
 					Utils.addBuff(juanLiuBuff,onFightAttr)
 					buffController.selfBuffs[juanLiuBuff.id].level = 10;
 				}
 			}
+		
 			damage = (onFightAttr.attack * buff.cof + (buff.max-buff.min)*Math.random() + buff.min) * (0.25 * flag.insight + onFightAttr.critEff/100 * flag.crit + 1 * flag.hit);
 			damage = damage * (1 + onFightAttr.overcome/3616.925) * (1 - target.shield/100) * (1 + onFightAttr.damageAddPercent/100);
 			damage = damage.toFixed(0) * level;
@@ -84,6 +85,24 @@ app.service('Buff', ['$rootScope','Utils', function($rootScope,Utils){
 	}
 
 	this.getBuffById = function(id){
+		var buffList = $rootScope.originalBuffList;
+		var returnObj;
+		angular.forEach(buffList,function(value,key){
+			if(value.id == id){
+				returnObj = value;
+			}
+		});
+		return returnObj;
+	}
+
+	function getBuffByName(name){
+		var buffList = $rootScope.originalBuffList;
+		angular.forEach(buffList,function(value,key){
+			if(value.name == name) return value;
+		})
+	}
+
+	function getBuffById(id){
 		var buffList = $rootScope.originalBuffList;
 		var returnObj;
 		angular.forEach(buffList,function(value,key){

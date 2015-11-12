@@ -23,7 +23,7 @@ app.controller('BuffCtrl', ['$scope','$rootScope','Utils','Buff', function($scop
 				var roll = Math.random();
 				if(roll<0.25){
 					var buff = angular.copy(fangGeBuff);
-					addBuff(buff, buffController, attr);
+					Utils.addBuff(buff, buffController, attr);
 				}
 			}
 		},
@@ -403,4 +403,161 @@ app.controller('BuffCtrl', ['$scope','$rootScope','Utils','Buff', function($scop
 	});
 	$rootScope.buffList[14]=juanLiuBuff;
 	$rootScope.originalBuffList.juanLiuBuff = juanLiuBuff;
+
+	var shuiMieXuBuff = Buff.createNew({
+		id:15,
+		icon:7468,
+		name:"水·灭虚",
+		desc:"水·灭虚",
+		type:1,
+		conflict:1,
+		duration:96,
+		interval:0,
+		cof:0,
+		maxLevel:10,
+		canStack:true,
+		min:0,
+		max:0,
+		data:{
+			attackAddBase:7
+		},
+		recipeName:"none",
+		onSkillHitEvent:function(attr, target, buffController, recipes, options){
+		},
+		onSkillCritEvent:function(attr, target, buffController, recipes, options){
+		}
+	});
+	$rootScope.buffList[15]=shuiMieXuBuff;
+	$rootScope.originalBuffList.shuiMieXuBuff = shuiMieXuBuff;
+
+	var shuiWuShuangBuff = Buff.createNew({
+		id:16,
+		icon:7468,
+		name:"水·无双",
+		desc:"水·无双",
+		type:1,
+		conflict:1,
+		duration:96,
+		interval:0,
+		cof:0,
+		maxLevel:10,
+		canStack:true,
+		min:0,
+		max:0,
+		data:{
+			strainAddBase:8
+		},
+		recipeName:"none",
+		onSkillHitEvent:function(attr, target, buffController, recipes, options){
+		},
+		onSkillCritEvent:function(attr, target, buffController, recipes, options){
+		}
+	});
+	$rootScope.buffList[16]=shuiWuShuangBuff;
+	$rootScope.originalBuffList.shuiWuShuangBuff = shuiWuShuangBuff;
+
+	var leiJiLiuBuff = Buff.createNew({
+		id:17,
+		icon:7468,
+		name:"雷·激流",
+		desc:"雷·激流",
+		type:1,
+		conflict:1,
+		duration:240,
+		interval:0,
+		cof:0,
+		maxLevel:1,
+		canStack:false,
+		min:0,
+		max:0,
+		data:{
+			attackAddBase:94,
+			critAddBase:48
+		},
+		recipeName:"none",
+		onSkillHitEvent:function(attr, target, buffController, recipes, options){
+		},
+		onSkillCritEvent:function(attr, target, buffController, recipes, options){
+		}
+	});
+	$rootScope.buffList[17]=leiJiLiuBuff;
+	$rootScope.originalBuffList.leiJiLiuBuff = leiJiLiuBuff;
+
+	var leiMieQiBuff = Buff.createNew({
+		id:18,
+		icon:7468,
+		name:"雷·灭气",
+		desc:"雷·灭气",
+		type:1,
+		conflict:1,
+		duration:240,
+		interval:0,
+		cof:0,
+		maxLevel:1,
+		canStack:false,
+		min:0,
+		max:0,
+		data:{
+			overcomeAddBase:112,
+			critAddBase:48
+		},
+		recipeName:"none",
+		onSkillHitEvent:function(attr, target, buffController, recipes, options){
+		},
+		onSkillCritEvent:function(attr, target, buffController, recipes, options){
+		}
+	});
+	$rootScope.buffList[18]=leiMieQiBuff;
+	$rootScope.originalBuffList.leiMieQiBuff = leiMieQiBuff;
+
+	var leiTongQieBuff = Buff.createNew({
+		id:19,
+		icon:7468,
+		name:"雷·痛切",
+		desc:"雷·痛切",
+		type:1,
+		conflict:1,
+		duration:240,
+		interval:0,
+		cof:0,
+		maxLevel:1,
+		canStack:false,
+		min:0,
+		max:0,
+		data:{
+			critEffAddBase:112,
+			critAddBase:48
+		},
+		recipeName:"none",
+		onSkillHitEvent:function(attr, target, buffController, recipes, options){
+		},
+		onSkillCritEvent:function(attr, target, buffController, recipes, options){
+		}
+	});
+	$rootScope.buffList[19]=leiTongQieBuff;
+	$rootScope.originalBuffList.leiTongQieBuff = leiTongQieBuff;
+
+	var leiCD = Buff.createNew({
+		id:20,
+		icon:7468,
+		name:"雷特效CD",
+		desc:"雷特效CD",
+		type:1,
+		conflict:1,
+		duration:960,
+		interval:0,
+		cof:0,
+		maxLevel:1,
+		canStack:false,
+		min:0,
+		max:0,
+		data:{},
+		recipeName:"none",
+		onSkillHitEvent:function(attr, target, buffController, recipes, options){
+		},
+		onSkillCritEvent:function(attr, target, buffController, recipes, options){
+		}
+	});
+	$rootScope.buffList[20]=leiCD;
+	$rootScope.originalBuffList.leiCD = leiCD;
 }]);
