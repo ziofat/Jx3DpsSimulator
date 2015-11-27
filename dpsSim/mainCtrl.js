@@ -16,15 +16,15 @@ app.controller('MainCtrl', ['$scope','$rootScope','$timeout','$interval','Utils'
 	};
 	$rootScope.myself = {
 		attributes:{
-			basicAttack:2748,
-			spunk:706,
-			crit:15.15,
-			critEff:211.77,
-			hit:106.76,
-			haste:321,
-			strain:20.09,
-			overcome:900,
-			delay:100
+			basicAttack:2151,
+			spunk:687,
+			crit:5.67,
+			critEff:182.4,
+			hit:108.25,
+			haste:408,
+			strain:18.11,
+			overcome:588,
+			delay:50
 		},
 		extra:{
 			damage:0,
@@ -54,8 +54,10 @@ app.controller('MainCtrl', ['$scope','$rootScope','$timeout','$interval','Utils'
 	$rootScope.skillRecipe = angular.copy(whRecipes);
 	$rootScope.skillOption = angular.copy(whOptions);
 	$rootScope.macroMode = true;
+	$rootScope.maxTime = 225;
+	$rootScope.maxLoop = 1;
 	$rootScope.effects = {
-		cw:2,
+		cw:0,
 		water:0,
 		thunder:0,
 	}
@@ -191,7 +193,7 @@ app.controller('MainCtrl', ['$scope','$rootScope','$timeout','$interval','Utils'
 			$interval.cancel(loopInterval);
 			loopInterval = $interval($scope.digest,62.5);
 		}else{
-			for (; $rootScope.time < 3600; ) {
+			for (; $rootScope.time < $rootScope.maxTime*16; ) {
 				$scope.digest();
 			};
 		}
@@ -206,7 +208,7 @@ app.controller('MainCtrl', ['$scope','$rootScope','$timeout','$interval','Utils'
 	$scope.aveStart = function(){
 		var b = new Date();
 		var totalDps = 0;
-		for (var i = 0; i < 100; i++) {
+		for (var i = 0; i < 10; i++) {
 			totalDps += $scope.start();
 		};
 		console.log("平均DPS："+totalDps/100);
@@ -571,6 +573,20 @@ app.controller('MainCtrl', ['$scope','$rootScope','$timeout','$interval','Utils'
 		"/cast [bufftime:焚玉<2|nobuff:焚玉&tbuff:钟林毓秀&tbuff:兰摧玉折&tbuff:商阳指] 水月无间" + "\n" +
 		"/cast [bufftime:焚玉<2|nobuff:焚玉&tbuff:钟林毓秀&tbuff:兰摧玉折&tbuff:商阳指] 玉石俱焚" + "\n" +
 		"/cast 阳明指";
+	// $rootScope.macroText =
+	// 	"/cast [tbufftime:钟林毓秀<4.2] 芙蓉并蒂" + "\n" +
+	// 	"/cast [tnobuff:兰摧玉折] 兰摧玉折" + "\n" +
+	// 	"/cast [tnobuff:商阳指] 商阳指" + "\n" +
+	// 	"/cast [nobuff:恣游] 阳明指" + "\n" +
+	// 	"/cast [buff:恣游<=4] 阳明指" + "\n" +
+	// 	"/cast [mana<0.4&bufftime:恣游>6&tbufftime:商阳指>8] 碧水滔天" + "\n" +
+	// 	"/cast [tbufftime:兰摧玉折<10&tbufftime:兰摧玉折>7] 乱洒青荷" + "\n" +
+	// 	"/cast [buff:乱洒青荷] 水月无间" + "\n" +
+	// 	"/cast [bufftime:恣游<4.2&tbufftime:商阳指>10] 阳明指" + "\n" +
+	// 	"/cast [bufftime:恣游<4.2&tbufftime:商阳指<10] 阳明指" + "\n" +
+	// 	"/cast [tbufftime:商阳指<4.2|tbufftime:兰摧玉折<4.2] 芙蓉并蒂" + "\n" +
+	// 	"/cast [bufftime:恣游<4.2&tbufftime:商阳指>10] 阳明指" + "\n" +
+	// 	"/cast 快雪时晴";
 	$rootScope.macroProgram = $rootScope.macroText.split("\n");
 }]);
 

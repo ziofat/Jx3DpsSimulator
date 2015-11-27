@@ -114,6 +114,8 @@
 			<input type="text" ng-model="myself.attributes.strain">%无双<br>
 			<input type="text" ng-model="myself.attributes.overcome">破防等级<br>
 			<input type="text" ng-model="myself.attributes.delay">延迟<br>
+			<input type="text" ng-model="$root.maxTime">循环时间(s)<br>
+			<input type="text" ng-model="$root.maxLoop">循环次数(未实装)<br>
 		</div>
 		<div class="col-md-5">
 			<div class="row" style="margin-bottom:16px;">
@@ -146,7 +148,7 @@
 				<button class="btn" ng-click="start()">开始循环</button>
 				<button class="btn" ng-click="stop()">结束循环</button>
 				<button class="btn" ng-click="clear()">清空log</button>
-				<!-- <button class="btn" ng-click="aveStart()">10次循环</button> -->
+				<button class="btn" ng-click="aveStart()">10次循环</button>
 			</div>
 			<div class="row" style="margin-bottom:16px;">
 				<button class="btn" ng-click="qixueSettings()">奇穴设置</button>
@@ -203,7 +205,7 @@
 							<td>{{$root.curSkillStats[type].count}}</td>
 							<td>{{$root.curSkillStats[type].max}}/{{$root.curSkillStats[type].min}}</td>
 							<td>{{($root.curSkillStats[type].damage/($root.curSkillStats[type].count)).toFixed(0)}}</span></td>
-							<td>{{($root.curSkillStats[type].damage/$root.curSkillStats.damage*100).toFixed(1)}}%</td>
+							<td>{{($root.curSkillStats[type].count/$root.curSkillStats.count*100).toFixed(1)}}%</td>
 						</tr>
 					</tbody>
 				</table>

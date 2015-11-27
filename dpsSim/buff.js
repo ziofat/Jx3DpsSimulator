@@ -23,16 +23,16 @@ app.service('Buff', ['$rootScope','Utils', function($rootScope,Utils){
 		};
 		buff.calc = function(self,target,buffController,level,recipes,options){
 			var onFightAttr = {
-				basicAttack: self.attributes.basicAttack,
-				attack: self.attributes.basicAttack+self.attributes.spunk*1.95*(1+this.extraAttr.attackAddPercent/100 + self.extra.attackAddPercent/100)+this.extraAttr.attackAddBase+self.extra.attackAddBase,
-				crit: self.attributes.crit + (this.extraAttr.critAddBase + self.extra.critAddBase)/41.43925 + this.extraAttr.critAddPercent + self.extra.critAddPercent,
-				critEff: self.attributes.critEff + (this.extraAttr.critEffAddBase + self.extra.critEffAddBase)/15.066 + this.extraAttr.critEffAddPercent + self.extra.critEffAddPercent,
-				hit: self.attributes.hit + (this.extraAttr.hitAddBase + self.extra.hitAddBase)/34.24725 + this.extraAttr.hitAddPercent + self.extra.hitAddPercent,
-				strain: self.attributes.strain + (this.extraAttr.strainAddBase + self.extra.strainAddBase)/25.6835 + this.extraAttr.strainAddPercent + self.extra.strainAddPercent,
-				haste: self.attributes.haste,
-				extraHaste: self.extra.haste,
-				overcome: self.attributes.overcome + (self.attributes.overcome - self.attributes.spunk * 0.34) * (this.extraAttr.overcomeAddPercent/100 + self.extra.overcomeAddPercent) + this.extraAttr.overcomeAddBase + self.extra.overcomeAddBase,
-				damageAddPercent: this.extraAttr.damage + self.extra.damage
+				basicAttack: parseInt(self.attributes.basicAttack),
+				attack: parseInt(self.attributes.basicAttack)+self.attributes.spunk*1.95*(1+this.extraAttr.attackAddPercent/100 + self.extra.attackAddPercent/100)+this.extraAttr.attackAddBase+self.extra.attackAddBase,
+				crit: parseInt(self.attributes.crit) + (this.extraAttr.critAddBase + self.extra.critAddBase)/41.43925 + this.extraAttr.critAddPercent + self.extra.critAddPercent,
+				critEff: parseInt(self.attributes.critEff) + (this.extraAttr.critEffAddBase + self.extra.critEffAddBase)/15.066 + this.extraAttr.critEffAddPercent + self.extra.critEffAddPercent,
+				hit: parseInt(self.attributes.hit) + (this.extraAttr.hitAddBase + self.extra.hitAddBase)/34.24725 + this.extraAttr.hitAddPercent + self.extra.hitAddPercent,
+				strain: parseInt(self.attributes.strain) + (this.extraAttr.strainAddBase + self.extra.strainAddBase)/25.6835 + this.extraAttr.strainAddPercent + self.extra.strainAddPercent,
+				haste: parseInt(self.attributes.haste),
+				extraHaste: parseInt(self.extra.haste),
+				overcome: parseInt(self.attributes.overcome) + (self.attributes.overcome - self.attributes.spunk * 0.34) * (this.extraAttr.overcomeAddPercent/100 + self.extra.overcomeAddPercent) + parseInt(this.extraAttr.overcomeAddBase) + parseInt(self.extra.overcomeAddBase),
+				damageAddPercent: this.extraAttr.damage + parseInt(self.extra.damage)
 			}
 			var damage = 0;
 			var strainRequire = target.strainRequire;
@@ -57,8 +57,8 @@ app.service('Buff', ['$rootScope','Utils', function($rootScope,Utils){
 			if((!flag.miss)&&(target.curLife/target.life)<0.35){
 				var juanLiuBuff = $rootScope.originalBuffList.juanLiuBuff;
 				if(juanLiuBuff.id in buffController.selfBuffs){
-					buffController[juanLiuBuff.id].level--;
-					if(buffController[juanLiuBuff.id].level==0){
+					buffController.selfBuffs[juanLiuBuff.id].level--;
+					if(buffController.selfBuffs[juanLiuBuff.id].level==0){
 						delete buffController.selfBuffs[juanLiuBuff.id];
 					}
 				}else{
