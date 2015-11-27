@@ -588,6 +588,13 @@ app.controller('MainCtrl', ['$scope','$rootScope','$timeout','$interval','Utils'
 	// 	"/cast [bufftime:恣游<4.2&tbufftime:商阳指>10] 阳明指" + "\n" +
 	// 	"/cast 快雪时晴";
 	$rootScope.macroProgram = $rootScope.macroText.split("\n");
+
+	$scope.$on("start",function(e){$scope.start();$scope.$apply()});
+	$scope.$on("qixue",function(e){$scope.qixueSettings();$scope.$apply()});
+	$scope.$on("recipe",function(e){$scope.recipeSettings();$scope.$apply()});
+	$scope.$on("target",function(e){$scope.targetSettings();$scope.$apply()});
+	$scope.$on("effect",function(e){$scope.effectSettings();$scope.$apply()});
+	$scope.$on("macro",function(e){$scope.macroSettings();$scope.$apply()});
 }]);
 
 app.controller('StatsCtrl', ['$rootScope','$scope', function($rootScope,$scope){

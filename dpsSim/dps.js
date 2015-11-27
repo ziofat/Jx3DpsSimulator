@@ -52,154 +52,39 @@ app.directive('icheck', ['$timeout', '$parse', function($timeout, $parse) {
 	};
 }]);
 app.controller('AppCtrl', ['$scope','$http','toastr','$modal','$rootScope','$httpParamSerializerJQLike', function($scope,$http,toastr,$modal,$rootScope,$httpParamSerializerJQLike){
-	$scope.isLogin = false;
-	$scope.user = {
-		mail:"",
-		password:"",
-		name:"",
-		isLoading:false
-	}
-	$http.post('api/loginCertificate.php')
-	.success(function(response) {
-		if(response.err||!response.isLogin){
-			console.log('使用cookies登录失败');
-		}else{
-			$scope.isLogin = true;
-			$scope.user.name = response.name;
-			console.log('使用cookies登录成功');
-		}
-	})
-	.error(function(response) {
-		console.log('使用cookies过程中连接失败');
-	});
-	$scope.checkUpdate = function(forceOpen){
-		$http.get('api/checkVersion.php')
-		.success(function(response){
-			if(Number(response.version) > Number(localStorage.edition)||!localStorage.edition||forceOpen){
-				$rootScope.updateDesc = response.desc;
-				var modalInstance = $modal.open({
-					animation: true,
-					templateUrl: 'templates/updateDesc.html',
-					controller: 'ModalInstanceCtrl',
-				});
-			}
-			try{localStorage.edition=response.version}catch(e){;}
-		})
-	}
-	$scope.checkUpdate();
-	$scope.login = function(){
-		$scope.user.isLoading = true;
-		$http({
-			url: 'api/loginCertificate.php',
-			method: 'POST',
-			data: $httpParamSerializerJQLike({email:$scope.user.mail, pswd:$scope.user.password}),
-			headers: {
-				'Content-Type': 'application/x-www-form-urlencoded'
-			}
-		})
-		.success(function(response) {
-			if(response.err||!response.isLogin){
-				toastr.error("登录失败, " + response.errReason);
-			}else{
-				$scope.isLogin = true;
-				$scope.user.name = response.name;
-				$scope.user.isLoading = false;
-			}
-		})
-		.error(function(response) {
-			toastr.error("连接失败")
-		});
-	};
-	$scope.logout = function(){
-		$http.get('api/logout.php');
-		$scope.isLogin = false;
-		$scope.user = {
-			mail:"",
-			password:"",
-			name:""
-		}
-	}
-	$scope.forgetPass = function(){
-		var modalInstance = $modal.open({
-			animation: true,
-			templateUrl: 'templates/reset.html',
-			controller: 'ModalInstanceCtrl',
-		});
+	var gui = require('nw.gui');
+	var win = gui.Window.get();
+	var menu = new gui.Menu();
 
-		modalInstance.result.then(function(email) {
-			$http({
-				url: 'api/sendMail.php',
-				method: 'POST',
-				data: $httpParamSerializerJQLike({mail:email}),
-				headers: {
-					'Content-Type': 'application/x-www-form-urlencoded'
-				}
-			})
-			.success(function(response){ 
-				if(response=="noreg"){ 
-					toastr.warning('该邮箱没有注册');
-				}else{ 
-					toastr.success(response); 
-				}
-			}); 
-		},function() {
-			console.log('Reset Password Cancelled');
-		});
-	};
-	$scope.loginModal = function(){
-		var modalInstance = $modal.open({
-	 		animation: $scope.animationsEnabled,
-			templateUrl: 'templates/login.html',
-			controller: 'LoginModalController',
-			size: 'sm',
-	 	});
-		modalInstance.result.then(function(user) {
-			$http({
-				url: 'api/loginCertificate.php',
-				method: 'POST',
-				data: $httpParamSerializerJQLike({email:user.mail, pswd:user.password}),
-				headers: {
-					'Content-Type': 'application/x-www-form-urlencoded'
-				}
-			})
-			.success(function(response) {
-				if(response.err||!response.isLogin){
-					toastr.error("登录失败, " + response.errReason);
-				}else{
-					$scope.isLogin = true;
-					$scope.user.name = response.name;
-					$scope.user.isLoading = false;
-				}
-			})
-			.error(function(response) {
-				toastr.error("登录失败，网络连接不正常");
-			});
-		},function() {
-			console.log('Login Cancelled');
-		});
-	}
-}])
+	win.setTransparent(!win.isTransparent);
+	win.setTransparent(!win.isTransparent);
 
-app.controller('ModalInstanceCtrl',['$scope', '$modalInstance','$sce', function ($scope, $modalInstance,$sce) {
-	$scope.reset = function (email) {
-		$modalInstance.close(email);
-	};
-	$scope.close = function() {
-		$modalInstance.dismiss();
-	}
-	$scope.getUpdateDesc = function(text){
-		return $sce.trustAsHtml(text);
-	}
-}]);
+	// 添加菜单项，label为菜单项的显示名
+	menu.append(new gui.MenuItem({ label: '开始循环' , click:function(){$scope.$broadcast("start");} }));
+	menu.append(new gui.MenuItem({ type: 'separator' }));
+	menu.append(new gui.MenuItem({ label: '奇穴设置' , click:function(){$scope.$broadcast("qixue");}}));
+	menu.append(new gui.MenuItem({ label: '秘籍设置' , click:function(){$scope.$broadcast("recipe");}}));
+	menu.append(new gui.MenuItem({ label: '目标设置' , click:function(){$scope.$broadcast("target");}}));
+	menu.append(new gui.MenuItem({ label: '特效设置' , click:function(){$scope.$broadcast("effect");}}));
+	menu.append(new gui.MenuItem({ label: '宏设置' , click:function(){$scope.$broadcast("macro");}}));
 
-app.controller('LoginModalController',['$scope', '$modalInstance',function($scope, $modalInstance){
-	$scope.login = function (user) {
-		$modalInstance.close(user);
-	};
-	$scope.close = function() {
-		$modalInstance.dismiss();
-	}
-}]);
+	document.body.addEventListener('contextmenu', function(ev) { 
+		ev.preventDefault();
+		// 在你点击后弹出
+		menu.popup(ev.x, ev.y);
+		return false;
+	}, false);
 
-app.service('Utils',['$rootScope',function($rootScope){
+	$scope.closeApp = function(){
+		win.close();
+	}
+
+	$scope.minimizeApp = function(){
+		win.minimize();
+	}
+
+	$scope.devMode = function(){
+		if(win.isDevToolsOpen()) win.showDevTools();
+		else win.closeDevTools();
+	}
 }]);

@@ -5,93 +5,22 @@
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
 	<meta name="description" content="剑网3,配装器,dps计算器">
 	<meta name="author" content="胖叔叔">
-	<title>剑网3全职业配装器 - DPS 模拟计算器</title>
+	<title>剑网3 DPS 模拟器</title>
 	<link href="css/bootstrap.min.css" rel="stylesheet">
 	<link href="css/all.css" rel="stylesheet">
 	<link href="css/flat/_all.css" rel="stylesheet">
 	<link href="css/angular-toastr.min.css" rel="stylesheet">
 </head>
-<script>
-  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
-  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
-  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
-  })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
-  ga('create', 'UA-17530182-11', 'auto');
-  ga('require', 'displayfeatures');
-  ga('send', 'pageview');
-</script>
 <body style="padding-top: 70px;" ng-controller="AppCtrl">
-<div class="navbar navbar-inverse navbar-fixed-top">
+<div class="navbar navbar-inverse navbar-fixed-top" style="-webkit-app-region: drag;-webkit-user-select: none;">
 	<div class="container">
 		<div class="navbar-header">
-			<a href="m/tools.html"><button type="button" class="navbar-toggle">
-				手机版
-			</button></a>
-			<a class="navbar-brand" href="index.html">剑网3配装器</a>
+			<a class="navbar-brand" href="index.html">剑网3 DPS 模拟器</a>
 		</div>
 		<div class="navbar-collapse collapse">
-			<ul class="nav navbar-nav">
-				<li><a href="index.html">主页</a></li>
-				<li><a href ng-click="checkUpdate(true)">更新说明</a></li>
-				<li><a href="feedback/" target="_blank">反馈</a></li>
-				<li dropdown class="dropdown">
-					<a href id="xinfa-select" dropdown-toggle>快速选择职业 <b class="caret"></b></a>
-					<ul class="row dropdown-menu multi-column columns-3" aria-labelledby="xinfa-select">
-						<div class="col-xs-4 dropdown-column">
-							<ul class="multi-column-dropdown">
-								<li><a href="dps/bingxin/"><span class="jx3icon iconList jx3icon-qx"></span> 冰心诀</a></li>
-								<li><a href="dps/dujing/"><span class="jx3icon iconList jx3icon-wd"></span> 毒经</a></li>
-								<li><a href="dps/zixia/"><span class="jx3icon iconList jx3icon-cy"></span> 紫霞功</a></li>
-								<li><a href="dps/mowen/"><span class="jx3icon iconList jx3icon-cg"></span> 莫问</a></li>
-								<li class="divider"></li>
-								<li><a href="dps/taixu/"><span class="jx3icon iconList jx3icon-cy"></span> 太虚剑意</a></li>
-								<li><a href="dps/cangjian/"><span class="jx3icon iconList jx3icon-cj"></span> 问水诀/山居剑意</a></li>
-								<li><a href="dps/fenshan/"><span class="jx3icon iconList jx3icon-sd"></span> 分山劲</a></li>
-							</ul>
-						</div>
-						<div class="col-xs-4 dropdown-column">
-							<ul class="multi-column-dropdown">
-								<li><a href="dps/huajian/"><span class="jx3icon iconList jx3icon-wh"></span> 花间游</a></li>
-								<li><a href="dps/yijin/"><span class="jx3icon iconList jx3icon-sl"></span> 易筋经</a></li>
-								<li><a href="dps/fenying/"><span class="jx3icon iconList jx3icon-mj"></span> 焚影圣诀</a></li>
-								<li><a href="dps/tianluo/"><span class="jx3icon iconList jx3icon-tm"></span> 天罗诡道</a></li>
-								<li class="divider"></li>
-								<li><a href="dps/jingyu/"><span class="jx3icon iconList jx3icon-tm"></span> 惊羽诀</a></li>
-								<li><a href="dps/aoxue/"><span class="jx3icon iconList jx3icon-tc"></span> 傲血战意</a></li>
-								<li><a href="dps/xiaochen/"><span class="jx3icon iconList jx3icon-gb"></span> 笑尘诀</a></li>
-							</ul>
-						</div>
-						<div class="col-xs-4 dropdown-column">
-							<ul class="multi-column-dropdown">
-								<li><a href="hps/lijing/"><span class="jx3icon iconList jx3icon-wh"></span> 离经易道</a></li>
-								<li><a href="hps/yunchang/"><span class="jx3icon iconList jx3icon-qx"></span> 云裳心经</a></li>
-								<li><a href="hps/butian/"><span class="jx3icon iconList jx3icon-wd"></span> 补天决</a></li>
-								<li><a href="hps/xiangzhi/"><span class="jx3icon iconList jx3icon-cg"></span> 相知</a></li>
-								<li class="divider"></li>
-								<li><a href="t/tielao/"><span class="jx3icon iconList jx3icon-tc"></span> 铁牢律</a></li>
-								<li><a href="t/xisui/"><span class="jx3icon iconList jx3icon-sl"></span> 洗髓经</a></li>
-								<li><a href="t/mingzun/"><span class="jx3icon iconList jx3icon-mj"></span> 明尊琉璃体</a></li>
-								<li><a href="t/tiegu/"><span class="jx3icon iconList jx3icon-sd"></span> 铁骨衣</a></li>
-							</ul>
-						</div>
-					</ul>
-				</li>
-			</ul>
-			<form class="navbar-form navbar-right"  ng-if="!isLogin">
-				<div class="form-group hidden-md hidden-sm">
-					<input name="email" type="text" ng-model="user.mail" placeholder="邮箱" class="form-control">
-				</div>
-				<div class="form-group hidden-md hidden-sm">
-					<input name="pswd" type="password" ng-model="user.password" placeholder="密码" class="form-control">
-				</div>
-				<button class="btn btn-primary hidden-md hidden-sm" ng-click="login()" ng-disabled="isLoading">登录</button>
-				<button class="btn btn-primary hidden-lg" ng-click="loginModal()">点此登录</button>
-				&nbsp;&nbsp;&nbsp;<a href ng-click="forgetPass()">忘记密码？</a>
-				&nbsp;&nbsp;&nbsp;<a href="reg.html">注册</a>
-			</form>
-			<ul class="nav navbar-nav navbar-right" ng-if="isLogin">
-				<li><a href="user.html">{{user.name}}</a></li>
-				<li><a href ng-click="logout()">退出</a></li>
+			<ul class="nav navbar-nav navbar-right">
+				<li><a href="#" ng-click="minimizeApp()" style="-webkit-app-region: no-drag;">_</a></li>
+				<li><a href="#" ng-click="closeApp()" style="-webkit-app-region: no-drag;">X</a></li>
 			</ul>
 		</div>
 	</div>
@@ -99,12 +28,6 @@
 <div class="container" ng-controller="MainCtrl">
 	<div class="row">
 		<div class="col-md-3">
-			<p class="lead">剑网3配装器 - 小工具</p>
-			<div class="list-group">
-				<li class="list-group-item"><a href="tools.html">加速宝典</a></li>
-				<li class="list-group-item"><a href="guishi.html">瑰石查询</a></li>
-				<li class="list-group-item active">DPS 测试器</li>
-			</div>
 			<input type="text" ng-model="myself.attributes.basicAttack">基础攻击<br>
 			<input type="text" ng-model="myself.attributes.spunk">元气<br>
 			<input type="text" ng-model="myself.attributes.crit">%会心<br>
@@ -216,35 +139,8 @@
 	</div>
 </div>
 <footer style="margin-top:20px;">
-	<div id="footer" class="footer">
-		<div class="container" style="list-style:none;">
-			<div class="row">
-				<div class="col-sm-3 col-xs-6">
-					<h4>关于我们</h4>
-					<li><a href="about.html" target="_blank">关于剑网3配装器</a></li>
-					<li><a href="thanks.html" target="_blank">致谢</a></li>
-					<li><a href="http://weibo.com/printlts" target="_blank">开发者微博</a></li>
-				</div>
-				<div class="col-sm-3 hidden-xs">
-					<h4>使用指南</h4>
-					<li><a href="http://www.j3pz.com/feedback/issue/1.html" target="_blank">使用说明</a></li>
-					<li></li>
-					<li></li>
-				</div>
-				<div class="col-sm-3 col-xs-6">
-					<h4>用户支持</h4>
-					<li><a href="http://www.j3pz.com/feedback/" target="_blank">用户反馈</a></li>
-					<li><a href="upgrade/" target="_blank">方案保存位置购买</a></li>
-					<li></li>
-				</div>
-				<div class="col-sm-3 hidden-xs">
-					<h4>服务条款</h4>
-					<li><a href="http://www.ziofat.me/terms-of-use.html" target="_blank">免责声明与隐私条款</a></li>
-					<li><a href="http://www.ziofat.me/disclaimer-about-be-banned-by-360.html" target="_blank">安全性声明</a></li>
-					<li><a href="http://www.miitbeian.gov.cn/" target="_blank">滇ICP备14005270号</a></li>
-				</div>
-			</div>
-		</div>
+	<div id="footer" class="footer container">
+		胖叔叔版 剑网3 DPS 循环模拟器 v0.0.1 测试版
 	</div>
 </footer>
 <script src="js/angular.min.js"></script>
