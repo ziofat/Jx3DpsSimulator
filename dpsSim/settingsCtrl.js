@@ -1,4 +1,4 @@
-app.controller('QixueCtrl', ['$rootScope','$scope','$modalInstance', function($rootScope,$scope,$modalInstance){
+app.controller('QixueCtrl', ['$rootScope','$scope', function($rootScope,$scope){
 	$scope.options = [];
 	angular.forEach($rootScope.skillOption,function(value,key){
 		for (var i = 0; i < value.length; i++) {
@@ -20,12 +20,9 @@ app.controller('QixueCtrl', ['$rootScope','$scope','$modalInstance', function($r
 		var value = $rootScope.skillOption[id][subid];
 		$scope.options[id-1] = {id:id,name:value.name,icon:value.icon,desc:value.desc};
 	}
-	$scope.close = function() {
-		$modalInstance.dismiss();
-	}
 }]);
 
-app.controller('RecipeCtrl', ['$rootScope','$scope','$modalInstance', function($rootScope,$scope,$modalInstance){
+app.controller('RecipeCtrl', ['$rootScope','$scope', function($rootScope,$scope){
 	$scope.recipeList = [
 		{name:"阳明指",id:"yangMing"},
 		{name:"商阳指",id:"shangYang"},
@@ -57,12 +54,9 @@ app.controller('RecipeCtrl', ['$rootScope','$scope','$modalInstance', function($
 			
 		};
 	}
-	$scope.close = function() {
-		$modalInstance.dismiss();
-	}
 }]);
 
-app.controller('TargetCtrl', ['$rootScope','$scope','$modalInstance', function($rootScope,$scope,$modalInstance){
+app.controller('TargetCtrl', ['$rootScope','$scope', function($rootScope,$scope){
 	$scope.targetList = [
 		{id:0,level:96,name:"初级试炼木桩(96)",life:5000000,mana:5000000,curLife:5000000,hitRequire:102.5,strainRequire:15,shield:15},
 		{id:1,level:97,name:"中级试炼木桩(97)",life:5000000,mana:5000000,curLife:5000000,hitRequire:105,strainRequire:20,shield:25},
@@ -74,23 +68,17 @@ app.controller('TargetCtrl', ['$rootScope','$scope','$modalInstance', function($
 		$scope.targetSelectId = target;
 		$rootScope.target = $scope.targetList[target];
 	}
-	$scope.close = function() {
-		$modalInstance.dismiss();
-	}
 }]);
 
-app.controller('MacroCtrl', ['$rootScope','$scope','$modalInstance', function($rootScope,$scope,$modalInstance){
-	$rootScope.macroProgram = [];
+app.controller('MacroCtrl', ['$rootScope','$scope', function($rootScope,$scope){
+	$rootScope.macroProgram = $rootScope.macroText.split("\n");
+	$rootScope.$watch("macroText",$scope.setMacro);
 	$scope.setMacro = function(){
 		$rootScope.macroProgram = $rootScope.macroText.split("\n");
 	}
-	$scope.close = function() {
-		$scope.setMacro();
-		$modalInstance.dismiss();
-	}
 }]);
 
-app.controller('EffectCtrl', ['$rootScope','$scope','$modalInstance', function($rootScope,$scope,$modalInstance){
+app.controller('EffectCtrl', ['$rootScope','$scope', function($rootScope,$scope){
 	$scope.cw = [
 		{id:0,name:"无"},
 		{id:1,name:"小橙武"},
@@ -107,7 +95,4 @@ app.controller('EffectCtrl', ['$rootScope','$scope','$modalInstance', function($
 		{id:18,name:"雷·灭气"},
 		{id:19,name:"雷·痛切"}
 	]
-	$scope.close = function() {
-		$modalInstance.dismiss();
-	}
 }]);

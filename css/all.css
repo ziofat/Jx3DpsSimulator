@@ -1,0 +1,12 @@
+body {
+  font-family:"微软雅黑","Microsoft YaHei",Verdana, Arial, Helvetica, sans-serif;
+  -webkit-user-select: none;
+}
+
+.left{
+    float:left;
+}
+
+.right{
+    float:right;
+}

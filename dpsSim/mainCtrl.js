@@ -1,4 +1,4 @@
-app.controller('MainCtrl', ['$scope','$rootScope','$timeout','$interval','Utils','Buff','Skill','$modal', function($scope,$rootScope,$timeout,$interval,Utils,Buff,Skill,$modal){
+app.controller('MainCtrl', ['$scope','$rootScope','$timeout','$interval','Utils','Buff','Skill', function($scope,$rootScope,$timeout,$interval,Utils,Buff,Skill){
 	$rootScope.target = {
 		id:1,
 		level:97,
@@ -524,46 +524,46 @@ app.controller('MainCtrl', ['$scope','$rootScope','$timeout','$interval','Utils'
 	}
 	// 设置开关
 	$rootScope.settings = false;
-	$scope.qixueSettings = function(){
-		var modalInstance = $modal.open({
-			animation: true,
-			templateUrl: 'dpsSim/template/qixueSetting.html',
-			controller: 'QixueCtrl',
-			size:'lg'
-		});
-	}
-	$scope.recipeSettings = function(){
-		var modalInstance = $modal.open({
-			animation: true,
-			templateUrl: 'dpsSim/template/recipeSetting.html',
-			controller: 'RecipeCtrl',
-			size:'lg'
-		});
-	}
-	$scope.targetSettings = function(){
-		var modalInstance = $modal.open({
-			animation: true,
-			templateUrl: 'dpsSim/template/targetSetting.html',
-			controller: 'TargetCtrl',
-			size:'md'
-		});
-	}
-	$scope.macroSettings = function(){
-		var modalInstance = $modal.open({
-			animation: true,
-			templateUrl: 'dpsSim/template/macroSetting.html',
-			controller: 'MacroCtrl',
-			size:'lg'
-		});
-	}
-	$scope.effectSettings = function(){
-		var modalInstance = $modal.open({
-			animation: true,
-			templateUrl: 'dpsSim/template/effectSetting.html',
-			controller: 'EffectCtrl',
-			size:'md'
-		});
-	}
+	// $scope.qixueSettings = function(){
+	// 	var modalInstance = $modal.open({
+	// 		animation: true,
+	// 		templateUrl: 'dpsSim/template/qixueSetting.html',
+	// 		controller: 'QixueCtrl',
+	// 		size:'lg'
+	// 	});
+	// }
+	// $scope.recipeSettings = function(){
+	// 	var modalInstance = $modal.open({
+	// 		animation: true,
+	// 		templateUrl: 'dpsSim/template/recipeSetting.html',
+	// 		controller: 'RecipeCtrl',
+	// 		size:'lg'
+	// 	});
+	// }
+	// $scope.targetSettings = function(){
+	// 	var modalInstance = $modal.open({
+	// 		animation: true,
+	// 		templateUrl: 'dpsSim/template/targetSetting.html',
+	// 		controller: 'TargetCtrl',
+	// 		size:'md'
+	// 	});
+	// }
+	// $scope.macroSettings = function(){
+	// 	var modalInstance = $modal.open({
+	// 		animation: true,
+	// 		templateUrl: 'dpsSim/template/macroSetting.html',
+	// 		controller: 'MacroCtrl',
+	// 		size:'lg'
+	// 	});
+	// }
+	// $scope.effectSettings = function(){
+	// 	var modalInstance = $modal.open({
+	// 		animation: true,
+	// 		templateUrl: 'dpsSim/template/effectSetting.html',
+	// 		controller: 'EffectCtrl',
+	// 		size:'md'
+	// 	});
+	// }
 	$rootScope.macroText = 
 		"/cast [tnobuff:兰摧玉折&tnobuff:钟林毓秀] 乱洒青荷" + "\n" +
 		"/cast [tnobuff:兰摧玉折&tnobuff:钟林毓秀&buff:乱洒青荷] 阳明指" + "\n" +
@@ -597,7 +597,7 @@ app.controller('MainCtrl', ['$scope','$rootScope','$timeout','$interval','Utils'
 	$scope.$on("macro",function(e){$scope.macroSettings();$scope.$apply()});
 }]);
 
-app.controller('StatsCtrl', ['$rootScope','$scope', function($rootScope,$scope){
+app.controller('StatsCtrl', ['$rootScope','$scope','DTOptionsBuilder','DTColumnDefBuilder', function($rootScope,$scope,DTOptionsBuilder, DTColumnDefBuilder){
 	$scope.typeList=["hit","crit","insight","miss"];
 	$scope.typeDesc={
 		hit:"命中",
@@ -605,6 +605,42 @@ app.controller('StatsCtrl', ['$rootScope','$scope', function($rootScope,$scope){
 		insight:"识破",
 		miss:"偏离"
 	};
+	$scope.skillTable = {
+		dtOptions:{
+			"lengthChange":false,
+			"searching": false,
+			"order": [[ 2, 'desc' ]],
+			"paging": false,
+			"info": false,
+			"language": {
+				"emptyTable": '<span class="text-primary-dark text-caption">暂无数据</span>'
+			},
+			"rowCallback":function(nRow, aData, iDisplayIndex, iDisplayIndexFull){
+				$('td', nRow).unbind('click');
+				$('td', nRow).bind('click', function() {
+					$scope.$apply(function() {
+						$scope.tabSwitch(aData[0]);
+					});
+				});
+				return nRow;
+			}
+		},
+		dtColumnDefs:{}
+	}
+	$scope.detailTable = {
+		dtOptions:{
+			"lengthChange":false,
+			"searching": false,
+			"ordering": false,
+			"paging": false,
+			"info": false,
+		},
+		dtColumnDefs:{}
+	}
+	$scope.dtInstances = {
+		skillTable:{},
+		detailTable:{}
+	}
 	$scope.tabSwitch = function(name){
 		for (var i = 0; i < $rootScope.dpsLog.skillList.length; i++) {
 			if($rootScope.dpsLog.skillList[i] == name){

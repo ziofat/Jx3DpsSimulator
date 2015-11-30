@@ -1,0 +1,421 @@
+<html lang="zh-cn" ng-app="J3DPS">
+	<head>
+		<title>剑网3 DPS 模拟器</title>
+		<meta charset="utf-8">
+		<meta http-equiv="X-UA-Compatible" content="IE=edge">
+		<meta name="viewport" content="width=device-width, initial-scale=1.0">
+		<!-- BEGIN STYLESHEETS -->
+		<link href='http://fonts.googleapis.com/css?family=Open+Sans:400italic,300,400,600,700,800' rel='stylesheet' type='text/css'/>
+		<link type="text/css" rel="stylesheet" href="css/theme-default/bootstrap.css" />
+		<link type="text/css" rel="stylesheet" href="css/theme-default/materialadmin.css" />
+		<link type="text/css" rel="stylesheet" href="css/theme-default/font-awesome.min.css" /> <!--Font Awesome Icon Font-->
+		<link type="text/css" rel="stylesheet" href="css/theme-default/material-design-iconic-font.min.css" /> <!--Material Design Iconic Font-->
+		<!-- Additional CSS includes -->
+		<link type="text/css" rel="stylesheet" href="css/theme-default/libs/DataTables/jquery.dataTables.css">
+		<link type="text/css" rel="stylesheet" href="css/all.css">
+		<!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
+		<!--[if lt IE 9]>
+		<script type="text/javascript" src="js/libs/utils/html5shiv.js"></script>
+		<script type="text/javascript" src="js/libs/utils/respond.min.js"></script>
+		<![endif]-->
+	</head>
+	<body class="menubar-hoverable header-fixed menubar-first" ng-controller="AppCtrl">
+		<header id="header" style="-webkit-app-region: drag">
+			<div class="headerbar">
+				<div class="headerbar-left">
+					<ul class="header-nav header-nav-options">
+						<li class="header-nav-brand" >
+							<div class="brand-holder">
+								<a href="#">
+									<span class="text-lg text-bold text-primary">剑网3&nbsp;DPS&nbsp;模拟器</span>
+								</a>
+							</div>
+						</li>
+						<li>
+							<a class="btn btn-icon-toggle menubar-toggle" data-toggle="menubar" href="javascript:void(0);">
+								<i class="fa fa-bars"></i>
+							</a>
+						</li>
+					</ul>
+				</div>
+				<div class="headerbar-right">
+					<!-- <ul class="header-nav header-nav-options">
+						~ Right aligned navigation items ~
+					</ul> -->
+					<!-- <ul class="header-nav header-nav-profile">
+						
+					</ul> -->
+					<ul class="header-nav header-nav-toggle">
+						<li><a class="btn btn-icon-toggle btn-default" ng-click="minimizeApp()" style="-webkit-app-region: no-drag;"><i class="md md-expand-more"></i></a></li>
+						<li><a class="btn btn-icon-toggle btn-default" ng-click="closeApp()" style="-webkit-app-region: no-drag;"><i class="md md-close"></i></a></li>
+					</ul>
+				</div>
+			</div>
+		</header>
+		<div id="base">
+			<!-- <div class="offcanvas">
+				<div class="offcanvas-pane">
+					~ Offcanvas content ~
+				</div>
+				<div class="offcanvas-pane">
+					~ Offcanvas content ~
+				</div>
+			</div> -->
+			<div id="content" ng-controller="MainCtrl" class="scroll" style="height:600px;">
+				<section id="home" ng-show="pageShow.home">
+					<div class="section-body">
+						<div class="rows">
+							<div class="col-md-2">
+								<div class="card style-default-bright">
+									<div class="card-body">
+										<form class="form">
+											<div class="form-group floating-label">
+												<input type="text" class="form-control input-sm" ng-model="myself.attributes.basicAttack" id="basicAttack">
+												<label for="basicAttack">基础攻击</label>
+											</div>
+											<div class="form-group floating-label">
+												<input type="text" class="form-control input-sm" ng-model="myself.attributes.spunk" id="spunk">
+												<label for="spunk">元气</label>
+											</div>
+											<div class="form-group floating-label">
+												<input type="text" class="form-control input-sm" ng-model="myself.attributes.crit" id="crit">
+												<label for="crit">会心率</label>
+											</div>
+											<div class="form-group floating-label">
+												<input type="text" class="form-control input-sm" ng-model="myself.attributes.critEff" id="critEff">
+												<label for="critEff">会心效果</label>
+											</div>
+											<div class="form-group floating-label">
+												<input type="text" class="form-control input-sm" ng-model="myself.attributes.hit" id="hit">
+												<label for="hit">命中率</label>
+											</div>
+											<div class="form-group floating-label">
+												<input type="text" class="form-control input-sm" ng-model="myself.attributes.haste" id="haste">
+												<label for="haste">加速等级</label>
+											</div>
+											<div class="form-group floating-label">
+												<input type="text" class="form-control input-sm" ng-model="myself.attributes.strain" id="strain">
+												<label for="strain">无双率</label>
+											</div>
+											<div class="form-group floating-label">
+												<input type="text" class="form-control input-sm" ng-model="myself.attributes.overcome" id="overcome">
+												<label for="overcome">破防等级</label>
+											</div>
+										</form>
+									</div>
+								</div>
+							</div>
+							<div class="col-md-10">
+								<div class="rows" ng-controller="StatsCtrl">
+									<div class="col-md-6">
+										<div class="card style-default-bright">
+											<div class="card-body">
+												<div class="row" style="margin-bottom:16px;">
+													<button class="btn ink-reaction btn-raised btn-primary" ng-click="start()">开始循环</button>
+													<button class="btn ink-reaction btn-raised btn-primary" ng-click="stop()" ng-show="$root.debug">结束循环</button>
+													<!-- <button class="btn ink-reaction btn-raised btn-primary" ng-click="clear()">清空log</button>
+													<button class="btn ink-reaction btn-raised btn-primary" ng-click="aveStart()">10次循环</button> -->
+												</div>
+												<div class="row">
+												
+													<!-- <label class="checkbox-inline checkbox-styled">
+														<input type="checkbox" ng-model="$root.macroMode"><span>自动模式</span>
+													</label> -->
+													<label class="checkbox-inline checkbox-styled">
+														<input type="checkbox" ng-model="$root.debug"><span>显示战斗过程</span>
+													</label>
+													<label class="checkbox-inline checkbox-styled">
+														<input type="checkbox" ng-model="$root.kill"><span>木桩掉血开关</span>
+													</label>
+												</div>
+											</div>
+										</div>
+										<div class="card style-default-bright">
+											<div class="card-body">
+												<div class="row" style="margin-bottom:16px;">
+													<span class="text-primary-dark">目标状态</span> {{$root.target.name}}({{$root.target.curLife}}/{{$root.target.life}})<br>
+													<span class="text-primary-dark">战斗时间</span> {{($root.time/16).toFixed(2)}}s<br>
+													<span class="text-primary-dark">DPS</span> {{$root.dps.toFixed(0)}}
+												</div>
+												<div class="row" style="margin-bottom:16px;" ng-controller="BuffCtrl">
+													<span class="text-primary-dark">目标Buff</span> 
+													<span ng-repeat="buff in buffController.targetBuffs">
+														<b>{{buff.name}}</b>
+														<i ng-if="buff.maxLevel>1">x{{buff.level}}</i>
+														({{(buff.remain/16).toFixed(0)}})
+													</span>
+												</div>
+												<div class="row" style="margin-bottom:16px;">
+													<span class="text-primary-dark">自身Buff</span> 
+													<span ng-repeat="buff in buffController.selfBuffs">
+														<b>{{buff.name}}</b>
+														<i ng-if="buff.maxLevel>1">x{{buff.level}}</i>
+														({{(buff.remain/16).toFixed(0)}})
+													</span>
+												</div>
+												<div class="row" style="margin-bottom:16px;" ng-controller="SkillCtrl">
+													<span class="text-primary-dark">读条状态</span> 
+													<span ng-if="myself.states.ota&&skillController.curSkill.type=='ota'">【{{skillController.curSkill.name}}】{{((myself.states.curOta - myself.states.otaRemain)/16).toFixed(2)}}s/{{(myself.states.curOta/16).toFixed(2)}}s</span>
+													<span ng-if="myself.states.ota&&skillController.curSkill.type=='channel'">【{{skillController.curSkill.name}}】{{(myself.states.otaRemain/16).toFixed(2)}}s/{{(myself.states.curOta/16).toFixed(2)}}s</span>
+												</div>
+											</div>
+										</div>
+									</div>
+									<div class="col-md-6">
+										<div class="card style-default-bright">
+											<div class="card-body">
+												<table id="skillDT" class="table table-hover table-condensed" datatable="ng" dt-options="skillTable.dtOptions" dt-column-defs="skillTable.dtColumnDefs" dt-instance="dtInstances.skillTable">
+													<thead>
+														<tr><th>技能</th><th>计数</th><th>伤害</th><th>占比</th></tr>
+													</thead>
+													<tbody class="text-sm">
+														<tr ng-repeat="skill in dpsLog.skillDetails" ng-class="skill.name==skillHighlight?'info':''">
+															<td>{{skill.name}}</td>
+															<td>{{skill.count}}</td>
+															<td>{{skill.damage}}</td>
+															<td>{{(skill.damage/$root.globalDamage*100).toFixed(1)}}%</td>
+														</tr>
+													</tbody>
+												</table>
+												
+											</div>
+										</div>
+										<div class="card style-default-bright">
+											<div class="card-body">
+												<table id="DetailDT" class="table table-condensed" datatable="ng" dt-options="detailTable.dtOptions" dt-column-defs="detailTable.dtColumnDefs" dt-instance="dtInstances.detailTable">
+													<thead class="text-defalut">
+														<tr><th>类别</th><th>计数</th><th>最大/最小伤害</th><th>平均伤害</th><th>占比</th></tr>
+													</thead>
+													<tbody  class="text-xs">
+														<tr ng-repeat="type in typeList" ng-show="$root.curSkillStats[type].count>0">
+															<td>{{typeDesc[type]}}</td>
+															<td>{{$root.curSkillStats[type].count}}</td>
+															<td>{{$root.curSkillStats[type].max}}/{{$root.curSkillStats[type].min}}</td>
+															<td>{{($root.curSkillStats[type].damage/($root.curSkillStats[type].count)).toFixed(0)}}</td>
+															<td>{{($root.curSkillStats[type].count/$root.curSkillStats.count*100).toFixed(1)}}%</td>
+														</tr>
+													</tbody>
+												</table>
+											</div>
+										</div>
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+				</section>
+				<section id="setting" ng-show="pageShow.setting" >
+					<div class="row" ng-controller="QixueCtrl">
+						<div class="col-md-12">
+							<div class="card card-underline">
+								<div class="card-head">
+									<header>奇穴设置</header>
+								</div><!--end .card-head -->
+								<div class="card-body">
+									<div class="col-sm-1" ng-repeat="option in options" style="padding-left: 8px;padding-right: 8px;">
+										<div class="qixue dropdown">
+											<button id="add-buff" type="button" class="btn btn-default dropdown-toggle" ng-style="{background:'url(http://icons.j3pz.com/'+option.icon+'.png) 0 0 no-repeat'}" style="width:60px;height:48px;padding:3px" data-toggle="dropdown" tooltip="{{option.name+'：'+option.desc}}" tooltip-append-to-body="true">
+												<span class="caret right"></span>
+											</button>
+											<ul class="dropdown-menu" role="menu" aria-labelledby="qixue">
+												<li role="menuitem" ng-repeat="opts in $root.skillOption[option.id]" ng-click="toggleOption(opts.name,option.id)" tooltip="{{opts.desc}}" tooltip-append-to-body="true" tooltip-placement="left"><a href style="display:inline"><img ng-src="{{'http://icons.j3pz.com/'+opts.icon+'.png'}}" style="width:24px;height:24px"></img><span>{{opts.name}}</span></a></li>
+											</ul>
+										</div>
+										<span>{{option.name}}</span>
+									</div>
+								</div><!--end .card-body -->
+							</div>
+						</div>
+					</div>
+					<div class="row">
+						<div class="col-md-6" ng-controller="TargetCtrl">
+							<div class="card card-underline">
+								<div class="card-head">
+									<header>目标设置</header>
+								</div><!--end .card-head -->
+								<div class="card-body">
+									<div class="row">
+										<div class="col-sm-4">
+											<div class="radio radio-styled"><label ng-click="setTarget(0)">
+												<input type="radio" name="target" ng-model="targetSelectId" value="0"><span> 初级试炼木桩(96)</span>
+											</label></div>
+											<div class="radio radio-styled"><label ng-click="setTarget(1)">
+												<input type="radio" name="target" ng-model="targetSelectId" value="1"><span> 中级试炼木桩(97)</span>
+											</label></div>
+											<div class="radio radio-styled"><label ng-click="setTarget(2)">
+												<input type="radio" name="target" ng-model="targetSelectId" value="2"><span> 高级试炼木桩(98)</span>
+											</label></div>
+											<div class="radio radio-styled"><label ng-click="setTarget(3)">
+												<input type="radio" name="target" ng-model="targetSelectId" value="3"><span> 极境试炼木桩(99)</span>
+											</label></div>
+
+										</div>
+										<div class="col-sm-4">
+											<span class="text-primary-dark">命中要求</span> {{$root.target.hitRequire}}%<br>
+											<span class="text-primary-dark">无双要求</span> {{$root.target.strainRequire}}%<br>
+											<span class="text-primary-dark">目标防御</span> {{$root.target.shield}}%<br>
+										</div>
+									</div>
+								</div><!--end .card-body -->
+							</div>
+						</div>
+						<div class="col-md-6" ng-controller="EffectCtrl">
+							<div class="card card-underline">
+								<div class="card-head">
+									<header>特效设置</header>
+								</div><!--end .card-head -->
+								<div class="card-body">
+									<div class="row">
+										<div class="col-sm-4">
+											<label>橙武特效</label><br>
+											<div class="radio radio-styled" ng-repeat="texiao in cw">
+												<label ng-click="$root.effects.cw = texiao.id">
+													<input type="radio" name="texiao_cw" ng-model="$root.effects.cw" ng-value="texiao.id">
+													<span>{{texiao.name}}</span>
+												</label>
+											</div>
+										</div>
+										<div class="col-sm-4">
+											<label>水特效</label><br>
+											<div class="radio radio-styled" ng-repeat="texiao in water">
+												<label ng-click="$root.effects.water = texiao.id">
+													<input type="radio" name="texiao_water" ng-model="$root.effects.water" ng-value="texiao.id">
+													<span>{{texiao.name}}</span>
+												</label>
+											</div>
+										</div>
+										<div class="col-sm-4">
+											<label>雷特效</label><br>
+											<div class="radio radio-styled" ng-repeat="texiao in thunder">
+												<label ng-click="$root.effects.thunder = texiao.id">
+													<input type="radio" name="texiao_thunder" ng-model="$root.effects.thunder" ng-value="texiao.id">
+													<span>{{texiao.name}}</span>
+												</label>
+											</div>
+										</div>
+									</div>
+									<small>腰坠特效请在宏中使用/use 命令开启</small>
+								</div><!--end .card-body -->
+							</div>
+						</div>
+					</div>
+					<div class="row">
+						<div class="col-md-12" ng-controller="MacroCtrl">
+							<div class="card card-underline">
+								<div class="card-head">
+									<header>宏设置</header>
+								</div><!--end .card-head -->
+								<div class="card-body">
+									<div class="form-group" >
+										<textarea class="form-control" rows="10" ng-model="$root.macroText" id="macroTextArea" style="font-size: 12px;padding-top: 16px;"></textarea>
+										<label for="macroTextArea">在此输入宏</label>
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+					<div class="row">
+						<div class="col-md-12" ng-controller="RecipeCtrl">
+							<div class="card card-underline">
+								<div class="card-head">
+									<header>秘籍设置</header>
+								</div><!--end .card-head -->
+								<div class="card-body">
+									<div class="row">
+										<div class="col-sm-2" style="width:20%" ng-repeat="recipe in recipeList">
+											<label>{{recipe.name}}</label>
+											<div class="checkbox checkbox-styled" ng-repeat="item in $root.skillRecipe[recipe.id]">
+												<label>
+													<input type="checkbox" value="" ng-model="item.active" ng-click="toggleRecipe(recipe.id)" ng-disabled="!item.active&&recipeLCtrl[recipe.id]==4">
+													<span>{{item.desc}}</span>
+												</label>
+											</div>
+										</div>
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+				</section>
+				<section id="guide" ng-show="pageShow.guide">
+					
+				</section>
+			</div>
+			<div id="menubar" class="menubar-inverse ">
+				<div class="menubar-fixed-panel">
+					<div>
+						<a class="btn btn-icon-toggle btn-default menubar-toggle" data-toggle="menubar" href="javascript:void(0);">
+							<i class="fa fa-bars"></i>
+						</a>
+					</div>
+					<div class="expanded">
+						<a href="#">
+							<span class="text-lg text-bold text-primary ">剑网3&nbsp;DPS&nbsp;模拟器</span>
+						</a>
+					</div>
+				</div>
+				<div class="menubar-scroll-panel">
+					<ul id="main-menu" class="gui-controls gui-controls-tree">
+						<li ng-class="pageShow.home?'active':''">
+							<a href="#" ng-click="pageSwitch('home')" >
+								<div class="gui-icon"><i class="md md-home"></i></div>
+								<span class="title">DPS 模拟</span>
+							</a>
+						</li>
+						<li ng-class="pageShow.setting?'active':''">
+							<a href="#" ng-click="pageSwitch('setting')">
+								<div class="gui-icon"><i class="md md-settings"></i></div>
+								<span class="title">设置</span>
+							</a>
+						</li>
+						<li ng-class="pageShow.guide?'active':''">
+							<a href="#" ng-click="pageSwitch('guide')" >
+								<div class="gui-icon"><i class="md md-description"></i></div>
+								<span class="title">使用说明</span>
+							</a>
+						</li>
+					</ul>
+					<div class="menubar-foot-panel">
+						<small class="no-linebreak hidden-folded">
+							<span class="opacity-75">Copyright &copy; 2013-2015</span> <strong>剑网3配装器</strong>
+						</small>
+					</div>
+				</div>
+			</div>
+			<!-- <div class="offcanvas">
+				<div class="offcanvas-pane">
+					<div id="log" style="max-height:350px;overflow-y:scroll;" ng-show="$root.debug"></div>
+				</div>
+				<div class="offcanvas-pane">
+					~ Offcanvas content ~
+				</div>
+			</div> -->
+		</div>
+
+		<!-- BEGIN JAVASCRIPT -->
+		<script src="js/libs/jquery/jquery-1.11.2.min.js"></script>
+		<script src="js/libs/jquery/jquery-migrate-1.2.1.min.js"></script>
+		<script src="js/libs/bootstrap/bootstrap.min.js"></script>
+		<script src="js/libs/nanoscroller/jquery.nanoscroller.min.js"></script>
+		<script src="js/libs/DataTables/jquery.dataTables.min.js"></script>
+		<script src="js/libs/angular/angular.min.js"></script>
+		<script src="js/libs/angular/angular-animate.min.js"></script>
+		<script src="js/libs/angular/angular-aria.min.js"></script>
+		<script src="js/libs/icheck/icheck.min.js"></script>
+		<script src="js/libs/DataTables/angular-datatables.min.js"></script>
+		<script src="js/ui-bootstrap-tpls-0.13.2.min.js"></script>
+
+		<script src="dpsSim/dps.js"></script>
+		<script src="dpsSim/skill.js"></script>
+		<script src="dpsSim/buff.js"></script>
+		<script src="dpsSim/utils.js"></script>
+		<script src="dpsSim/buffs.js"></script>
+		<script src="dpsSim/skills.js"></script>
+		<script src="dpsSim/recipes.js"></script>
+		<script src="dpsSim/options.js"></script>
+		<script src="dpsSim/mainCtrl.js"></script>
+		<script src="dpsSim/settingsCtrl.js"></script>
+		<!-- Put App.js last in your javascript imports -->
+		<script src="js/core/source/App.min.js"></script>
+	</body>
+</html>
