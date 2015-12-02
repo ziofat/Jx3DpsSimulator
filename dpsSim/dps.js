@@ -1,3 +1,6 @@
+var fs = require('fs');
+var gui = require('nw.gui');
+
 var app = angular.module('J3DPS', ['ngAnimate','datatables','ui.bootstrap']);
 app.controller('AppCtrl', ['$scope','$rootScope', function($scope,$rootScope){
 	$scope.pageSwitch = function(page){
@@ -9,15 +12,73 @@ app.controller('AppCtrl', ['$scope','$rootScope', function($scope,$rootScope){
 		$scope.pageShow[page]=true;
 	}
 	$scope.pageShow = {
-		home:false,
+		home:true,
 		setting:false,
 		guide:false
 	}
 
-	// var gui = require('nw.gui');
-	// var win = gui.Window.get();
-	// var menu = new gui.Menu();
+	var win = gui.Window.get();
 
+	// 载入配置文件
+	$rootScope.settings = JSON.parse(fs.readFileSync('./userdata/default.json'));
+	$rootScope.macroText = 
+		"/cast [tnobuff:兰摧玉折&tnobuff:钟林毓秀] 乱洒青荷" + "\n" +
+		"/cast [tnobuff:兰摧玉折&tnobuff:钟林毓秀&buff:乱洒青荷] 阳明指" + "\n" +
+		"/cast [tnobuff:兰摧玉折] 兰摧玉折" + "\n" +
+		"/cast [tnobuff:商阳指] 商阳指" + "\n" +
+		"/cast [tnobuff:钟林毓秀] 阳明指" + "\n" +
+		"/cast [bufftime:焚玉<2|nobuff:焚玉&tbuff:钟林毓秀&tbuff:兰摧玉折&tbuff:商阳指] 水月无间" + "\n" +
+		"/cast [bufftime:焚玉<2|nobuff:焚玉&tbuff:钟林毓秀&tbuff:兰摧玉折&tbuff:商阳指] 玉石俱焚" + "\n" +
+		"/cast 阳明指";
+	$rootScope.macroProgram = $rootScope.macroText.split("\n");
+	var filename = './userdata/'+ $rootScope.settings.macro;
+	fs.readFile(filename, 'utf8', function(err, data) {
+		if (err) throw err;
+		$rootScope.macroText = data;
+		// $rootScope.macroProgram = $rootScope.macroText.split("\n");
+		// for (var i = 0; i < $rootScope.macroProgram.length; i++) {
+		// 	$rootScope.macroProgram[i] = $.trim($rootScope.macroProgram[i]);
+		// 	$rootScope.macroProgram[i] = macroTranslateToJs($rootScope.macroProgram[i]);
+		// };
+	});
+	// 应用配置文件
+	$rootScope.skillRecipe = angular.copy(whRecipes);
+	angular.forEach($rootScope.skillRecipe,function(value,key){
+		for (var i = 0; i < $rootScope.settings.recipe[key].length; i++) {
+			value[$rootScope.settings.recipe[key][i]].active=true;
+		};
+	});
+	$rootScope.skillOption = angular.copy(whOptions);
+	for (var i = 1; i <= 12; i++) {
+		$rootScope.skillOption[i][$rootScope.settings.qixue[i-1]].active = true;
+	};
+	$rootScope.myself = {
+		attributes:$rootScope.settings.attribute,
+		extra:{
+			damage:0,
+			attackAddPercent:0,
+			attackAddBase:0,
+			critAddPercent:0,
+			critAddBase:0,
+			hitAddPercent:0,
+			hitAddBase:0,
+			critEffAddPercent:0,
+			critEffAddBase:0,
+			overcomeAddPercent:0,
+			overcomeAddBase:0,
+			strainAddPercent:0,
+			strainAddBase:0,
+			haste:0
+		},
+		states:{
+			life:27166,
+			mana:32000,
+			ota:false,
+			otaRemain:0,
+			curOta:0,
+			gcd:0
+		}
+	}
 	// win.setTransparent(!win.isTransparent);
 	// win.setTransparent(!win.isTransparent);
 
@@ -37,20 +98,65 @@ app.controller('AppCtrl', ['$scope','$rootScope', function($scope,$rootScope){
 	// 	return false;
 	// }, false);
 
-	// $scope.closeApp = function(){
-	// 	win.close();
-	// }
+	$scope.closeApp = function(){
+		win.close();
+	}
 
-	// $scope.minimizeApp = function(){
-	// 	win.minimize();
-	// }
+	$scope.minimizeApp = function(){
+		win.minimize();
+	}
 
-	// $scope.devMode = function(){
-	// 	if(win.isDevToolsOpen()) win.showDevTools();
-	// 	else win.closeDevTools();
-	// }
+	win.on('close', function() {
+		this.hide();
+		fs.writeFileSync('./userdata/default.json',JSON.stringify($rootScope.settings));
+		this.close(true);
+	});
 
-	angular.element(document).ready(function () {
-        $scope.pageShow.home = true;
-    });
+	win.on('new-win-policy',function(frame, url, policy){
+		gui.Shell.openExternal(url);
+		policy.ignore();
+	})
 }]);
+
+function macroTranslateToJs(s){
+	var lineArr = s.split(" ");
+	var action = lineArr[0].split("/")[1];
+	if(lineArr[1].indexOf("[")<0){
+		// 无条件
+		var condition = true;
+		var skill = lineArr[1];
+		var program = 'if($scope.nocd("'+skill+'")){$scope.'+action+'("'+skill+'");return;}';
+	}else{
+		// 有条件
+		var conditionProgram = "";
+		var conditions = lineArr[1].slice(lineArr[1].indexOf("[")+1,lineArr.indexOf("]"));
+		var skill = lineArr[2];
+		var conditionArr = conditions.split(/(\&|\|)/);
+		var condition = true;
+		conditionArr.push("&");
+		conditionArr.unshift("&");
+		for (var i = 1; i < conditionArr.length; i=i+2) {
+			var checkArr = conditionArr[i].split(/:|>=|<=|=|>|</);
+			var funcName = checkArr[0];
+			var logic = conditionArr[i-1];
+			var sign = "=";
+			if(conditionArr[i].indexOf(">=")>=0) sign = ">=";
+			else if(conditionArr[i].indexOf("<=")>=0) sign = "<=";
+			else if(conditionArr[i].indexOf("<")>=0) sign = "<";
+			else if(conditionArr[i].indexOf(">")>=0) sign = ">";
+			else if(conditionArr[i].indexOf("=")>=0) sign = "=";
+			if(checkArr.length==3){
+				var result = '$scope.'+funcName+'("'+checkArr[1]+'",'+checkArr[2]+',"'+sign+'")';
+			}else if(checkArr.length==2){
+				var result = '$scope.'+funcName+'("'+checkArr[1]+'")';
+				if(funcName=="life"||funcName=="mana") result = '$scope.'+funcName+'("'+checkArr[1]+',"'+sign+'")';
+			}else if(checkArr.length==1){
+				var result = '$scope.'+funcName+'()';
+			}
+			if(i>1) conditionProgram = conditionProgram+logic+logic+result;
+			else conditionProgram = result;
+		};
+		var program = 'if($scope.nocd("'+skill+'")&&('+conditionProgram+')){$scope.'+action+'("'+skill+'");return;};';
+	}
+	return program;
+}

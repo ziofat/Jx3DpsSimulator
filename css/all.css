@@ -2,11 +2,19 @@ body {
   font-family:"微软雅黑","Microsoft YaHei",Verdana, Arial, Helvetica, sans-serif;
   -webkit-user-select: none;
 }
-
 .left{
     float:left;
 }
-
 .right{
     float:right;
+}
+[ng\:cloak], [ng-cloak], [data-ng-cloak], [x-ng-cloak], .ng-cloak, .x-ng-cloak {
+  display: none !important;
+}
+.m-b-5 {
+	margin-bottom: 5px;
+}
+
+button{
+	-webkit-app-region: no-drag;
 }

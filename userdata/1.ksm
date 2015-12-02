@@ -1,0 +1,8 @@
+/cast [tnobuff:兰摧玉折&tnobuff:钟林毓秀] 乱洒青荷
+/cast [tnobuff:兰摧玉折&tnobuff:钟林毓秀&buff:乱洒青荷] 阳明指
+/cast [tnobuff:兰摧玉折] 兰摧玉折
+/cast [tnobuff:商阳指] 商阳指
+/cast [tnobuff:钟林毓秀] 阳明指
+/cast [bufftime:焚玉<2|nobuff:焚玉&tbuff:钟林毓秀&tbuff:兰摧玉折&tbuff:商阳指] 水月无间
+/cast [bufftime:焚玉<2|nobuff:焚玉&tbuff:钟林毓秀&tbuff:兰摧玉折&tbuff:商阳指] 玉石俱焚
+/cast 阳明指

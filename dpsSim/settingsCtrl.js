@@ -18,6 +18,7 @@ app.controller('QixueCtrl', ['$rootScope','$scope', function($rootScope,$scope){
 			}
 		};
 		var value = $rootScope.skillOption[id][subid];
+		$rootScope.settings.qixue[id-1] = subid;
 		$scope.options[id-1] = {id:id,name:value.name,icon:value.icon,desc:value.desc};
 	}
 }]);
@@ -42,16 +43,16 @@ app.controller('RecipeCtrl', ['$rootScope','$scope', function($rootScope,$scope)
 			if(value[i].active){
 				$scope.recipeLCtrl[key]++;
 			}
-			
 		};
 	})
 	$scope.toggleRecipe = function(id){
 		$scope.recipeLCtrl[id] = 0;
+		$rootScope.settings.recipe[id] = [];
 		for (var i = 0; i < $rootScope.skillRecipe[id].length; i++) {
 			if($rootScope.skillRecipe[id][i].active){
 				$scope.recipeLCtrl[id]++;
+				$rootScope.settings.recipe[id].push(i);
 			}
-			
 		};
 	}
 }]);
@@ -67,14 +68,25 @@ app.controller('TargetCtrl', ['$rootScope','$scope', function($rootScope,$scope)
 	$scope.setTarget = function(target){
 		$scope.targetSelectId = target;
 		$rootScope.target = $scope.targetList[target];
+		$rootScope.settings.target = target;
 	}
 }]);
 
 app.controller('MacroCtrl', ['$rootScope','$scope', function($rootScope,$scope){
-	$rootScope.macroProgram = $rootScope.macroText.split("\n");
-	$rootScope.$watch("macroText",$scope.setMacro);
+	$rootScope.$watch("macroText",function(){
+		$scope.setMacro();
+	});
 	$scope.setMacro = function(){
 		$rootScope.macroProgram = $rootScope.macroText.split("\n");
+		for (var i = 0; i < $rootScope.macroProgram.length; i++) {
+			$rootScope.macroProgram[i] = $.trim($rootScope.macroProgram[i]);
+			$rootScope.macroProgram[i] = macroTranslateToJs($rootScope.macroProgram[i]);
+		};
+		evalPro = $rootScope.macroProgram.join(" ");
+		expression = new String(evalPro);
+		expression = expression.toString();
+		var filename = './userdata/'+ $rootScope.settings.macro;
+		fs.writeFile(filename, $rootScope.macroText, 'utf8');
 	}
 }]);
 
@@ -83,16 +95,20 @@ app.controller('EffectCtrl', ['$rootScope','$scope', function($rootScope,$scope)
 		{id:0,name:"无"},
 		{id:1,name:"小橙武"},
 		{id:2,name:"落凤"}
-	]
+	];
 	$scope.water = [
 		{id:0,name:"无"},
 		{id:15,name:"水·灭虚"},
 		{id:16,name:"水·无双"},
-	]
+	];
 	$scope.thunder = [
 		{id:0,name:"无"},
 		{id:17,name:"雷·激流"},
 		{id:18,name:"雷·灭气"},
 		{id:19,name:"雷·痛切"}
-	]
+	];
+
+	$rootScope.$watch("effects",function(){
+		$rootScope.settings.effects = $rootScope.effects;
+	},true);
 }]);

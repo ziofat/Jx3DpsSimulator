@@ -1,4 +1,4 @@
-app.controller('MainCtrl', ['$scope','$rootScope','$timeout','$interval','Utils','Buff','Skill', function($scope,$rootScope,$timeout,$interval,Utils,Buff,Skill){
+app.controller('MainCtrl', ['$scope','$rootScope','$timeout','$interval','Utils','Buff','Skill','$http', function($scope,$rootScope,$timeout,$interval,Utils,Buff,Skill,$http){
 	$rootScope.target = {
 		id:1,
 		level:97,
@@ -14,53 +14,15 @@ app.controller('MainCtrl', ['$scope','$rootScope','$timeout','$interval','Utils'
 		selfBuffs:{},
 		targetBuffs:{}
 	};
-	$rootScope.myself = {
-		attributes:{
-			basicAttack:2151,
-			spunk:687,
-			crit:5.67,
-			critEff:182.4,
-			hit:108.25,
-			haste:408,
-			strain:18.11,
-			overcome:588,
-			delay:50
-		},
-		extra:{
-			damage:0,
-			attackAddPercent:0,
-			attackAddBase:0,
-			critAddPercent:0,
-			critAddBase:0,
-			hitAddPercent:0,
-			hitAddBase:0,
-			critEffAddPercent:0,
-			critEffAddBase:0,
-			overcomeAddPercent:0,
-			overcomeAddBase:0,
-			strainAddPercent:0,
-			strainAddBase:0,
-			haste:0
-		},
-		states:{
-			life:27166,
-			mana:32000,
-			ota:false,
-			otaRemain:0,
-			curOta:0,
-			gcd:0
-		}
-	}
-	$rootScope.skillRecipe = angular.copy(whRecipes);
-	$rootScope.skillOption = angular.copy(whOptions);
 	$rootScope.macroMode = true;
-	$rootScope.maxTime = 225;
+	$rootScope.maxTime = 3.5;
 	$rootScope.maxLoop = 1;
 	$rootScope.effects = {
 		cw:0,
 		water:0,
 		thunder:0,
 	}
+	
 	$scope.digest = function(){
 		if($rootScope.macroMode&&$rootScope.time%(Math.ceil($rootScope.myself.attributes.delay/1000*16)+1)==0){
 			$scope.macro();
@@ -95,7 +57,6 @@ app.controller('MainCtrl', ['$scope','$rootScope','$timeout','$interval','Utils'
 				this[key] = value;
 			}
 		},$rootScope.skillController.list);
-		
 		// buff 时间控制
 		angular.forEach($rootScope.buffController.targetBuffs,function(value,key){
 			value.remain--;
@@ -130,7 +91,6 @@ app.controller('MainCtrl', ['$scope','$rootScope','$timeout','$interval','Utils'
 				});
 			}
 		},$rootScope.buffController.targetBuffs);
-		
 		angular.forEach($rootScope.buffController.selfBuffs,function(value,key){
 			value.remain--;
 			this[key] = value;
@@ -193,12 +153,12 @@ app.controller('MainCtrl', ['$scope','$rootScope','$timeout','$interval','Utils'
 			$interval.cancel(loopInterval);
 			loopInterval = $interval($scope.digest,62.5);
 		}else{
-			for (; $rootScope.time < $rootScope.maxTime*16; ) {
+			for (; $rootScope.time < $rootScope.maxTime*16*60; ) {
 				$scope.digest();
 			};
 		}
 		var e = new Date();
-		// console.log(e.getTime()-b.getTime());
+		console.log(e.getTime()-b.getTime());
 		if($rootScope.dpsLog.skillDetails[0]){
 			$rootScope.curSkillStats = $rootScope.dpsLog.skillDetails[0];
 			$rootScope.skillHighlight = $rootScope.dpsLog.skillDetails[0].name;
@@ -219,90 +179,62 @@ app.controller('MainCtrl', ['$scope','$rootScope','$timeout','$interval','Utils'
 		$interval.cancel(loopInterval);
 	}
 	$scope.clear = function(){
-		$('#log').html("");
+		// $('#log').html("");
+		fs.writeFileSync('./userdata/default.json',JSON.stringify($rootScope.settings));
 	}
 	$scope.macro = function(){
-		for (var i = 0; i < $rootScope.macroProgram.length; i++) {
-			var success = macroTranslate($rootScope.macroProgram[i]);
-			if(success) break;
-		};
-		// if($scope.tnobuff("兰摧玉折")&&$scope.tnobuff("钟林毓秀")&&$scope.nocd("乱洒青荷")){
-		// 	$scope.cast("乱洒青荷");
-		// 	return;
-		// }
-		// if($scope.tnobuff("兰摧玉折")&&$scope.tnobuff("钟林毓秀")&&$scope.buff("乱洒青荷")){
-		// 	$scope.cast("阳明指");
-		// 	return;
-		// }
-		// if($scope.tnobuff("兰摧玉折")&&$scope.nocd("兰摧玉折")){
-		// 	$scope.cast("兰摧玉折");
-		// 	return;
-		// }
-		// if($scope.tnobuff("商阳指")&&$scope.nocd("商阳指")){
-		// 	$scope.cast("商阳指");
-		// 	return;
-		// }
-		// if($scope.tnobuff("钟林毓秀")){
-		// 	$scope.cast("阳明指");
-		// 	return;
-		// }
-		// if($scope.tbuff("钟林毓秀")&&$scope.tbuff("兰摧玉折")&&$scope.tbuff("商阳指")&&$scope.nocd("水月无间")&&$scope.nocd("玉石俱焚")&&($scope.bufftime("焚玉",2,"<")||$scope.nobuff("焚玉"))){
-		// 	$scope.cast("水月无间");
-		// 	return;
-		// }
-		// if($scope.tbuff("钟林毓秀")&&$scope.tbuff("兰摧玉折")&&$scope.tbuff("商阳指")&&$scope.nocd("玉石俱焚")&&($scope.bufftime("焚玉",2,"<")||$scope.nobuff("焚玉"))){
-		// 	$scope.cast("玉石俱焚");
-		// 	return;
-		// }
-		// $scope.cast("阳明指");
+		// for (var i = 0; i < $rootScope.macroProgram.length; i++) {
+		// 	var success = macroTranslate($rootScope.macroProgram[i]);
+		// 	if(success) break;
+		// };
+		eval('(function() {' + expression + '}())');
 	}
-
-	function macroTranslate(s){
-		var lineArr = s.split(" ");
-		var action = lineArr[0];
-		if(lineArr[1].indexOf("[")<0){
-			// 无条件
-			var condition = true;
-			var skill = lineArr[1];
-		}else{
-			// 有条件
-			var conditions = lineArr[1].slice(lineArr[1].indexOf("[")+1,lineArr.indexOf("]"));
-			var skill = lineArr[2];
-			var conditionArr = conditions.split(/(\&|\|)/);
-			conditionArr.push("&");
-			conditionArr.unshift("&");
-			var condition = true;
-			for (var i = 1; i < conditionArr.length; i=i+2) {
-				var checkArr = conditionArr[i].split(/:|>=|<=|=|>|</);
-				var funcName = checkArr[0];
-				var logic = conditionArr[i-1];
-				var sign = undefined;
-				if(conditionArr[i].indexOf(">=")>=0) sign = ">=";
-				else if(conditionArr[i].indexOf("<=")>=0) sign = "<=";
-				else if(conditionArr[i].indexOf("<")>=0) sign = "<";
-				else if(conditionArr[i].indexOf(">")>=0) sign = ">";
-				else if(conditionArr[i].indexOf("=")>=0) sign = "=";
-				if(checkArr.length==3){
-					var result = eval("$scope."+funcName+"(checkArr[1],checkArr[2],sign)");
-				}else if(checkArr.length==2){
-					var result = eval("$scope."+funcName+"(checkArr[1],sign)");
-				}else if(checkArr.length==1){
-					var result = eval("$scope."+funcName+"()");
-				}
-				if(logic == "&") condition = condition&&result;
-				else if(logic == "|") condition = condition||result;
-				if(!condition&&conditionArr[i+1]=="&"){
-					return false;
-				}
-			};
-		}
-		if(action=="/cast"&&$scope.nocd(skill)){
-			$scope.cast(skill);
-			return true;
-		}else{
-			return false;
-		}
-	}
+	// function macroTranslate(s){
+	// 	var lineArr = s.split(" ");
+	// 	var action = lineArr[0];
+	// 	if(lineArr[1].indexOf("[")<0){
+	// 		// 无条件
+	// 		var condition = true;
+	// 		var skill = lineArr[1];
+	// 	}else{
+	// 		// 有条件
+	// 		var conditions = lineArr[1].slice(lineArr[1].indexOf("[")+1,lineArr.indexOf("]"));
+	// 		var skill = lineArr[2];
+	// 		var conditionArr = conditions.split(/(\&|\|)/);
+	// 		conditionArr.push("&");
+	// 		conditionArr.unshift("&");
+	// 		var condition = true;
+	// 		for (var i = 1; i < conditionArr.length; i=i+2) {
+	// 			var checkArr = conditionArr[i].split(/:|>=|<=|=|>|</);
+	// 			var funcName = checkArr[0];
+	// 			var logic = conditionArr[i-1];
+	// 			var sign = undefined;
+	// 			if(conditionArr[i].indexOf(">=")>=0) sign = ">=";
+	// 			else if(conditionArr[i].indexOf("<=")>=0) sign = "<=";
+	// 			else if(conditionArr[i].indexOf("<")>=0) sign = "<";
+	// 			else if(conditionArr[i].indexOf(">")>=0) sign = ">";
+	// 			else if(conditionArr[i].indexOf("=")>=0) sign = "=";
+	// 			if(checkArr.length==3){
+	// 				var result = eval("$scope."+funcName+"(checkArr[1],checkArr[2],sign)");
+	// 			}else if(checkArr.length==2){
+	// 				var result = eval("$scope."+funcName+"(checkArr[1],sign)");
+	// 			}else if(checkArr.length==1){
+	// 				var result = eval("$scope."+funcName+"()");
+	// 			}
+	// 			if(logic == "&") condition = condition&&result;
+	// 			else if(logic == "|") condition = condition||result;
+	// 			if(!condition&&conditionArr[i+1]=="&"){
+	// 				return false;
+	// 			}
+	// 		};
+	// 	}
+	// 	if(action=="/cast"&&$scope.nocd(skill)){
+	// 		$scope.cast(skill);
+	// 		return true;
+	// 	}else{
+	// 		return false;
+	// 	}
+	// }
 	// 宏命令
 	// 动作指令
 	$scope.cast = function(skillName){
@@ -311,7 +243,7 @@ app.controller('MainCtrl', ['$scope','$rootScope','$timeout','$interval','Utils'
 			if(value.name == skillName){
 				skill = angular.copy($rootScope.skillController.list[key]);
 			}
-		})
+		});
 		if(skill.cdRemain>0) return;
 		skill.onSkillPrepare($rootScope.myself,$rootScope.target,$rootScope.buffController,$rootScope.skillRecipe,$rootScope.skillOption);
 		// 水月免读条
@@ -522,79 +454,22 @@ app.controller('MainCtrl', ['$scope','$rootScope','$timeout','$interval','Utils'
 		})
 		return returnValue;
 	}
-	// 设置开关
-	$rootScope.settings = false;
-	// $scope.qixueSettings = function(){
-	// 	var modalInstance = $modal.open({
-	// 		animation: true,
-	// 		templateUrl: 'dpsSim/template/qixueSetting.html',
-	// 		controller: 'QixueCtrl',
-	// 		size:'lg'
-	// 	});
-	// }
-	// $scope.recipeSettings = function(){
-	// 	var modalInstance = $modal.open({
-	// 		animation: true,
-	// 		templateUrl: 'dpsSim/template/recipeSetting.html',
-	// 		controller: 'RecipeCtrl',
-	// 		size:'lg'
-	// 	});
-	// }
-	// $scope.targetSettings = function(){
-	// 	var modalInstance = $modal.open({
-	// 		animation: true,
-	// 		templateUrl: 'dpsSim/template/targetSetting.html',
-	// 		controller: 'TargetCtrl',
-	// 		size:'md'
-	// 	});
-	// }
-	// $scope.macroSettings = function(){
-	// 	var modalInstance = $modal.open({
-	// 		animation: true,
-	// 		templateUrl: 'dpsSim/template/macroSetting.html',
-	// 		controller: 'MacroCtrl',
-	// 		size:'lg'
-	// 	});
-	// }
-	// $scope.effectSettings = function(){
-	// 	var modalInstance = $modal.open({
-	// 		animation: true,
-	// 		templateUrl: 'dpsSim/template/effectSetting.html',
-	// 		controller: 'EffectCtrl',
-	// 		size:'md'
-	// 	});
-	// }
-	$rootScope.macroText = 
-		"/cast [tnobuff:兰摧玉折&tnobuff:钟林毓秀] 乱洒青荷" + "\n" +
-		"/cast [tnobuff:兰摧玉折&tnobuff:钟林毓秀&buff:乱洒青荷] 阳明指" + "\n" +
-		"/cast [tnobuff:兰摧玉折] 兰摧玉折" + "\n" +
-		"/cast [tnobuff:商阳指] 商阳指" + "\n" +
-		"/cast [tnobuff:钟林毓秀] 阳明指" + "\n" +
-		"/cast [bufftime:焚玉<2|nobuff:焚玉&tbuff:钟林毓秀&tbuff:兰摧玉折&tbuff:商阳指] 水月无间" + "\n" +
-		"/cast [bufftime:焚玉<2|nobuff:焚玉&tbuff:钟林毓秀&tbuff:兰摧玉折&tbuff:商阳指] 玉石俱焚" + "\n" +
-		"/cast 阳明指";
-	// $rootScope.macroText =
-	// 	"/cast [tbufftime:钟林毓秀<4.2] 芙蓉并蒂" + "\n" +
-	// 	"/cast [tnobuff:兰摧玉折] 兰摧玉折" + "\n" +
-	// 	"/cast [tnobuff:商阳指] 商阳指" + "\n" +
-	// 	"/cast [nobuff:恣游] 阳明指" + "\n" +
-	// 	"/cast [buff:恣游<=4] 阳明指" + "\n" +
-	// 	"/cast [mana<0.4&bufftime:恣游>6&tbufftime:商阳指>8] 碧水滔天" + "\n" +
-	// 	"/cast [tbufftime:兰摧玉折<10&tbufftime:兰摧玉折>7] 乱洒青荷" + "\n" +
-	// 	"/cast [buff:乱洒青荷] 水月无间" + "\n" +
-	// 	"/cast [bufftime:恣游<4.2&tbufftime:商阳指>10] 阳明指" + "\n" +
-	// 	"/cast [bufftime:恣游<4.2&tbufftime:商阳指<10] 阳明指" + "\n" +
-	// 	"/cast [tbufftime:商阳指<4.2|tbufftime:兰摧玉折<4.2] 芙蓉并蒂" + "\n" +
-	// 	"/cast [bufftime:恣游<4.2&tbufftime:商阳指>10] 阳明指" + "\n" +
-	// 	"/cast 快雪时晴";
-	$rootScope.macroProgram = $rootScope.macroText.split("\n");
 
-	$scope.$on("start",function(e){$scope.start();$scope.$apply()});
-	$scope.$on("qixue",function(e){$scope.qixueSettings();$scope.$apply()});
-	$scope.$on("recipe",function(e){$scope.recipeSettings();$scope.$apply()});
-	$scope.$on("target",function(e){$scope.targetSettings();$scope.$apply()});
-	$scope.$on("effect",function(e){$scope.effectSettings();$scope.$apply()});
-	$scope.$on("macro",function(e){$scope.macroSettings();$scope.$apply()});
+	$scope.checkUpdate = function(){
+		var currentVersion = gui.App.manifest.version;
+		$http.get('http://www.j3pz.com/dpsSim/update.json')
+		.success(function(response){
+			$rootScope.update = response;
+			console.log($rootScope.update);
+			if($rootScope.update.version!=currentVersion){
+				$('#updateModal').modal('show');
+			}
+		})
+	}
+
+	$scope.update = function(){
+		toastr.info('暂不支持热更新，请点击按钮前往网站下载最新安装包 <a type="button" id="okBtn" class="btn btn-flat btn-success toastr-action" href="http://www.j3pz.com/dps.html" target="_blank">更新</a>');
+	}
 }]);
 
 app.controller('StatsCtrl', ['$rootScope','$scope','DTOptionsBuilder','DTColumnDefBuilder', function($rootScope,$scope,DTOptionsBuilder, DTColumnDefBuilder){
