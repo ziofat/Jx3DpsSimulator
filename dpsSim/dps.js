@@ -18,6 +18,7 @@ app.controller('AppCtrl', ['$scope','$rootScope', function($scope,$rootScope){
 	}
 
 	var win = gui.Window.get();
+	var ini = require("ini")
 
 	// 载入配置文件
 	$rootScope.settings = JSON.parse(fs.readFileSync('./userdata/default.json'));
@@ -41,6 +42,7 @@ app.controller('AppCtrl', ['$scope','$rootScope', function($scope,$rootScope){
 		// 	$rootScope.macroProgram[i] = macroTranslateToJs($rootScope.macroProgram[i]);
 		// };
 	});
+	fs.writeFileSync('./userdata/config.ini', ini.stringify($rootScope.settings, { whitespace : true }))
 	// 应用配置文件
 	$rootScope.skillRecipe = angular.copy(whRecipes);
 	angular.forEach($rootScope.skillRecipe,function(value,key){
