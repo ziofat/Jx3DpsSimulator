@@ -19,7 +19,7 @@ app.controller('SkillCtrl', ['$scope','$rootScope','Utils','Skill','Buff', funct
 		onSkillHitEvent:function(attr, target, buffController, recipes, options){
 			// 阳明指命中后添加一层恣游buff
 			Utils.addBuff($rootScope.originalBuffList.ziYouBuff,attr);
-			// 乱撒添加DOT
+			// 乱洒添加DOT
 			if($rootScope.originalBuffList.luanSaBuff.id in buffController.selfBuffs){
 				// 添加钟林毓秀
 				var dot = angular.copy($rootScope.originalBuffList.zhongLinDot);

@@ -406,7 +406,7 @@ app.controller('BuffCtrl', ['$scope','$rootScope','Utils','Buff', function($scop
 
 	var shuiMieXuBuff = Buff.createNew({
 		id:15,
-		icon:7468,
+		icon:3412,
 		name:"水·灭虚",
 		desc:"水·灭虚",
 		type:1,
@@ -432,7 +432,7 @@ app.controller('BuffCtrl', ['$scope','$rootScope','Utils','Buff', function($scop
 
 	var shuiWuShuangBuff = Buff.createNew({
 		id:16,
-		icon:7468,
+		icon:3412,
 		name:"水·无双",
 		desc:"水·无双",
 		type:1,
@@ -458,7 +458,7 @@ app.controller('BuffCtrl', ['$scope','$rootScope','Utils','Buff', function($scop
 
 	var leiJiLiuBuff = Buff.createNew({
 		id:17,
-		icon:7468,
+		icon:3406,
 		name:"雷·激流",
 		desc:"雷·激流",
 		type:1,
@@ -485,7 +485,7 @@ app.controller('BuffCtrl', ['$scope','$rootScope','Utils','Buff', function($scop
 
 	var leiMieQiBuff = Buff.createNew({
 		id:18,
-		icon:7468,
+		icon:3406,
 		name:"雷·灭气",
 		desc:"雷·灭气",
 		type:1,
@@ -512,7 +512,7 @@ app.controller('BuffCtrl', ['$scope','$rootScope','Utils','Buff', function($scop
 
 	var leiTongQieBuff = Buff.createNew({
 		id:19,
-		icon:7468,
+		icon:3406,
 		name:"雷·痛切",
 		desc:"雷·痛切",
 		type:1,
@@ -539,7 +539,7 @@ app.controller('BuffCtrl', ['$scope','$rootScope','Utils','Buff', function($scop
 
 	var leiCD = Buff.createNew({
 		id:20,
-		icon:7468,
+		icon:3406,
 		name:"雷特效CD",
 		desc:"雷特效CD",
 		type:1,
