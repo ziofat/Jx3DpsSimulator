@@ -18,3 +18,33 @@ body {
 button{
 	-webkit-app-region: no-drag;
 }
+
+.buff{
+  display: inline-block;
+  width: 23px;
+  margin: 2px;
+  height: 37px;
+  overflow: hidden;
+}
+
+.buff-time{
+  position: relative;
+  top:-10px;
+}
+
+.buff-level{
+  position: relative;
+  top: -50px;
+  left: 14px;
+  color: yellow;
+  /* font-size: 14px; */
+  text-shadow: 1px 1px 1px black;
+}
+
+.progress-bar {
+    -webkit-transition: none;
+    -moz-transition: none;
+    -ms-transition: none;
+    -o-transition: none;
+    transition: none;
+}

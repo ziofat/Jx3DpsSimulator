@@ -122,7 +122,7 @@
 												<div class="row" style="margin-bottom:16px;">
 													<button class="btn ink-reaction btn-raised btn-primary" ng-click="start()">开始循环</button>
 													<button class="btn ink-reaction btn-raised btn-primary" ng-click="stop()" ng-show="$root.debug">结束循环</button>
-													<button class="btn ink-reaction btn-raised btn-primary" ng-click="checkUpdate()">更新测试</button>
+													<!-- <button class="btn ink-reaction btn-raised btn-primary" ng-click="checkUpdate()">更新测试</button> -->
 													<!-- <button class="btn ink-reaction btn-raised btn-primary" ng-click="clear()">清空log</button>
 													<button class="btn ink-reaction btn-raised btn-primary" ng-click="aveStart()">10次循环</button> -->
 												</div>
@@ -148,26 +148,32 @@
 													<span class="text-primary-dark">战斗时间</span> {{($root.time/16).toFixed(2)}}s<br>
 													<span class="text-primary-dark">DPS</span> {{$root.dps.toFixed(0)}}
 												</div>
-												<div class="row" style="margin-bottom:16px;" ng-controller="BuffCtrl">
-													<span class="text-primary-dark">目标Buff</span> 
-													<span ng-repeat="buff in buffController.targetBuffs">
-														<b>{{buff.name}}</b>
-														<i ng-if="buff.maxLevel>1">x{{buff.level}}</i>
-														({{(buff.remain/16).toFixed(0)}})
-													</span>
+												<div class="row" ng-controller="BuffCtrl">
+													<div class="text-primary-dark" class="col-md-1">目标Buff</div>  
+													<div class="buff" ng-repeat="buff in buffController.targetBuffs">
+														<img ng-src="res/icons/{{buff.icon}}.png" width="30px" height="30px" tooltip="{{buff.name}}" tooltip-append-to-body="true">
+														<span class="buff-time">{{(buff.remain/16).toFixed(0)}}'</span>
+														<span class="buff-level" ng-if="buff.maxLevel>1">{{buff.level}}</span>
+													</div>
 												</div>
-												<div class="row" style="margin-bottom:16px;">
-													<span class="text-primary-dark">自身Buff</span> 
-													<span ng-repeat="buff in buffController.selfBuffs">
-														<b>{{buff.name}}</b>
-														<i ng-if="buff.maxLevel>1">x{{buff.level}}</i>
-														({{(buff.remain/16).toFixed(0)}})
-													</span>
+												<div class="row">
+													<div class="text-primary-dark" class="col-md-1">自身Buff</div> 
+													<div class="buff" ng-repeat="buff in buffController.selfBuffs">
+														<img ng-src="res/icons/{{buff.icon}}.png" width="30px" height="30px" tooltip="{{buff.name}}" tooltip-append-to-body="true">
+														<span class="buff-time">{{(buff.remain/16).toFixed(0)}}'</span>
+														<span class="buff-level" ng-if="buff.maxLevel>1">{{buff.level}}</span>
+													</div>
 												</div>
 												<div class="row" style="margin-bottom:16px;" ng-controller="SkillCtrl">
 													<span class="text-primary-dark">读条状态</span> 
 													<span ng-if="myself.states.ota&&skillController.curSkill.type=='ota'">【{{skillController.curSkill.name}}】{{((myself.states.curOta - myself.states.otaRemain)/16).toFixed(2)}}s/{{(myself.states.curOta/16).toFixed(2)}}s</span>
 													<span ng-if="myself.states.ota&&skillController.curSkill.type=='channel'">【{{skillController.curSkill.name}}】{{(myself.states.otaRemain/16).toFixed(2)}}s/{{(myself.states.curOta/16).toFixed(2)}}s</span>
+													<div class="col-md-12">
+														<div class="progress progress-hairline col-md-7">
+															<div class="progress-bar progress-bar-primary-dark" ng-style="{'width':100*(myself.states.curOta - myself.states.otaRemain)/myself.states.curOta+'%'}" ng-if="myself.states.ota&&skillController.curSkill.type=='ota'"></div>
+															<div class="progress-bar progress-bar-primary-dark" ng-style="{'width':100*myself.states.otaRemain/myself.states.curOta+'%'}" ng-if="myself.states.ota&&skillController.curSkill.type=='channel'"></div>
+														</div>
+													</div>
 												</div>
 											</div>
 										</div>
