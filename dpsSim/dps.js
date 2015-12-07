@@ -127,7 +127,7 @@ function macroTranslateToJs(s){
 		// 无条件
 		var condition = true;
 		var skill = lineArr[1];
-		var program = 'if($scope.nocd("'+skill+'")){$scope.'+action+'("'+skill+'");return;}';
+		var program = 'if($scope.nocd("'+skill+'")){var s=$scope.'+action+'("'+skill+'");if(s) return;}';
 	}else{
 		// 有条件
 		var conditionProgram = "";
@@ -158,7 +158,7 @@ function macroTranslateToJs(s){
 			if(i>1) conditionProgram = conditionProgram+logic+logic+result;
 			else conditionProgram = result;
 		};
-		var program = 'if($scope.nocd("'+skill+'")&&('+conditionProgram+')){$scope.'+action+'("'+skill+'");return;};';
+		var program = 'if($scope.nocd("'+skill+'")&&('+conditionProgram+')){var s=$scope.'+action+'("'+skill+'");if(s) return;};';
 	}
 	return program;
 }

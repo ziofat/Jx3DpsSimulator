@@ -244,7 +244,8 @@ app.controller('MainCtrl', ['$scope','$rootScope','$timeout','$interval','Utils'
 				skill = angular.copy($rootScope.skillController.list[key]);
 			}
 		});
-		if(skill.cdRemain>0) return;
+		if(!skill) return false;
+		if(skill.cdRemain>0) return false;
 		skill.onSkillPrepare($rootScope.myself,$rootScope.target,$rootScope.buffController,$rootScope.skillRecipe,$rootScope.skillOption);
 		// 水月免读条
 		if($rootScope.originalBuffList.shuiYueBuff.id in $rootScope.buffController.selfBuffs&&skill.type=="ota"){
@@ -272,6 +273,7 @@ app.controller('MainCtrl', ['$scope','$rootScope','$timeout','$interval','Utils'
 			$rootScope.myself.states.curInterval = Utils.hasteCalc($rootScope.myself.attributes.haste,$rootScope.myself.extra.haste,skill.interval);
 			$rootScope.myself.states.gcd = Utils.hasteCalc($rootScope.myself.attributes.haste,$rootScope.myself.extra.haste,24);
 		}
+		return true;
 	}
 	// 自身条件
 	$scope.buff = function(buffName,level,sign){
