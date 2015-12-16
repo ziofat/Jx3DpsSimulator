@@ -275,6 +275,48 @@ app.controller('MainCtrl', ['$scope','$rootScope','$timeout','$interval','Utils'
 		}
 		return true;
 	}
+	$scope.fcast = function(skillName){
+		var skill;
+		angular.forEach($rootScope.skillController.list,function(value,key){
+			if(value.name == skillName){
+				skill = angular.copy($rootScope.skillController.list[key]);
+			}
+		});
+		if(!skill) return false;
+		if(skill.cdRemain>0) return false;
+		skill.onSkillPrepare($rootScope.myself,$rootScope.target,$rootScope.buffController,$rootScope.skillRecipe,$rootScope.skillOption);
+		// 水月免读条
+		if($rootScope.originalBuffList.shuiYueBuff.id in $rootScope.buffController.selfBuffs&&skill.type=="ota"){
+			skill.ota = 0;
+			skill.type = "instant";
+			$rootScope.buffController.selfBuffs[$rootScope.originalBuffList.shuiYueBuff.id].level--;
+			if($rootScope.buffController.selfBuffs[$rootScope.originalBuffList.shuiYueBuff.id].level==0) delete $rootScope.buffController.selfBuffs[$rootScope.originalBuffList.shuiYueBuff.id];
+		}
+		if(skill.hasRecipes) skill.applyRecipe($rootScope.skillRecipe[skill.recipeName],$rootScope.buffController);
+		// 强行打出技能
+		if(skill.type=="ota"&&$rootScope.myself.states.gcd==0){
+			$rootScope.myself.states.ota = true;
+			$rootScope.skillController.curSkill = skill;
+			$rootScope.myself.states.curOta = Utils.hasteCalc($rootScope.myself.attributes.haste,$rootScope.myself.extra.haste,skill.ota);
+			$rootScope.myself.states.otaRemain = Utils.hasteCalc($rootScope.myself.attributes.haste,$rootScope.myself.extra.haste,skill.ota);
+			$rootScope.myself.states.gcd = Utils.hasteCalc($rootScope.myself.attributes.haste,$rootScope.myself.extra.haste,24);
+		}else if(skill.type=="instant"&&$rootScope.myself.states.gcd==0){
+			if($rootScope.myself.states.ota&&($rootScope.skillController.curSkill.canCastSkill==skill.name||$rootScope.skillController.curSkill.name==skill.canCastSkill)){
+			}else{
+				$rootScope.myself.states.ota = false;
+			}
+			$rootScope.myself.states.gcd = Utils.hasteCalc($rootScope.myself.attributes.haste,$rootScope.myself.extra.haste,24);
+			var damage = skill.calc($rootScope.myself,$rootScope.target,$rootScope.buffController,$rootScope.skillRecipe,$rootScope.skillOption);
+		}else if(skill.type=="channel"&&$rootScope.myself.states.gcd==0){
+			$rootScope.myself.states.ota = true;
+			$rootScope.skillController.curSkill = skill;
+			$rootScope.myself.states.curOta = Utils.hasteCalc($rootScope.myself.attributes.haste,$rootScope.myself.extra.haste,skill.interval)*(skill.ota/skill.interval);
+			$rootScope.myself.states.otaRemain = $rootScope.myself.states.curOta;
+			$rootScope.myself.states.curInterval = Utils.hasteCalc($rootScope.myself.attributes.haste,$rootScope.myself.extra.haste,skill.interval);
+			$rootScope.myself.states.gcd = Utils.hasteCalc($rootScope.myself.attributes.haste,$rootScope.myself.extra.haste,24);
+		}
+		return true;
+	}
 	// 自身条件
 	$scope.buff = function(buffName,level,sign){
 		// 判断自己身上是否存在某增益或减益buff

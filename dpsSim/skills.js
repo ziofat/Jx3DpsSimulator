@@ -9,6 +9,8 @@ app.controller('SkillCtrl', ['$scope','$rootScope','Utils','Skill','Buff', funct
 		min:155,
 		max:183,
 		ota:28,
+		canCastSkill:0,
+		canCast:false,
 		damageInstant:true,
 		cd:0,
 		interval:24,
@@ -119,6 +121,8 @@ app.controller('SkillCtrl', ['$scope','$rootScope','Utils','Skill','Buff', funct
 		min:50,
 		max:50,
 		ota:0,
+		canCastSkill:0,
+		canCast:false,
 		damageInstant:false,
 		cd:0,
 		interval:0,
@@ -166,6 +170,8 @@ app.controller('SkillCtrl', ['$scope','$rootScope','Utils','Skill','Buff', funct
 		min:81,
 		max:91,
 		ota:0,
+		canCastSkill:0,
+		canCast:false,
 		damageInstant:true,
 		cd:272,
 		interval:0,
@@ -232,6 +238,8 @@ app.controller('SkillCtrl', ['$scope','$rootScope','Utils','Skill','Buff', funct
 		min:65,
 		max:75,
 		ota:80,
+		canCastSkill:0,
+		canCast:false,
 		damageInstant:true,
 		cd:0,
 		interval:16,
@@ -303,6 +311,8 @@ app.controller('SkillCtrl', ['$scope','$rootScope','Utils','Skill','Buff', funct
 		type:0,
 		cof:0.29,
 		ota:32,
+		canCastSkill:0,
+		canCast:false,
 		min:38,
 		max:38,
 		damageInstant:false,
@@ -348,6 +358,8 @@ app.controller('SkillCtrl', ['$scope','$rootScope','Utils','Skill','Buff', funct
 		min:30,
 		max:30,
 		ota:28,
+		canCastSkill:0,
+		canCast:false,
 		damageInstant:false,
 		cd:96,
 		interval:0,
@@ -395,6 +407,8 @@ app.controller('SkillCtrl', ['$scope','$rootScope','Utils','Skill','Buff', funct
 		min:76,
 		max:81,
 		ota:0,
+		canCastSkill:0,
+		canCast:false,
 		damageInstant:true,
 		cd:320,
 		interval:0,
@@ -437,6 +451,8 @@ app.controller('SkillCtrl', ['$scope','$rootScope','Utils','Skill','Buff', funct
 		min:0,
 		max:0,
 		ota:0,
+		canCastSkill:0,
+		canCast:false,
 		damageInstant:false,
 		cd:960,
 		interval:0,
@@ -478,6 +494,8 @@ app.controller('SkillCtrl', ['$scope','$rootScope','Utils','Skill','Buff', funct
 		min:0,
 		max:0,
 		ota:0,
+		canCastSkill:0,
+		canCast:false,
 		damageInstant:false,
 		cd:1440,
 		interval:0,
@@ -490,6 +508,8 @@ app.controller('SkillCtrl', ['$scope','$rootScope','Utils','Skill','Buff', funct
 			$rootScope.skillController.list[2].cdRemain = 0;
 			// 添加乱撒buff
 			Utils.addBuff($rootScope.originalBuffList.luanSaBuff,attr);
+			// 取消技能GCD
+			$rootScope.myself.states.gcd=0;
 		},
 		onSkillCritEvent:function(attr, target, buffController, recipes, options){
 			this.onSkillHitEvent(attr, target, buffController, recipes, options);
@@ -510,4 +530,3 @@ app.controller('SkillCtrl', ['$scope','$rootScope','Utils','Skill','Buff', funct
 		curSkill:null
 	};
 }]);
-
