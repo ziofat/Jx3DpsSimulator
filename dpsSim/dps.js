@@ -1,7 +1,7 @@
 var fs = require('fs');
 var gui = require('nw.gui');
 
-var app = angular.module('J3DPS', ['ngAnimate','datatables','ui.bootstrap']);
+var app = angular.module('J3DPS', ['ngAnimate','datatables','ui.bootstrap','cfp.hotkeys']);
 app.controller('AppCtrl', ['$scope','$rootScope', function($scope,$rootScope){
 	$scope.pageSwitch = function(page){
 		$scope.pageShow = {

@@ -112,3 +112,7 @@ app.controller('EffectCtrl', ['$rootScope','$scope', function($rootScope,$scope)
 		$rootScope.settings.effects = $rootScope.effects;
 	},true);
 }]);
+
+app.controller('HotkeyCtrl', ['$rootScope','$scope','hotkeys', function($rootScope,$scope,hotkeys){
+	
+}]);

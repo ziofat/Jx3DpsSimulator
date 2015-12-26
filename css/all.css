@@ -41,6 +41,40 @@ button{
   text-shadow: 1px 1px 1px black;
 }
 
+.skill{
+  display: inline-block;
+  width: 48px;
+  margin: 2px 2px 18px 2px;
+  height: 48px;
+  /*overflow: hidden;*/
+  font-size: 18px;
+  text-align: center;
+}
+
+.skill-cd{
+  position: relative;
+  top:-64px;
+  width: 48px;
+  height: 48px;
+  line-height:48px;  
+  color: yellow;
+  background-color: rgba(0,0,0,0.6);
+}
+
+.skill-nocd{
+  position: relative;
+  top:-64px;
+  width: 48px;
+  height: 48px;
+  line-height:48px;  
+}
+
+.skill-hotkey{
+  position: relative;
+  top: -70px;
+  color: black;
+}
+
 .progress-bar {
     -webkit-transition: none;
     -moz-transition: none;

@@ -13,6 +13,5 @@
 		"min_width": 1000,
 		"min_height": 664,
 		"resizable":true
-	},
-	"node-main":"test.js"
+	}
 }

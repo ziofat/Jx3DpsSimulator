@@ -13,6 +13,7 @@
 		<!-- Additional CSS includes -->
 		<link type="text/css" rel="stylesheet" href="css/theme-default/libs/DataTables/jquery.dataTables.css">
 		<link type="text/css" rel="stylesheet" href="css/theme-default/libs/toastr/toastr.css">
+		<link type="text/css" rel="stylesheet" href="css/theme-default/libs/hotkeys/hotkeys.min.css">
 		<link type="text/css" rel="stylesheet" href="css/all.css">
 		<!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
 		<!--[if lt IE 9]>
@@ -128,9 +129,9 @@
 												</div>
 												
 												<div class="row">
-													<!-- <label class="checkbox-inline checkbox-styled">
-														<input type="checkbox" ng-model="$root.macroMode"><span>自动模式</span>
-													</label> -->
+													<label class="checkbox-inline checkbox-styled">
+														<input type="checkbox" ng-model="$root.macroMode"><span>宏模式</span>
+													</label>
 													<label class="checkbox-inline checkbox-styled">
 														<input type="checkbox" ng-model="$root.debug"><span>显示战斗过程</span>
 													</label>
@@ -173,6 +174,19 @@
 															<div class="progress-bar progress-bar-primary-dark" ng-style="{'width':100*(myself.states.curOta - myself.states.otaRemain)/myself.states.curOta+'%'}" ng-if="myself.states.ota&&skillController.curSkill.type=='ota'"></div>
 															<div class="progress-bar progress-bar-primary-dark" ng-style="{'width':100*myself.states.otaRemain/myself.states.curOta+'%'}" ng-if="myself.states.ota&&skillController.curSkill.type=='channel'"></div>
 														</div>
+													</div>
+												</div>
+											</div>
+										</div>
+										<div class="card style-default-bright" ng-show="!$root.macroMode">
+											<div class="card-body">
+												<div class="row">
+													<div class="text-primary-dark" class="col-md-1">手动技能</div>
+													<div class="skill" ng-repeat="skillId in $root.settings.skillOrder" tooltip="{{skillController.list[skillId].name}}" tooltip-append-to-body="true">
+														<img ng-src="res/icons/{{skillController.list[skillId].icon}}.png" width="64px" height="64px" >
+														<div class="skill-cd" ng-show="skillController.list[skillId].cdRemain>0">{{(skillController.list[skillId].cdRemain/16).toFixed(0)}}</div>
+														<div class="skill-nocd" ng-show="skillController.list[skillId].cdRemain<=0"></div>
+														<span class="skill-hotkey">{{$root.hotkeyList[$index]}}</span>
 													</div>
 												</div>
 											</div>
@@ -317,7 +331,7 @@
 						</div>
 					</div>
 					<div class="row">
-						<div class="col-md-12" ng-controller="MacroCtrl">
+						<div class="col-md-6" ng-controller="MacroCtrl">
 							<div class="card card-underline">
 								<div class="card-head">
 									<header>宏设置</header>
@@ -326,6 +340,30 @@
 									<div class="form-group" >
 										<textarea class="form-control" rows="10" ng-model="$root.macroText" id="macroTextArea" style="font-size: 12px;padding-top: 16px;"></textarea>
 										<label for="macroTextArea">在此输入宏</label>
+									</div>
+								</div>
+							</div>
+						</div>
+
+						<div class="col-md-6" ng-controller="HotkeyCtrl">
+							<div class="card card-underline">
+								<div class="card-head">
+									<header>手动模式快捷键设置</header>
+								</div><!--end .card-head -->
+								<div class="card-body">
+									<div class="row">
+										<table class="table table-condensed">
+											<thead class="text-defalut" class="text-sm">
+												<tr><th>技能栏位置：当前技能</th><th>快捷键</th></tr>
+											</thead>
+											<tbody  class="text-xs">
+												<tr ng-repeat="skillButton in $root.hotkeyList">
+													<td>{{$index+1}}：{{$root.originalSkillList[$root.settings.skillOrder[$index]].name}}</td>
+													<td>{{skillButton}}</td>
+												</tr>
+											</tbody>
+										</table>
+										<small>由于 ctrl、alt 等键位在浏览器中有特殊作用，若需要组合快捷键请自行输入组合键键名。例如 shift+c 表示同时按下 Shift 键和 C 键</small>
 									</div>
 								</div>
 							</div>
@@ -575,6 +613,7 @@
 		<script src="js/libs/icheck/icheck.min.js"></script>
 		<script src="js/libs/DataTables/angular-datatables.min.js"></script>
 		<script src="js/libs/toastr/toastr.js"></script>
+		<script src="js/libs/hotkeys/hotkeys.min.js"></script>
 		<script src="js/ui-bootstrap-tpls-0.13.2.min.js"></script>
 
 		<script src="dpsSim/dps.js"></script>

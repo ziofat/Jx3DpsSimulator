@@ -1,4 +1,4 @@
-app.controller('MainCtrl', ['$scope','$rootScope','$timeout','$interval','Utils','Buff','Skill','$http', function($scope,$rootScope,$timeout,$interval,Utils,Buff,Skill,$http){
+app.controller('MainCtrl', ['$scope','$rootScope','$timeout','$interval','Utils','Buff','Skill','$http','hotkeys', function($scope,$rootScope,$timeout,$interval,Utils,Buff,Skill,$http,hotkeys){
 	$rootScope.target = {
 		id:1,
 		level:97,
@@ -15,6 +15,9 @@ app.controller('MainCtrl', ['$scope','$rootScope','$timeout','$interval','Utils'
 		targetBuffs:{}
 	};
 	$rootScope.macroMode = true;
+	$rootScope.$watch('macroMode',function(){
+		if(!$rootScope.macroMode) $rootScope.debug=true;
+	})
 	$rootScope.maxTime = 3.5;
 	$rootScope.maxLoop = 1;
 	$rootScope.effects = {
@@ -189,52 +192,6 @@ app.controller('MainCtrl', ['$scope','$rootScope','$timeout','$interval','Utils'
 		// };
 		eval('(function() {' + expression + '}())');
 	}
-	// function macroTranslate(s){
-	// 	var lineArr = s.split(" ");
-	// 	var action = lineArr[0];
-	// 	if(lineArr[1].indexOf("[")<0){
-	// 		// 无条件
-	// 		var condition = true;
-	// 		var skill = lineArr[1];
-	// 	}else{
-	// 		// 有条件
-	// 		var conditions = lineArr[1].slice(lineArr[1].indexOf("[")+1,lineArr.indexOf("]"));
-	// 		var skill = lineArr[2];
-	// 		var conditionArr = conditions.split(/(\&|\|)/);
-	// 		conditionArr.push("&");
-	// 		conditionArr.unshift("&");
-	// 		var condition = true;
-	// 		for (var i = 1; i < conditionArr.length; i=i+2) {
-	// 			var checkArr = conditionArr[i].split(/:|>=|<=|=|>|</);
-	// 			var funcName = checkArr[0];
-	// 			var logic = conditionArr[i-1];
-	// 			var sign = undefined;
-	// 			if(conditionArr[i].indexOf(">=")>=0) sign = ">=";
-	// 			else if(conditionArr[i].indexOf("<=")>=0) sign = "<=";
-	// 			else if(conditionArr[i].indexOf("<")>=0) sign = "<";
-	// 			else if(conditionArr[i].indexOf(">")>=0) sign = ">";
-	// 			else if(conditionArr[i].indexOf("=")>=0) sign = "=";
-	// 			if(checkArr.length==3){
-	// 				var result = eval("$scope."+funcName+"(checkArr[1],checkArr[2],sign)");
-	// 			}else if(checkArr.length==2){
-	// 				var result = eval("$scope."+funcName+"(checkArr[1],sign)");
-	// 			}else if(checkArr.length==1){
-	// 				var result = eval("$scope."+funcName+"()");
-	// 			}
-	// 			if(logic == "&") condition = condition&&result;
-	// 			else if(logic == "|") condition = condition||result;
-	// 			if(!condition&&conditionArr[i+1]=="&"){
-	// 				return false;
-	// 			}
-	// 		};
-	// 	}
-	// 	if(action=="/cast"&&$scope.nocd(skill)){
-	// 		$scope.cast(skill);
-	// 		return true;
-	// 	}else{
-	// 		return false;
-	// 	}
-	// }
 	// 宏命令
 	// 动作指令
 	$scope.cast = function(skillName){
@@ -514,6 +471,31 @@ app.controller('MainCtrl', ['$scope','$rootScope','$timeout','$interval','Utils'
 	$scope.update = function(){
 		toastr.info('暂不支持热更新，请点击按钮前往网站下载最新安装包 <a type="button" id="okBtn" class="btn btn-flat btn-success toastr-action" href="http://www.j3pz.com/dps.html" target="_blank">更新</a>');
 	}
+
+	$rootScope.hotkeyList=['1','2','3','q','e','r','z','x','c'];
+	angular.element(document).ready(function () {
+		for (var i = 0; i < $rootScope.hotkeyList.length; i++) {
+			var skill = $rootScope.originalSkillList[$rootScope.settings.skillOrder[i]];
+			hotkeys.add({
+				combo: $rootScope.hotkeyList[i],
+				description: skill.name,
+				order: $rootScope.settings.skillOrder[i],
+				callback: function(event, hotkey) {
+					event.preventDefault();
+					var skillName = hotkey.description;
+					var skill;
+					angular.forEach($rootScope.skillController.list,function(value,key){
+						if(value.name == skillName){
+							skill = angular.copy($rootScope.skillController.list[key]);
+						}
+					});
+					if(!skill) return false;
+					if(skill.type!="channel") $scope.cast(skill.name);
+					else $scope.fcast(skill.name);
+				}
+			});
+		};
+    });
 }]);
 
 app.controller('StatsCtrl', ['$rootScope','$scope','DTOptionsBuilder','DTColumnDefBuilder', function($rootScope,$scope,DTOptionsBuilder, DTColumnDefBuilder){
