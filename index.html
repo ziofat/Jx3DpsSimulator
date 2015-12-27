@@ -357,9 +357,9 @@
 												<tr><th>技能栏位置：当前技能</th><th>快捷键</th></tr>
 											</thead>
 											<tbody  class="text-xs">
-												<tr ng-repeat="skillButton in $root.hotkeyList">
+												<tr ng-repeat="skillButton in hotkeySetting track by $index">
 													<td>{{$index+1}}：{{$root.originalSkillList[$root.settings.skillOrder[$index]].name}}</td>
-													<td>{{skillButton}}</td>
+													<td><input type="text" class="form-control input-sm" ng-model="hotkeySetting[$index]" ng-change="hotkeyChange($index)"></td>
 												</tr>
 											</tbody>
 										</table>

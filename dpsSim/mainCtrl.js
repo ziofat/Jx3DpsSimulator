@@ -472,7 +472,7 @@ app.controller('MainCtrl', ['$scope','$rootScope','$timeout','$interval','Utils'
 		toastr.info('暂不支持热更新，请点击按钮前往网站下载最新安装包 <a type="button" id="okBtn" class="btn btn-flat btn-success toastr-action" href="http://www.j3pz.com/dps.html" target="_blank">更新</a>');
 	}
 
-	$rootScope.hotkeyList=['1','2','3','q','e','r','z','x','c'];
+	$rootScope.hotkeyList=$rootScope.settings.hotkeys;
 	angular.element(document).ready(function () {
 		for (var i = 0; i < $rootScope.hotkeyList.length; i++) {
 			var skill = $rootScope.originalSkillList[$rootScope.settings.skillOrder[i]];
@@ -495,7 +495,7 @@ app.controller('MainCtrl', ['$scope','$rootScope','$timeout','$interval','Utils'
 				}
 			});
 		};
-    });
+	});
 }]);
 
 app.controller('StatsCtrl', ['$rootScope','$scope','DTOptionsBuilder','DTColumnDefBuilder', function($rootScope,$scope,DTOptionsBuilder, DTColumnDefBuilder){

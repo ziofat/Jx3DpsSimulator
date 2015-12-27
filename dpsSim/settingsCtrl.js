@@ -114,5 +114,41 @@ app.controller('EffectCtrl', ['$rootScope','$scope', function($rootScope,$scope)
 }]);
 
 app.controller('HotkeyCtrl', ['$rootScope','$scope','hotkeys', function($rootScope,$scope,hotkeys){
-	
+	$scope.hotkeySetting = angular.copy($rootScope.hotkeyList);
+	$scope.hotkeyChange = function(id){
+		var oldKey = $rootScope.hotkeyList[id];
+		var newKey = $scope.hotkeySetting[id];
+		oldId = $rootScope.hotkeyList.indexOf(newKey);
+		if(oldId>=0){
+			$scope.hotkeySetting[oldId] = "";
+		}
+		hotkeys.del(oldKey);
+		hotkeys.del(newKey);
+
+		var skill = $rootScope.originalSkillList[$rootScope.settings.skillOrder[id]];
+		hotkeys.add({
+			combo: newKey,
+			description: skill.name,
+			callback: function(event, hotkey) {
+				event.preventDefault();
+				var skillName = hotkey.description;
+				var skill;
+				angular.forEach($rootScope.skillController.list,function(value,key){
+					if(value.name == skillName){
+						skill = angular.copy($rootScope.skillController.list[key]);
+					}
+				});
+				if(!skill) return false;
+				if(skill.type!="channel") $scope.cast(skill.name);
+				else $scope.fcast(skill.name);
+			}
+		});
+		$rootScope.hotkeyList = angular.copy($scope.hotkeySetting);
+		$rootScope.settings.hotkeys = angular.copy($scope.hotkeySetting);
+	}
+	$scope.emptyKeys = function(){
+		for (var i = 0; i < $rootScope.settings.hotkeys.length; i++) {
+			hotkeys.del($rootScope.settings.hotkeys[i])
+		};
+	}
 }]);
