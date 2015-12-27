@@ -59,10 +59,6 @@ app.controller('SkillCtrl', ['$scope','$rootScope','Utils','Skill','Buff', funct
 					Utils.addBuff($rootScope.originalBuffList.hanBiCD,attr);
 				}
 			}
-			// 梦歌奇穴：施展“阳明指”或“快雪时晴”运功结束时均获得“梦歌”气劲，每层使加速率提高1%，持续30秒，最多叠加5层。
-			if(options[10][0].active){
-				Utils.addBuff($rootScope.originalBuffList.mengGeBuff,attr);
-			}
 		},
 		onSkillCritEvent:function(attr, target, buffController, recipes, options){
 			// 雪中行奇穴：“阳明指”会心后刷新目标身上所有混元持续伤害效果。
@@ -108,6 +104,10 @@ app.controller('SkillCtrl', ['$scope','$rootScope','Utils','Skill','Buff', funct
 			if($rootScope.effects.cw==1) this.extraAttr.critAddPercent += 5;
 		},
 		onSkillFinish:function(attr, target, buffController, recipes, options){
+			// 梦歌奇穴：施展“阳明指”或“快雪时晴”运功结束时均获得“梦歌”气劲，每层使加速率提高1%，持续30秒，最多叠加5层。
+			if(options[10][0].active){
+				Utils.addBuff($rootScope.originalBuffList.mengGeBuff,attr);
+			}
 		}
 	});
 	$rootScope.originalSkillList[0]=yangMingZhi_WH;
