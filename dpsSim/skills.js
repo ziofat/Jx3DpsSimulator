@@ -282,7 +282,7 @@ app.controller('SkillCtrl', ['$scope','$rootScope','Utils','Skill','Buff', funct
 				this.extraAttr.critEffAddPercent+=10;
 			}
 			// 青歌奇穴：“快雪时晴”每0.6秒造成一次伤害，持续3秒。
-			if(options[2][0].active){
+			if(options[3][0].active){
 				this.ota = 50;
 				this.interval = 10;
 			}
