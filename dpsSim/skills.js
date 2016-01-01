@@ -205,8 +205,12 @@ app.controller('SkillCtrl', ['$scope','$rootScope','Utils','Skill','Buff', funct
 			// 焚玉奇穴：“玉石俱焚”成功吞噬持续伤害效果，使阳明指伤害提高10%，每额外吞噬一个效果，持续时间增加5秒。
 			if(options[5][0].active&&dotCount>0){
 				var buff = angular.copy($rootScope.originalBuffList.fenYuBuff);
-				buff.duration = dotCount * 80;
-				Utils.addBuff(buff, attr);
+				if(buff.id in buffController.selfBuffs){
+					buffController.selfBuffs[buff.id].remain += dotCount * 80;
+				}else{
+					buff.duration = dotCount * 80;
+					Utils.addBuff(buff, attr);
+				}
 			}
 			// 旋落奇穴：“玉石俱焚”每吞噬一个持续伤害效果，调息时间降低1.5秒。
 			if(options[8][0].active&&dotCount>0){
