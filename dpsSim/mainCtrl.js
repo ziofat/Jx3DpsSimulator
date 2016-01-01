@@ -212,17 +212,17 @@ app.controller('MainCtrl', ['$scope','$rootScope','$timeout','$interval','Utils'
 			if($rootScope.buffController.selfBuffs[$rootScope.originalBuffList.shuiYueBuff.id].level==0) delete $rootScope.buffController.selfBuffs[$rootScope.originalBuffList.shuiYueBuff.id];
 		}
 		if(skill.hasRecipes) skill.applyRecipe($rootScope.skillRecipe[skill.recipeName],$rootScope.buffController);
-		if(skill.type=="ota"&&!$rootScope.myself.states.ota&&$rootScope.myself.states.gcd==0){
+		if(skill.type=="ota"&&!$rootScope.myself.states.ota&&($rootScope.myself.states.gcd==0||skill.gcdCast)){
 			$rootScope.myself.states.ota = true;
 			$rootScope.skillController.curSkill = skill;
 			$rootScope.myself.states.curOta = Utils.hasteCalc($rootScope.myself.attributes.haste,$rootScope.myself.extra.haste,skill.ota);
 			$rootScope.myself.states.otaRemain = Utils.hasteCalc($rootScope.myself.attributes.haste,$rootScope.myself.extra.haste,skill.ota);
 			$rootScope.myself.states.gcd = Utils.hasteCalc($rootScope.myself.attributes.haste,$rootScope.myself.extra.haste,24);
-		}else if(skill.type=="instant"&&!$rootScope.myself.states.ota&&$rootScope.myself.states.gcd==0){
+		}else if(skill.type=="instant"&&!$rootScope.myself.states.ota&&($rootScope.myself.states.gcd==0||skill.gcdCast)){
 			$rootScope.myself.states.ota = false;
 			$rootScope.myself.states.gcd = Utils.hasteCalc($rootScope.myself.attributes.haste,$rootScope.myself.extra.haste,24);
 			var damage = skill.calc($rootScope.myself,$rootScope.target,$rootScope.buffController,$rootScope.skillRecipe,$rootScope.skillOption);
-		}else if(skill.type=="channel"&&!$rootScope.myself.states.ota&&$rootScope.myself.states.gcd==0){
+		}else if(skill.type=="channel"&&!$rootScope.myself.states.ota&&($rootScope.myself.states.gcd==0||skill.gcdCast)){
 			$rootScope.myself.states.ota = true;
 			$rootScope.skillController.curSkill = skill;
 			$rootScope.myself.states.curOta = Utils.hasteCalc($rootScope.myself.attributes.haste,$rootScope.myself.extra.haste,skill.interval)*(skill.ota/skill.interval);
@@ -251,20 +251,20 @@ app.controller('MainCtrl', ['$scope','$rootScope','$timeout','$interval','Utils'
 		}
 		if(skill.hasRecipes) skill.applyRecipe($rootScope.skillRecipe[skill.recipeName],$rootScope.buffController);
 		// 强行打出技能
-		if(skill.type=="ota"&&$rootScope.myself.states.gcd==0){
+		if(skill.type=="ota"&&($rootScope.myself.states.gcd==0||skill.gcdCast)){
 			$rootScope.myself.states.ota = true;
 			$rootScope.skillController.curSkill = skill;
 			$rootScope.myself.states.curOta = Utils.hasteCalc($rootScope.myself.attributes.haste,$rootScope.myself.extra.haste,skill.ota);
 			$rootScope.myself.states.otaRemain = Utils.hasteCalc($rootScope.myself.attributes.haste,$rootScope.myself.extra.haste,skill.ota);
 			$rootScope.myself.states.gcd = Utils.hasteCalc($rootScope.myself.attributes.haste,$rootScope.myself.extra.haste,24);
-		}else if(skill.type=="instant"&&$rootScope.myself.states.gcd==0){
+		}else if(skill.type=="instant"&&($rootScope.myself.states.gcd==0||skill.gcdCast)){
 			if($rootScope.myself.states.ota&&($rootScope.skillController.curSkill.canCastSkill==skill.name||$rootScope.skillController.curSkill.name==skill.canCastSkill)){
 			}else{
 				$rootScope.myself.states.ota = false;
 			}
 			$rootScope.myself.states.gcd = Utils.hasteCalc($rootScope.myself.attributes.haste,$rootScope.myself.extra.haste,24);
 			var damage = skill.calc($rootScope.myself,$rootScope.target,$rootScope.buffController,$rootScope.skillRecipe,$rootScope.skillOption);
-		}else if(skill.type=="channel"&&$rootScope.myself.states.gcd==0){
+		}else if(skill.type=="channel"&&($rootScope.myself.states.gcd==0||skill.gcdCast)){
 			$rootScope.myself.states.ota = true;
 			$rootScope.skillController.curSkill = skill;
 			$rootScope.myself.states.curOta = Utils.hasteCalc($rootScope.myself.attributes.haste,$rootScope.myself.extra.haste,skill.interval)*(skill.ota/skill.interval);

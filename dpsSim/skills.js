@@ -18,6 +18,7 @@ app.controller('SkillCtrl', ['$scope','$rootScope','Utils','Skill','Buff', funct
 		hasRecipes:true,
 		recipeName:"yangMing",
 		cdRemain:0,
+		gcdCast:false,
 		onSkillHitEvent:function(attr, target, buffController, recipes, options){
 			// 阳明指命中后添加一层恣游buff
 			Utils.addBuff($rootScope.originalBuffList.ziYouBuff,attr);
@@ -130,6 +131,7 @@ app.controller('SkillCtrl', ['$scope','$rootScope','Utils','Skill','Buff', funct
 		hasRecipes:true,
 		recipeName:"shangYang",
 		cdRemain:0,
+		gcdCast:false,
 		onSkillHitEvent:function(attr, target, buffController, recipes, options){
 			//添加商阳指dot
 			var dot = angular.copy($rootScope.originalBuffList.shangYangDot);
@@ -178,6 +180,7 @@ app.controller('SkillCtrl', ['$scope','$rootScope','Utils','Skill','Buff', funct
 		target:true,
 		hasRecipes:false,
 		cdRemain:0,
+		gcdCast:false,
 		onSkillHitEvent:function(attr, target, buffController, recipes, options){
 			//吞噬dot
 			var dotCount = 0;
@@ -251,6 +254,7 @@ app.controller('SkillCtrl', ['$scope','$rootScope','Utils','Skill','Buff', funct
 		hasRecipes:true,
 		recipeName:"kuaiXue",
 		cdRemain:0,
+		gcdCast:false,
 		onSkillHitEvent:function(attr, target, buffController, recipes, options){
 			for (var i = 0; i < recipes.kuaiXue.length; i++) {
 				if(recipes.kuaiXue[i].active&&recipes.kuaiXue[i].effect=="debuffAdd"){
@@ -326,6 +330,7 @@ app.controller('SkillCtrl', ['$scope','$rootScope','Utils','Skill','Buff', funct
 		hasRecipes:true,
 		recipeName:"zhongLin",
 		cdRemain:0,
+		gcdCast:false,
 		onSkillHitEvent:function(attr, target, buffController, recipes, options){
 			//添加钟林毓琇dot
 			var dot = angular.copy($rootScope.originalBuffList.zhongLinDot);
@@ -371,6 +376,7 @@ app.controller('SkillCtrl', ['$scope','$rootScope','Utils','Skill','Buff', funct
 		hasRecipes:true,
 		recipeName:"lanCui",
 		cdRemain:0,
+		gcdCast:false,
 		onSkillHitEvent:function(attr, target, buffController, recipes, options){
 			//添加兰摧dot
 			var dot = angular.copy($rootScope.originalBuffList.lanCuiDot);
@@ -420,6 +426,7 @@ app.controller('SkillCtrl', ['$scope','$rootScope','Utils','Skill','Buff', funct
 		hasRecipes:false,
 		recipeName:"",
 		cdRemain:0,
+		gcdCast:false,
 		onSkillHitEvent:function(attr, target, buffController, recipes, options){
 			// 轻弃奇穴：“芙蓉并蒂”的伤害提高100%，命中目标后刷新目标身上的所有混元持续伤害效果。
 			if(options[5][2].active){
@@ -464,6 +471,7 @@ app.controller('SkillCtrl', ['$scope','$rootScope','Utils','Skill','Buff', funct
 		hasRecipes:false,
 		recipeName:"",
 		cdRemain:0,
+		gcdCast:false,
 		onSkillHitEvent:function(attr, target, buffController, recipes, options){
 			var buff = $rootScope.originalBuffList.shuiYueBuff;
 			// 夜思奇穴：“水月无间”额外使1个招式无需运功，并立刻回复自身10%内力值。 
@@ -507,6 +515,7 @@ app.controller('SkillCtrl', ['$scope','$rootScope','Utils','Skill','Buff', funct
 		hasRecipes:false,
 		recipeName:"",
 		cdRemain:0,
+		gcdCast:true,
 		onSkillHitEvent:function(attr, target, buffController, recipes, options){
 			// 重置玉石俱焚CD
 			$rootScope.skillController.list[2].cdRemain = 0;
