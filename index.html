@@ -4,17 +4,18 @@
 		<meta charset="utf-8">
 		<meta http-equiv="X-UA-Compatible" content="IE=edge">
 		<meta name="viewport" content="width=device-width, initial-scale=1.0">
-		<!-- BEGIN STYLESHEETS -->
+		<!-- 主样式 -->
 		<link href='http://fonts.googleapis.com/css?family=Open+Sans:400italic,300,400,600,700,800' rel='stylesheet' type='text/css'/>
-		<link type="text/css" rel="stylesheet" href="css/theme-default/bootstrap.css" />
-		<link type="text/css" rel="stylesheet" href="css/theme-default/materialadmin.css" />
-		<link type="text/css" rel="stylesheet" href="css/theme-default/font-awesome.min.css" /> <!--Font Awesome Icon Font-->
-		<link type="text/css" rel="stylesheet" href="css/theme-default/material-design-iconic-font.min.css" /> <!--Material Design Iconic Font-->
-		<!-- Additional CSS includes -->
-		<link type="text/css" rel="stylesheet" href="css/theme-default/libs/DataTables/jquery.dataTables.css">
-		<link type="text/css" rel="stylesheet" href="css/theme-default/libs/toastr/toastr.css">
-		<link type="text/css" rel="stylesheet" href="css/theme-default/libs/hotkeys/hotkeys.min.css">
-		<link type="text/css" rel="stylesheet" href="css/all.css">
+		<link type="text/css" rel="stylesheet" href="../css/theme/bootstrap.css" />
+		<link type="text/css" rel="stylesheet" href="../css/theme/materialadmin.css" />
+		<link type="text/css" rel="stylesheet" href="../css/theme/font-awesome.min.css" /> 
+		<link type="text/css" rel="stylesheet" href="../css/theme/material-design-iconic-font.min.css" />
+		<!-- 第三方样式库 -->
+		<link type="text/css" rel="stylesheet" href="../css/theme/libs/DataTables/jquery.dataTables.css">
+		<link type="text/css" rel="stylesheet" href="../css/theme/libs/toastr/toastr.css">
+		<link type="text/css" rel="stylesheet" href="../css/theme/libs/hotkeys/hotkeys.min.css">
+		<!-- 自定义样式 -->
+		<link type="text/css" rel="stylesheet" href="../css/all.css">
 		<!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
 		<!--[if lt IE 9]>
 		<script type="text/javascript" src="js/libs/utils/html5shiv.js"></script>
@@ -22,7 +23,7 @@
 		<![endif]-->
 	</head>
 	<body class="menubar-hoverable header-fixed menubar-first" ng-controller="AppCtrl">
-		<header id="header" style="-webkit-app-region: drag">
+		<header id="header">
 			<div class="headerbar">
 				<div class="headerbar-left">
 					<ul class="header-nav header-nav-options">
@@ -48,8 +49,7 @@
 						
 					</ul> -->
 					<ul class="header-nav header-nav-toggle">
-						<li><a class="btn btn-icon-toggle btn-default" ng-click="minimizeApp()" style="-webkit-app-region: no-drag;"><i class="md md-expand-more"></i></a></li>
-						<li><a class="btn btn-icon-toggle btn-default" ng-click="closeApp()" style="-webkit-app-region: no-drag;"><i class="md md-close"></i></a></li>
+						
 					</ul>
 				</div>
 			</div>
@@ -63,7 +63,8 @@
 					~ Offcanvas content ~
 				</div>
 			</div> -->
-			<div id="content" ng-controller="MainCtrl" class="scroll" style="height:600px;" ng-cloak>
+			<div id="content" ng-controller="MainCtrl" ng-cloak>
+				<!-- 主界面 -->
 				<section id="home" ng-show="pageShow.home">
 					<div class="section-body">
 						<div class="rows">
@@ -133,7 +134,7 @@
 														<input type="checkbox" ng-model="$root.macroMode"><span>宏模式</span>
 													</label>
 													<label class="checkbox-inline checkbox-styled">
-														<input type="checkbox" ng-model="$root.debug"><span>显示战斗过程</span>
+														<input type="checkbox" ng-model="$root.debug" ng-disabled="!$root.macroMode"><span>显示战斗过程</span>
 													</label>
 													<label class="checkbox-inline checkbox-styled">
 														<input type="checkbox" ng-model="$root.kill"><span>木桩掉血开关</span>
@@ -152,7 +153,7 @@
 												<div class="row" ng-controller="BuffCtrl">
 													<div class="text-primary-dark" class="col-md-1">目标Buff</div>  
 													<div class="buff" ng-repeat="buff in buffController.targetBuffs">
-														<img ng-src="res/icons/{{buff.icon}}.png" width="30px" height="30px" tooltip="{{buff.name}}" tooltip-append-to-body="true">
+														<img ng-src="../res/icons/{{buff.icon}}.png" width="30px" height="30px" tooltip="{{buff.name}}" tooltip-append-to-body="true">
 														<span class="buff-time">{{(buff.remain/16).toFixed(0)}}'</span>
 														<span class="buff-level" ng-if="buff.maxLevel>1">{{buff.level}}</span>
 													</div>
@@ -160,7 +161,7 @@
 												<div class="row">
 													<div class="text-primary-dark" class="col-md-1">自身Buff</div> 
 													<div class="buff" ng-repeat="buff in buffController.selfBuffs">
-														<img ng-src="res/icons/{{buff.icon}}.png" width="30px" height="30px" tooltip="{{buff.name}}" tooltip-append-to-body="true">
+														<img ng-src="../res/icons/{{buff.icon}}.png" width="30px" height="30px" tooltip="{{buff.name}}" tooltip-append-to-body="true">
 														<span class="buff-time">{{(buff.remain/16).toFixed(0)}}'</span>
 														<span class="buff-level" ng-if="buff.maxLevel>1">{{buff.level}}</span>
 													</div>
@@ -183,7 +184,7 @@
 												<div class="row">
 													<div class="text-primary-dark" class="col-md-1">手动技能</div>
 													<div class="skill" ng-repeat="skillId in $root.settings.skillOrder" tooltip="{{skillController.list[skillId].name}}" tooltip-append-to-body="true">
-														<img ng-src="res/icons/{{skillController.list[skillId].icon}}.png" width="64px" height="64px" >
+														<img ng-src="../res/icons/{{skillController.list[skillId].icon}}.png" width="64px" height="64px" >
 														<div class="skill-cd" ng-show="skillController.list[skillId].cdRemain>0">{{(skillController.list[skillId].cdRemain/16).toFixed(0)}}</div>
 														<div class="skill-nocd" ng-show="skillController.list[skillId].cdRemain<=0"></div>
 														<span class="skill-hotkey">{{$root.hotkeyList[$index]}}</span>
@@ -235,26 +236,27 @@
 						</div>
 					</div>
 				</section>
+				<!-- 设置界面 -->
 				<section id="setting" ng-show="pageShow.setting" >
 					<div class="row" ng-controller="QixueCtrl">
 						<div class="col-md-12">
 							<div class="card card-underline">
 								<div class="card-head">
 									<header>奇穴设置</header>
-								</div><!--end .card-head -->
+								</div>
 								<div class="card-body">
 									<div class="col-sm-1" ng-repeat="option in options" style="padding-left: 8px;padding-right: 8px;">
 										<div class="qixue dropdown">
-											<button id="add-buff" type="button" class="btn btn-default dropdown-toggle" ng-style="{background:'url(res/icons/'+option.icon+'.png) 0 0 no-repeat'}" style="width:60px;height:48px;padding:3px" data-toggle="dropdown" tooltip="{{option.name+'：'+option.desc}}" tooltip-append-to-body="true">
+											<button id="add-buff" type="button" class="btn btn-default dropdown-toggle" ng-style="{background:'url(../res/icons/'+option.icon+'.png) 0 0 no-repeat'}" style="width:60px;height:48px;padding:3px" data-toggle="dropdown" tooltip="{{option.name+'：'+option.desc}}" tooltip-append-to-body="true">
 												<span class="caret right"></span>
 											</button>
 											<ul class="dropdown-menu" role="menu" aria-labelledby="qixue">
-												<li role="menuitem" ng-repeat="opts in $root.skillOption[option.id]" ng-click="toggleOption(opts.name,option.id)" tooltip="{{opts.desc}}" tooltip-append-to-body="true" tooltip-placement="{{opts.firstChild?'right':'left'}}"><a href style="display:inline"><img ng-src="{{'res/icons/'+opts.icon+'.png'}}" style="width:24px;height:24px"></img><span>{{opts.name}}</span></a></li>
+												<li role="menuitem" ng-repeat="opts in $root.skillOption[option.id]" ng-click="toggleOption(opts.name,option.id)" tooltip="{{opts.desc}}" tooltip-append-to-body="true" tooltip-placement="{{opts.firstChild?'right':'left'}}"><a href style="display:inline"><img ng-src="{{'../res/icons/'+opts.icon+'.png'}}" style="width:24px;height:24px"></img><span>{{opts.name}}</span></a></li>
 											</ul>
 										</div>
 										<span>{{option.name}}</span>
 									</div>
-								</div><!--end .card-body -->
+								</div>
 							</div>
 						</div>
 					</div>
@@ -263,7 +265,7 @@
 							<div class="card card-underline">
 								<div class="card-head">
 									<header>目标设置</header>
-								</div><!--end .card-head -->
+								</div>
 								<div class="card-body">
 									<div class="row">
 										<div class="col-sm-4">
@@ -287,14 +289,14 @@
 											<span class="text-primary-dark">目标防御</span> {{$root.target.shield}}%<br>
 										</div>
 									</div>
-								</div><!--end .card-body -->
+								</div>
 							</div>
 						</div>
 						<div class="col-md-6" ng-controller="EffectCtrl">
 							<div class="card card-underline">
 								<div class="card-head">
 									<header>特效设置</header>
-								</div><!--end .card-head -->
+								</div>
 								<div class="card-body">
 									<div class="row">
 										<div class="col-sm-4">
@@ -326,7 +328,7 @@
 										</div>
 									</div>
 									<small><del>腰坠特效请在宏中使用/use 命令开启</del>（该功能暂未开放）</small>
-								</div><!--end .card-body -->
+								</div>
 							</div>
 						</div>
 					</div>
@@ -335,7 +337,7 @@
 							<div class="card card-underline">
 								<div class="card-head">
 									<header>宏设置</header>
-								</div><!--end .card-head -->
+								</div>
 								<div class="card-body">
 									<div class="form-group" >
 										<textarea class="form-control" rows="10" ng-model="$root.macroText" id="macroTextArea" style="font-size: 12px;padding-top: 16px;"></textarea>
@@ -349,7 +351,7 @@
 							<div class="card card-underline">
 								<div class="card-head">
 									<header>手动模式快捷键设置</header>
-								</div><!--end .card-head -->
+								</div>
 								<div class="card-body">
 									<div class="row">
 										<table class="table table-condensed">
@@ -374,7 +376,7 @@
 							<div class="card card-underline">
 								<div class="card-head">
 									<header>秘籍设置</header>
-								</div><!--end .card-head -->
+								</div>
 								<div class="card-body">
 									<div class="row">
 										<div class="col-sm-2" style="width:20%" ng-repeat="recipe in recipeList">
@@ -392,13 +394,13 @@
 						</div>
 					</div>
 				</section>
+				<!-- 使用说明 -->
 				<section id="guide" ng-show="pageShow.guide">
 					<div class="section-body contain-lg">
-						<!-- BEGIN INTRO -->
 						<div class="row">
 							<div class="col-lg-12">
 								<h1 class="text-primary">剑网3 DPS 模拟器</h1>
-							</div><!--end .col -->
+							</div>
 							<div class="col-lg-8">
 								<article class="margin-bottom-xxl">
 									<p class="lead">
@@ -411,17 +413,15 @@
 										剑网3 DPS 模拟器的一大特点就是能够根据玩家输入的宏文件自动完成技能循环，并将在未来提供更多的宏命令以供测试。
 									</p>
 								</article>
-							</div><!--end .col -->
-						</div><!--end .row -->
-						<!-- END INTRO -->
-						<!-- BEGIN SECTION DPS -->
+							</div>
+						</div>
+						
 						<div class="row">
 							<div class="col-lg-12">
 								<h2 class="text-primary">DPS 模拟</h2>
 							</div>
-						</div><!--end .row -->
-						<!-- END SECTION DPS INTRO -->
-						<!-- BEGIN DPS - Attributes -->
+						</div>
+						
 						<div class="row">
 							<div class="col-lg-12">
 								<h4>属性输入</h4>
@@ -435,21 +435,20 @@
 										用户一旦输入了数据后，这些数据将会自动保存在模拟器内，以供后续使用。
 									</p>
 								</article>
-							</div><!--end .col -->
+							</div>
 							<div class="col-lg-offset-1 col-md-8">
 								<div class="card">
 									<div class="card-body">
 										<div class="row">
-											<img src="res/guide/attributes_app.png" style="margin-right:100px">
-											<img src="res/guide/attributes_game.png">
+											<img src="../res/guide/attributes_app.png" style="margin-right:100px">
+											<img src="../res/guide/attributes_game.png">
 										</div>
-									</div><!--end .card-body -->
-								</div><!--end .card -->
+									</div>
+								</div>
 								<em class="text-caption">属性输入栏</em>
-							</div><!--end .col -->
-						</div><!--end .row -->
-						<!-- END DPS - Attributes -->
-						<!-- BEGIN DPS - Panel -->
+							</div>
+						</div>
+						
 						<div class="row">
 							<div class="col-lg-12">
 								<h4>状态面板</h4>
@@ -463,72 +462,70 @@
 										若玩家没有勾选“显示战斗过程”，此处将会显示战斗最后一秒的状态。需要注意的是，此处 DPS 为模拟过程最后一秒时的 DPS，考虑到脸的因素，多次模拟时，该 DPS 会产生上下浮动，属于正常情况。
 									</p>
 								</article>
-							</div><!--end .col -->
+							</div>
 							<div class="col-lg-offset-1 col-md-8">
 								<div class="card">
 									<div class="card-body">
-										<img src="res/guide/status_panel.png">
+										<img src="../res/guide/status_panel.png">
 									</div>
-								</div><!--end .card -->
+								</div>
 								<em class="text-caption">状态面板</em>
-							</div><!--end .col -->
-						</div><!--end .row -->
-						<!-- END DPS - Panel -->
-						<!-- BEGIN DPS - Stat -->
+							</div>
+						</div>
+						
 						<div class="row">
 							<div class="col-lg-12">
 								<h4>DPS 统计</h4>
-							</div><!--end .col -->
+							</div>
 							<div class="col-lg-3 col-md-4">
 								<article class="margin-bottom-xxl">
 									<p>
 										在 DPS 模拟界面的右侧，可以查看本次模拟的 DPS 统计信息，玩家可以查看本次循环的技能伤害比例，次数，和各个技能的详细信息等。
 									</p>
 								</article>
-							</div><!--end .col -->
+							</div>
 							<div class="col-lg-offset-1 col-md-8">
 								<div class="card">
 									<div class="card-body">
-										<img src="res/guide/stats.png">
+										<img src="../res/guide/stats.png">
 									</div>
-								</div><!--end .card -->
+								</div>
 								<em class="text-caption">DPS 统计面板</em>
-							</div><!--end .col -->
-						</div><!--end .row -->
-						<!-- END DPS - Stat -->
+							</div>
+						</div>
+						
 						<hr class="ruler-xxl">
-						<!-- BEGIN SECTION SETTINGS -->
+						
 						<div class="row">
 							<div class="col-lg-12">
 								<h2 class="text-primary">设置</h2>
 							</div>
-						</div><!--end .row -->
-						<!-- END SECTION SETTINGS -->
-						<!-- BEGIN DPS - Stat -->
+						</div>
+						
 						<div class="row">
 							<div class="col-lg-12">
 								<h4>DPS 模拟设置</h4>
-							</div><!--end .col -->
+							</div>
 							<div class="col-lg-3 col-md-4">
 								<article class="margin-bottom-xxl">
 									<p>
 										玩家可在设置中对奇穴、目标、特效、秘籍和宏进行设置，其中每个技能的秘籍最多选择四项。
 									</p>
 								</article>
-							</div><!--end .col -->
+							</div>
 							<div class="col-lg-offset-1 col-md-8">
 								<div class="card">
 									<div class="card-body">
-										<img src="res/guide/settings.png" class="col-md-12">
+										<img src="../res/guide/settings.png" class="col-md-12">
 									</div>
-								</div><!--end .card -->
+								</div>
 								<em class="text-caption">DPS 设置</em>
-							</div><!--end .col -->
-						</div><!--end .row -->
-						<!-- END DPS - Stat -->
-					</div><!--end .section-body -->
+							</div>
+						</div>
+						
+					</div>
 				</section>
-				<!-- BEGIN MODAL MARKUP -->
+				<!-- 更新说明 -->
 				<div class="modal fade" id="updateModal" tabindex="-1" role="dialog" aria-labelledby="updateModalLabel" aria-hidden="true">
 					<div class="modal-dialog">
 						<div class="modal-content">
@@ -545,10 +542,10 @@
 								<button type="button" class="btn btn-default" data-dismiss="modal">下次提醒我</button>
 								<button type="button" class="btn btn-primary" data-dismiss="modal" ng-click="update()">进行更新</button>
 							</div>
-						</div><!-- /.modal-content -->
-					</div><!-- /.modal-dialog -->
-				</div><!-- /.modal -->
-				<!-- END MODAL MARKUP -->
+						</div>
+					</div>
+				</div>
+				
 			</div>
 			<div id="menubar" class="menubar-inverse ">
 				<div class="menubar-fixed-panel">
@@ -586,7 +583,7 @@
 					</ul>
 					<div class="menubar-foot-panel">
 						<small class="no-linebreak hidden-folded">
-							<span class="opacity-75">Copyright &copy; 2013-2015</span> <strong>剑网3配装器</strong>
+							<span class="opacity-75">Copyright &copy; 2013-2016</span> <strong>剑网3配装器</strong>
 						</small>
 					</div>
 				</div>
@@ -601,32 +598,32 @@
 			</div> -->
 		</div>
 
-		<!-- BEGIN JAVASCRIPT -->
-		<script src="js/libs/jquery/jquery-1.11.2.min.js"></script>
-		<script src="js/libs/jquery/jquery-migrate-1.2.1.min.js"></script>
-		<script src="js/libs/bootstrap/bootstrap.min.js"></script>
-		<script src="js/libs/nanoscroller/jquery.nanoscroller.min.js"></script>
-		<script src="js/libs/DataTables/jquery.dataTables.min.js"></script>
-		<script src="js/libs/angular/angular.min.js"></script>
-		<script src="js/libs/angular/angular-animate.min.js"></script>
-		<script src="js/libs/angular/angular-aria.min.js"></script>
-		<script src="js/libs/icheck/icheck.min.js"></script>
-		<script src="js/libs/DataTables/angular-datatables.min.js"></script>
-		<script src="js/libs/toastr/toastr.js"></script>
-		<script src="js/libs/hotkeys/hotkeys.min.js"></script>
-		<script src="js/ui-bootstrap-tpls-0.13.2.min.js"></script>
+		<!-- 外部库 JAVASCRIPT -->
+		<script src="../js/libs/jquery/jquery-1.11.2.min.js"></script>
+		<script src="../js/libs/jquery/jquery-migrate-1.2.1.min.js"></script>
+		<script src="../js/libs/bootstrap/bootstrap.min.js"></script>
+		<script src="../js/libs/nanoscroller/jquery.nanoscroller.min.js"></script>
+		<script src="../js/libs/DataTables/jquery.dataTables.min.js"></script>
+		<script src="../js/libs/angular/angular.min.js"></script>
+		<script src="../js/libs/angular/angular-animate.min.js"></script>
+		<script src="../js/libs/angular/angular-aria.min.js"></script>
+		<script src="../js/libs/icheck/icheck.min.js"></script>
+		<script src="../js/libs/DataTables/angular-datatables.min.js"></script>
+		<script src="../js/libs/toastr/toastr.js"></script>
+		<script src="../js/libs/hotkeys/hotkeys.min.js"></script>
+		<script src="../js/libs/bootstrap/ui-bootstrap-tpls-0.13.2.min.js"></script>
+		<!-- DPS 模拟器 Javascript -->
+		<script src="js/dps.js"></script>
+		<script src="js/skill.js"></script>
+		<script src="js/buff.js"></script>
+		<script src="js/utils.js"></script>
+		<script src="huajian/buffs.js"></script>
+		<script src="huajian/skills.js"></script>
+		<script src="huajian/recipes.js"></script>
+		<script src="huajian/options.js"></script>
+		<script src="js/mainCtrl.js"></script>
+		<script src="js/settingsCtrl.js"></script>
 
-		<script src="dpsSim/dps.js"></script>
-		<script src="dpsSim/skill.js"></script>
-		<script src="dpsSim/buff.js"></script>
-		<script src="dpsSim/utils.js"></script>
-		<script src="dpsSim/buffs.js"></script>
-		<script src="dpsSim/skills.js"></script>
-		<script src="dpsSim/recipes.js"></script>
-		<script src="dpsSim/options.js"></script>
-		<script src="dpsSim/mainCtrl.js"></script>
-		<script src="dpsSim/settingsCtrl.js"></script>
-		<!-- Put App.js last in your javascript imports -->
-		<script src="js/core/source/App.min.js"></script>
+		<script src="../js/core/source/App.min.js"></script>
 	</body>
 </html>
