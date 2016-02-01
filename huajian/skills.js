@@ -5,7 +5,7 @@ app.controller('SkillCtrl', ['$scope','$rootScope','Utils','Skill','Buff', funct
 		icon:1527,
 		name:"阳明指",
 		type:0,
-		cof:1.02,
+		cof:1.11,
 		min:155,
 		max:183,
 		ota:28,
