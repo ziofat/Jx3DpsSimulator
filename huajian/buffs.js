@@ -288,10 +288,7 @@ app.controller('BuffCtrl', ['$scope','$rootScope','Utils','Buff', function($scop
 		canStack:false,
 		min:0,
 		max:0,
-		data:{
-			attackAddPercent:10,
-			overcomeAddPercent:10
-		},
+		data:{},
 		recipeName:"none",
 		onSkillHitEvent:function(attr, target, buffController, recipes, options){
 		},
@@ -335,12 +332,12 @@ app.controller('BuffCtrl', ['$scope','$rootScope','Utils','Buff', function($scop
 		duration:480,
 		interval:0,
 		cof:0,
-		maxLevel:5,
+		maxLevel:2,
 		canStack:true,
 		min:0,
 		max:0,
 		data:{
-			haste:10
+			haste:30
 		},
 		recipeName:"none",
 		onSkillHitEvent:function(attr, target, buffController, recipes, options){

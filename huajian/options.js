@@ -22,7 +22,7 @@ var whOptions = {
 		{name:"厥阴指",desc:"厥阴指",skill:"厥阴指",icon:1513,firstChild:false,active:false}
 	],
 	5:[
-		{name:"焚玉",desc:"“玉石俱焚”成功吞噬持续伤害效果，使阳明指伤害提高10%，每额外吞噬一个效果，持续时间增加5秒。",skill:"玉石俱焚",icon:411,firstChild:false,active:false},
+		{name:"焚玉",desc:"“玉石俱焚”成功吞噬持续伤害效果，使阳明指伤害提高20%，每额外吞噬一个效果，持续时间增加5秒。",skill:"玉石俱焚",icon:411,firstChild:false,active:false},
 		{name:"弹梦",desc:"“春泥护花”不会被消耗，持续8秒",skill:"春泥护花",icon:4501,firstChild:false,active:false},
 		{name:"轻弃",desc:"“芙蓉并蒂”的伤害提高100%，命中目标后刷新目标身上的所有混元持续伤害效果。",skill:"芙蓉并蒂",icon:398,firstChild:false,active:false},
 		{name:"星影",desc:"“春泥护花”施展给队友，则下一次“春泥护花”调息时间降低6秒",skill:"春泥护花",icon:413,firstChild:false,active:false}
@@ -30,14 +30,14 @@ var whOptions = {
 	6:[
 		{name:"放歌",desc:"“商阳指”“钟林毓秀”“兰摧玉折”每跳有25%几率使下一个阳明指无需运功，持续30秒，可叠加3层。",skill:"",icon:3015,firstChild:false,active:false},
 		{name:"踏歌",desc:"“快雪时晴”命中有自身持续伤害效果的目标，每次伤害有15%几率使持续伤害效果增加2跳，每个持续效果最多作用一次",skill:"快雪时晴",icon:4510,firstChild:false,active:false},
-		{name:"青冠",desc:"“阳明指”命中有自身混元持续伤害效果的目标，每个效果使“阳明指”会心几率提高5%。",skill:"阳明指",icon:4492,firstChild:false,active:false},
+		{name:"青冠",desc:"“阳明指”命中有自身混元持续伤害效果的目标，每个效果使“阳明指”会心几率提高5%，会心效果提高5%。",skill:"阳明指",icon:4492,firstChild:false,active:false},
 		{name:"闲垂影",desc:"“玉石俱焚”每吞噬一个持续伤害效果，有35%几率使目标定身，持续4秒",skill:"玉石俱焚",icon:411,firstChild:false,active:false}
 	],
 	7:[
 		{name:"夜思",desc:"“水月无间”额外使1个招式无需运功，并立刻回复自身10%内力值。",skill:"水月无间",icon:1522,firstChild:false,active:false},
 		{name:"青致",desc:"被“太阴指”命中的目标，锁足3秒。",skill:"太阴指",icon:1515,firstChild:false,active:false},
 		{name:"雪月",desc:"“快雪时晴”对定身锁足目标造成的会心几率提高50%。",skill:"快雪时晴",icon:3403,firstChild:false,active:false},
-		{name:"乱洒青荷",desc:"乱洒青荷",skill:"乱洒青荷",icon:3001,firstChild:false,active:false}
+		{name:"乱洒青荷",desc:"重置【玉石俱焚】调息时间，效果期间施展的下一个【阳明指】同时附带【钟林毓秀】【兰摧玉折】持续伤害效果。",skill:"乱洒青荷",icon:3001,firstChild:false,active:false}
 	],
 	8:[
 		{name:"旋落",desc:"“玉石俱焚”每吞噬一个持续伤害效果，调息时间降低1.5秒。",skill:"玉石俱焚",icon:410,firstChild:false,active:false},
@@ -52,7 +52,7 @@ var whOptions = {
 		{name:"浮花浪蕊",desc:"浮花浪蕊",skill:"浮花浪蕊",icon:400,firstChild:false,active:false}
 	],
 	10:[
-		{name:"梦歌",desc:"施展“阳明指”或“快雪时晴”运功结束时均获得“梦歌”气劲，每层使加速率提高1%，持续30秒，最多叠加5层。",skill:"阳明指|快雪时晴",icon:4528,firstChild:false,active:false},
+		{name:"梦歌",desc:"施展“阳明指”或“快雪时晴”运功结束时均获得“梦歌”气劲，每层使加速率提高3%，持续30秒，最多叠加2层。",skill:"阳明指|快雪时晴",icon:4528,firstChild:false,active:false},
 		{name:"生脉",desc:"“水月无间”效果期间使自身免疫控制和封内效果的影响，且运功不会被打断，持续6秒。",skill:"水月无间",icon:399,firstChild:false,active:false},
 		{name:"砚悬",desc:"“水月无间”效果期间下一个伤害或治疗招式必定会心",skill:"水月无间",icon:7242,firstChild:false,active:false},
 		{name:"傍花随柳",desc:"傍花随柳",skill:"傍花随柳",icon:405,firstChild:false,active:false}
@@ -61,7 +61,7 @@ var whOptions = {
 		{name:"雪中行",desc:"“阳明指”会心后刷新目标身上所有混元持续伤害效果。",skill:"阳明指",icon:4519,firstChild:false,active:false},
 		{name:"踏莲",desc:"“芙蓉并蒂”调息时间降低5秒，定身效果持续时间延迟1秒。",skill:"芙蓉并蒂",icon:7252,firstChild:false,active:false},
 		{name:"星移",desc:"“星楼月影”调息时间降低2秒，不受招式控制效果持续时间增加1秒。",skill:"星楼月影",icon:1520,firstChild:false,active:false},
-		{name:"摇柳",desc:"听风吹雪”可在花间游心法下施展，但调息时间增加60秒。",skill:"听风吹雪",icon:7226,firstChild:false,active:false}
+		{name:"摇柳",desc:"听风吹雪”可在花间游心法下施展，但调息时间增加30秒。",skill:"听风吹雪",icon:7226,firstChild:false,active:false}
 	],
 	12:[
 		{name:"涓流",desc:"施展伤害招式命中气血值低于35%的目标，自身会心几率提高20%，会心效果提高20%，每次造成伤害，该效果降低2%。",skill:"",icon:7468,firstChild:false,active:false},

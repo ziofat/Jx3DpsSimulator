@@ -86,19 +86,20 @@ app.controller('SkillCtrl', ['$scope','$rootScope','Utils','Skill','Buff', funct
 					delete buffController.selfBuffs[$rootScope.originalBuffList.fangGeBuff.id];
 				}
 			}
-			// 焚玉buff使阳明指提高10%伤害
+			// 焚玉buff使阳明指提高20%伤害
 			if($rootScope.originalBuffList.fenYuBuff.id in buffController.selfBuffs){
 				if(buffController.selfBuffs[$rootScope.originalBuffList.fenYuBuff.id].remain>=this.ota){
-					this.extraAttr.damage += 10;
+					this.extraAttr.damage += 20;
 				}
 			}
-			// 青冠奇穴：“阳明指”命中有自身混元持续伤害效果的目标，每个效果使“阳明指”会心几率提高5%。
+			// 青冠奇穴：“阳明指”命中有自身混元持续伤害效果的目标，每个效果使“阳明指”会心几率提高5%，会心效果提高5%。
 			if(options[6][2].active){
 				var dotCount = 0;
 				if($rootScope.originalBuffList.shangYangDot.id in buffController.targetBuffs&&buffController.targetBuffs[$rootScope.originalBuffList.shangYangDot.id].remain>=this.ota) dotCount++;
 				if($rootScope.originalBuffList.zhongLinDot.id in buffController.targetBuffs&&buffController.targetBuffs[$rootScope.originalBuffList.zhongLinDot.id].remain>=this.ota) dotCount++;
 				if($rootScope.originalBuffList.lanCuiDot.id in buffController.targetBuffs&&buffController.targetBuffs[$rootScope.originalBuffList.lanCuiDot.id].remain>=this.ota) dotCount++;
 				this.extraAttr.critAddPercent += parseInt(5*dotCount);
+				this.extraAttr.critEffAddPercent += parseInt(5*dotCount);
 			}
 			// 落凤
 			if($rootScope.effects.cw==2) this.extraAttr.damage += 5;
@@ -106,7 +107,7 @@ app.controller('SkillCtrl', ['$scope','$rootScope','Utils','Skill','Buff', funct
 			if($rootScope.effects.cw==1) this.extraAttr.critAddPercent += 5;
 		},
 		onSkillFinish:function(attr, target, buffController, recipes, options){
-			// 梦歌奇穴：施展“阳明指”或“快雪时晴”运功结束时均获得“梦歌”气劲，每层使加速率提高1%，持续30秒，最多叠加5层。
+			// 梦歌奇穴：施展“阳明指”或“快雪时晴”运功结束时均获得“梦歌”气劲，每层使加速率提高3%，持续30秒，最多叠加2层。
 			if(options[10][0].active){
 				Utils.addBuff($rootScope.originalBuffList.mengGeBuff,attr);
 			}
@@ -308,7 +309,7 @@ app.controller('SkillCtrl', ['$scope','$rootScope','Utils','Skill','Buff', funct
 			if($rootScope.effects.cw==1) this.extraAttr.critAddPercent += 5;
 		},
 		onSkillFinish:function(attr, target, buffController, recipes, options){
-			// 梦歌奇穴：施展“阳明指”或“快雪时晴”运功结束时均获得“梦歌”气劲，每层使加速率提高1%，持续30秒，最多叠加5层。
+			// 梦歌奇穴：施展“阳明指”或“快雪时晴”运功结束时均获得“梦歌”气劲，每层使加速率提高3%，持续30秒，最多叠加2层。
 			if(options[10][0].active){
 				Utils.addBuff($rootScope.originalBuffList.mengGeBuff,attr);
 			}
