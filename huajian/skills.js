@@ -23,7 +23,7 @@ app.controller('SkillCtrl', ['$scope','$rootScope','Utils','Skill','Buff', funct
 			// 阳明指命中后添加一层恣游buff
 			Utils.addBuff($rootScope.originalBuffList.ziYouBuff,attr);
 			// 乱洒添加DOT
-			if($rootScope.originalBuffList.luanSaBuff.id in buffController.selfBuffs){
+			if($rootScope.originalBuffList.luanSaBuff.id in buffController.selfBuffs && buffController.selfBuffs[$rootScope.originalBuffList.luanSaBuff.id].extraSetting.firstHit){
 				// 添加钟林毓秀
 				var dot = angular.copy($rootScope.originalBuffList.zhongLinDot);
 				for (var i = 0; i < recipes.zhongLin.length; i++) {
@@ -43,6 +43,7 @@ app.controller('SkillCtrl', ['$scope','$rootScope','Utils','Skill','Buff', funct
 					}
 				};
 				Utils.addDot(dot,attr);
+				buffController.selfBuffs[$rootScope.originalBuffList.luanSaBuff.id].extraSetting.firstHit = false;
 			}
 			// 寒碧奇穴：若目标身上没有“钟林毓秀”效果，则阳明指附带“钟林毓秀”，该效果每12秒触发一次。
 			if(options[2][0].active){

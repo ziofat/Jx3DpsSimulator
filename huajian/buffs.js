@@ -289,6 +289,9 @@ app.controller('BuffCtrl', ['$scope','$rootScope','Utils','Buff', function($scop
 		min:0,
 		max:0,
 		data:{},
+		extraSetting:{
+			firstHit:true
+		},
 		recipeName:"none",
 		onSkillHitEvent:function(attr, target, buffController, recipes, options){
 		},
