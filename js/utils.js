@@ -108,9 +108,9 @@ app.service('Utils',['$rootScope',function($rootScope){
 			$rootScope.buffController.targetBuffs[buff.id].duration = this.hasteCalc(attr.haste,attr.extraHaste,buff.duration);
 			if("addedInterval" in buffIn) buffIn.addedInterval = false;
 			if(buff.recipeName!="none"){
-				for (var i = 0; i < whRecipes[buff.recipeName].length; i++) {
-					if(whRecipes[buff.recipeName][i].active&&whRecipes[buff.recipeName][i].effect=="debuffAdd"){
-						this.addDebuff(angular.copy($rootScope.buffList[whRecipes[buff.recipeName][i].value]),$rootScope.buffController,attr);
+				for (var i = 0; i < $rootScope.skillRecipe[buff.recipeName].length; i++) {
+					if($rootScope.skillRecipe[buff.recipeName][i].active&&$rootScope.skillRecipe[buff.recipeName][i].effect=="debuffAdd"){
+						this.addDebuff(angular.copy($rootScope.buffList[$rootScope.skillRecipe[buff.recipeName][i].value]),$rootScope.buffController,attr);
 					}
 				}
 			}
@@ -123,9 +123,9 @@ app.service('Utils',['$rootScope',function($rootScope){
 			$rootScope.buffController.targetBuffs[buff.id].remain += times * this.hasteCalc(attr.haste,attr.extraHaste,buff.interval);
 			$rootScope.buffController.targetBuffs[buff.id].addedInterval = true;
 			if(buff.recipeName!="none"){
-				for (var i = 0; i < whRecipes[buff.recipeName].length; i++) {
-					if(whRecipes[buff.recipeName][i].active&&whRecipes[buff.recipeName][i].effect=="debuffAdd"){
-						this.addDebuff(angular.copy($rootScope.buffList[whRecipes[buff.recipeName][i].value]),$rootScope.buffController,attr);
+				for (var i = 0; i < $rootScope.skillRecipe[buff.recipeName].length; i++) {
+					if($rootScope.skillRecipe[buff.recipeName][i].active&&$rootScope.skillRecipe[buff.recipeName][i].effect=="debuffAdd"){
+						this.addDebuff(angular.copy($rootScope.buffList[$rootScope.skillRecipe[buff.recipeName][i].value]),$rootScope.buffController,attr);
 					}
 				}
 			}
