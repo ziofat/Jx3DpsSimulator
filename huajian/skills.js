@@ -138,11 +138,13 @@ app.controller('SkillCtrl', ['$scope','$rootScope','Utils','Skill','Buff', funct
 		onSkillHitEvent:function(attr, target, buffController, recipes, options){
 			//添加商阳指dot
 			var dot = angular.copy($rootScope.originalBuffList.shangYangDot);
+			// 噬骨判定
+			var hasShigu = $rootScope.originalBuffList.shiGuBuff.id in buffController.targetBuffs;
 			for (var i = 0; i < recipes.shangYang.length; i++) {
 				if(recipes.shangYang[i].active&&recipes.shangYang[i].effect=="durationAdd"){
 					dot.duration = dot.duration+recipes.shangYang[i].value;
 				}
-				if(recipes.shangYang[i].active&&recipes.shangYang[i].effect=="debuffAdd"){
+				if(recipes.shangYang[i].active&&recipes.shangYang[i].effect=="debuffAdd"&&!hasShigu){
 					Utils.addDebuff(angular.copy(Buff.getBuffById(recipes.shangYang[i].value)),attr)
 				}
 			};

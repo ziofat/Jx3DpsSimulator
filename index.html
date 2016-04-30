@@ -154,7 +154,7 @@
 													<div class="text-primary-dark" class="col-md-1">目标Buff</div>  
 													<div class="buff" ng-repeat="buff in buffController.targetBuffs">
 														<img ng-src="../res/icons/{{buff.icon}}.png" width="30px" height="30px" tooltip="{{buff.name}}" tooltip-append-to-body="true">
-														<span class="buff-time">{{(buff.remain/16).toFixed(0)}}'</span>
+														<span class="buff-time">{{(buff.remain/16).toFixed(0)<=9?'0':''}}{{(buff.remain/16).toFixed(0)}}'</span>
 														<span class="buff-level" ng-if="buff.maxLevel>1">{{buff.level}}</span>
 													</div>
 												</div>
@@ -162,7 +162,7 @@
 													<div class="text-primary-dark" class="col-md-1">自身Buff</div> 
 													<div class="buff" ng-repeat="buff in buffController.selfBuffs">
 														<img ng-src="../res/icons/{{buff.icon}}.png" width="30px" height="30px" tooltip="{{buff.name}}" tooltip-append-to-body="true">
-														<span class="buff-time">{{(buff.remain/16).toFixed(0)}}'</span>
+														<span class="buff-time">{{(buff.remain/16).toFixed(0)<=9?'0':''}}{{(buff.remain/16).toFixed(0)}}'</span>
 														<span class="buff-level" ng-if="buff.maxLevel>1">{{buff.level}}</span>
 													</div>
 												</div>
