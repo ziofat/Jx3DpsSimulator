@@ -64,12 +64,13 @@ app.controller('TargetCtrl', ['$rootScope','$scope', function($rootScope,$scope)
 		{id:2,level:98,name:"高级试炼木桩(98)",life:5000000,mana:5000000,curLife:5000000,hitRequire:110,strainRequire:30,shield:35},
 		{id:3,level:99,name:"极境试炼木桩(99)",life:5000000,mana:5000000,curLife:5000000,hitRequire:115,strainRequire:40,shield:40}
 	];
-	$scope.targetSelectId = $rootScope.target.id;
+	$scope.targetSelectId = $rootScope.settings.target;
 	$scope.setTarget = function(target){
 		$scope.targetSelectId = target;
 		$rootScope.target = $scope.targetList[target];
 		$rootScope.settings.target = target;
 	};
+	$scope.setTarget($scope.targetSelectId);
 }]);
 
 app.controller('MacroCtrl', ['$rootScope','$scope', function($rootScope,$scope){
@@ -110,6 +111,17 @@ app.controller('EffectCtrl', ['$rootScope','$scope', function($rootScope,$scope)
 		{id:1,name:"怒叱",check:false},
 		{id:2,name:"套装加伤害",check:false}
 	];
+
+	$scope.settingInital = function(){
+		$rootScope.effects = $rootScope.settings.effects;
+		switch($rootScope.effects.setEffect){
+			case 0:break;
+			case 1:$scope.setEffect[0].check = true;break;
+			case 2:$scope.setEffect[1].check = true;break;
+			case 3:$scope.setEffect[0].check = true;$scope.setEffect[1].check = true;break;
+		}
+	}
+	$scope.settingInital();
 
 	$scope.toggleSetEffect = function(){
 		var effectFlag = 0;

@@ -1,15 +1,4 @@
 app.controller('MainCtrl', ['$scope','$rootScope','$timeout','$interval','Utils','Buff','Skill','$http','hotkeys', function($scope,$rootScope,$timeout,$interval,Utils,Buff,Skill,$http,hotkeys){
-	$rootScope.target = {
-		id:1,
-		level:97,
-		name:"中级试炼木桩",
-		life:5000000,
-		curLife:5000000,
-		mana:1000000,
-		hitRequire:105,
-		strainRequire:20,
-		shield:25
-	};
 	$rootScope.buffController = {
 		selfBuffs:{},
 		targetBuffs:{}
@@ -20,12 +9,6 @@ app.controller('MainCtrl', ['$scope','$rootScope','$timeout','$interval','Utils'
 	});
 	$rootScope.maxTime = 3.5;
 	$rootScope.maxLoop = 1;
-	$rootScope.effects = {
-		cw:0,
-		water:0,
-		thunder:0,
-		setEffect:0
-	};
 	
 	$scope.digest = function(){
 		if($rootScope.macroMode&&$rootScope.time%(Math.ceil($rootScope.myself.attributes.delay/1000*16)+1)===0){
