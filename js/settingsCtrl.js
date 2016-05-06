@@ -106,6 +106,18 @@ app.controller('EffectCtrl', ['$rootScope','$scope', function($rootScope,$scope)
 		{id:18,name:"雷·灭气"},
 		{id:19,name:"雷·痛切"}
 	];
+	$scope.setEffect = [
+		{id:1,name:"怒叱",check:false},
+		{id:2,name:"套装加伤害",check:false}
+	];
+
+	$scope.toggleSetEffect = function(){
+		var effectFlag = 0;
+		for (var i = 0; i < $scope.setEffect.length; i++) {
+			if($scope.setEffect[i].check) effectFlag = effectFlag + $scope.setEffect[i].id
+		}
+		$rootScope.effects.setEffect = effectFlag;
+	}
 
 	$rootScope.$watch("effects",function(){
 		$rootScope.settings.effects = $rootScope.effects;

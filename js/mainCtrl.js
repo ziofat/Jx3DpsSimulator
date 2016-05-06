@@ -24,6 +24,7 @@ app.controller('MainCtrl', ['$scope','$rootScope','$timeout','$interval','Utils'
 		cw:0,
 		water:0,
 		thunder:0,
+		setEffect:0
 	};
 	
 	$scope.digest = function(){

@@ -106,6 +106,8 @@ app.controller('SkillCtrl', ['$scope','$rootScope','Utils','Skill','Buff', funct
 			if($rootScope.effects.cw==2) this.extraAttr.damage += 5;
 			// 小橙武
 			if($rootScope.effects.cw==1) this.extraAttr.critAddPercent += 5;
+			// 套装特效
+			if($rootScope.effects.setEffect==2||$rootScope.effects.setEffect==3) this.extraAttr.damage += 10;
 		},
 		onSkillFinish:function(attr, target, buffController, recipes, options){
 			// 梦歌奇穴：施展“阳明指”或“快雪时晴”运功结束时均获得“梦歌”气劲，每层使加速率提高3%，持续30秒，最多叠加2层。
@@ -310,6 +312,8 @@ app.controller('SkillCtrl', ['$scope','$rootScope','Utils','Skill','Buff', funct
 			if($rootScope.effects.cw==2) this.extraAttr.damage += 5;
 			// 小橙武
 			if($rootScope.effects.cw==1) this.extraAttr.critAddPercent += 5;
+			// 套装特效
+			if($rootScope.effects.setEffect==2||$rootScope.effects.setEffect==3) this.extraAttr.damage += 10;
 		},
 		onSkillFinish:function(attr, target, buffController, recipes, options){
 			// 梦歌奇穴：施展“阳明指”或“快雪时晴”运功结束时均获得“梦歌”气劲，每层使加速率提高3%，持续30秒，最多叠加2层。

@@ -26,9 +26,9 @@ app.controller('AppCtrl', ['$scope','$rootScope', function($scope,$rootScope){
 	
 	var ls = localStorage.getItem("simulator_default");
 	var configVersion = localStorage.getItem("config_version");
-	var configVersionCur = 0.2;
+	var configVersionCur = 0.3;
 	if(!ls||!configVersion||configVersion<configVersionCur){
-		ls = {"school":"huajian","attribute":{"basicAttack":"2748","spunk":"706","crit":"15.15","critEff":"211.77","hit":"106.76","haste":"321","strain":"20.09","overcome":"900","delay":"100"},"delay":50,"maxTime":225,"effects":{"cw":0,"water":0,"thunder":0},"qixue":[0,0,1,2,0,2,3,0,0,0,0,0],"recipe":{"yangMing":[0,1,6,7],"shangYang":[3,4,5,6],"lanCui":[0,1,2,6],"zhongLin":[0,1,2,5],"kuaiXue":[0,1,2,3]},"target":1,"macro":"1","skillOrder":[5,4,1,0,2,3,8,7,6],"hotkeys":['1','2','3','q','e','r','z','x','c']};
+		ls = {"school":"huajian","attribute":{"basicAttack":"2748","spunk":"706","crit":"15.15","critEff":"211.77","hit":"106.76","haste":"321","strain":"20.09","overcome":"900","delay":"100"},"delay":50,"maxTime":225,"effects":{"cw":0,"water":0,"thunder":0,"setEffect":0},"qixue":[0,0,1,2,0,2,3,0,0,0,0,0],"recipe":{"yangMing":[0,1,6,7],"shangYang":[3,4,5,6],"lanCui":[0,1,2,6],"zhongLin":[0,1,2,5],"kuaiXue":[0,1,2,3]},"target":1,"macro":"1","skillOrder":[5,4,1,0,2,3,8,7,6],"hotkeys":['1','2','3','q','e','r','z','x','c']};
 		ls = JSON.stringify(ls);
 		localStorage.setItem("simulator_default",ls);
 		localStorage.setItem("macro_1",$rootScope.macroText);

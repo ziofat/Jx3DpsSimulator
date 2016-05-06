@@ -106,7 +106,7 @@ app.service('Skill',['$rootScope','Utils','Buff',function($rootScope,Utils,Buff)
 					buffController.selfBuffs[juanLiuBuff.id].level = 10;
 				}
 			}
-			// 水雷特效触发
+			// 特效触发
 			if(!flag.miss&&this.damageInstant){
 				// 水特效触发
 				if($rootScope.effects.water!==0){
@@ -123,6 +123,11 @@ app.service('Skill',['$rootScope','Utils','Buff',function($rootScope,Utils,Buff)
 							Utils.addBuff(leiCD,onFightAttr);
 						}
 					}
+				}
+				// 套装特效触发
+				if($rootScope.effects.setEffect==1||$rootScope.effects.setEffect==3){
+					roll = Math.random()*100;
+					if(roll<10) Utils.addBuff(Buff.getBuffById(21),onFightAttr);
 				}
 			}
 			skill.cdRemain = this.cd;

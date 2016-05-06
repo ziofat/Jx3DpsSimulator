@@ -299,7 +299,7 @@
 								</div>
 								<div class="card-body">
 									<div class="row">
-										<div class="col-sm-4">
+										<div class="col-sm-3">
 											<label>橙武特效</label><br>
 											<div class="radio radio-styled" ng-repeat="texiao in cw">
 												<label ng-click="$root.effects.cw = texiao.id">
@@ -308,7 +308,7 @@
 												</label>
 											</div>
 										</div>
-										<div class="col-sm-4">
+										<div class="col-sm-3">
 											<label>水特效</label><br>
 											<div class="radio radio-styled" ng-repeat="texiao in water">
 												<label ng-click="$root.effects.water = texiao.id">
@@ -317,11 +317,20 @@
 												</label>
 											</div>
 										</div>
-										<div class="col-sm-4">
+										<div class="col-sm-3">
 											<label>雷特效</label><br>
 											<div class="radio radio-styled" ng-repeat="texiao in thunder">
 												<label ng-click="$root.effects.thunder = texiao.id">
 													<input type="radio" name="texiao_thunder" ng-model="$root.effects.thunder" ng-value="texiao.id">
+													<span>{{texiao.name}}</span>
+												</label>
+											</div>
+										</div>
+										<div class="col-sm-3">
+											<label>套装特效</label><br>
+											<div class="checkbox checkbox-styled" ng-repeat="texiao in setEffect">
+												<label ng-click="toggleSetEffect(texiao.id)">
+													<input type="checkbox" name="texiao_set" ng-model="texiao.check">
 													<span>{{texiao.name}}</span>
 												</label>
 											</div>

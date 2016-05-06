@@ -560,4 +560,30 @@ app.controller('BuffCtrl', ['$scope','$rootScope','Utils','Buff', function($scop
 	});
 	$rootScope.buffList[20]=leiCD;
 	$rootScope.originalBuffList.leiCD = leiCD;
+
+	var nuChi = Buff.createNew({
+		id:21,
+		icon:15,
+		name:"怒叱",
+		desc:"怒叱",
+		type:1,
+		conflict:0,
+		duration:96,
+		interval:0,
+		cof:0,
+		maxLevel:1,
+		canStack:false,
+		min:0,
+		max:0,
+		data:{
+			attackAddPercent:10
+		},
+		recipeName:"none",
+		onSkillHitEvent:function(attr, target, buffController, recipes, options){
+		},
+		onSkillCritEvent:function(attr, target, buffController, recipes, options){
+		}
+	});
+	$rootScope.buffList[21]=nuChi;
+	$rootScope.originalBuffList.nuChi = nuChi;
 }]);
