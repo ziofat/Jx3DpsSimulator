@@ -222,6 +222,11 @@ app.controller('SkillCtrl', ['$scope','$rootScope','Utils','Skill','Buff', funct
 					Utils.addBuff(buff, attr);
 				}
 			}
+			// 清流奇穴：玉石俱焚”施展后使自身内功破防等级提高15%，持续18秒。
+			if(options[7][1].active){
+				var buff = angular.copy($rootScope.originalBuffList.qingLiuBuff);
+				Utils.addBuff(buff, attr);
+			}
 			// 旋落奇穴：“玉石俱焚”每吞噬一个持续伤害效果，调息时间降低1.5秒。
 			if(options[8][0].active&&dotCount>0){
 				this.cd = 272 - dotCount * 24;
@@ -229,7 +234,7 @@ app.controller('SkillCtrl', ['$scope','$rootScope','Utils','Skill','Buff', funct
 			// 流离奇穴：“玉石俱焚”命中目标后使自身下一个“兰摧玉折”无需运功。
 			if(options[9][1].active){
 				var buff = angular.copy($rootScope.originalBuffList.liuLiBuff);
-
+				Utils.addBuff(buff, attr);
 			}
 		},
 		onSkillCritEvent:function(attr, target, buffController, recipes, options){

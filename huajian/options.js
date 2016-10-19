@@ -23,7 +23,7 @@ var whOptions = {
 	],
 	5:[
 		{name:"焚玉",desc:"“玉石俱焚”成功吞噬持续伤害效果，使阳明指伤害提高20%，每额外吞噬一个效果，持续时间增加5秒。",skill:"玉石俱焚",icon:411,firstChild:false,active:false},
-		{name:"弹梦",desc:"“春泥护花”不会被消耗，持续8秒",skill:"春泥护花",icon:4501,firstChild:false,active:false},
+		{name:"弹梦",desc:"“春泥护花”不会被消耗，持续10秒",skill:"春泥护花",icon:4501,firstChild:false,active:false},
 		{name:"轻弃",desc:"“芙蓉并蒂”的伤害提高100%，命中目标后刷新目标身上的所有混元持续伤害效果。",skill:"芙蓉并蒂",icon:398,firstChild:false,active:false},
 		{name:"星影",desc:"“春泥护花”施展给队友，则下一次“春泥护花”调息时间降低6秒",skill:"春泥护花",icon:413,firstChild:false,active:false}
 	],
@@ -35,14 +35,14 @@ var whOptions = {
 	],
 	7:[
 		{name:"夜思",desc:"“水月无间”额外使1个招式无需运功，并立刻回复自身10%内力值。",skill:"水月无间",icon:1522,firstChild:false,active:false},
-		{name:"青致",desc:"被“太阴指”命中的目标，锁足3秒。",skill:"太阴指",icon:1515,firstChild:false,active:false},
+		{name:"清流",desc:"“玉石俱焚”施展后使自身内功破防等级提高15%，持续18秒。",skill:"玉石俱焚",icon:3017,firstChild:false,active:false},
 		{name:"雪月",desc:"“快雪时晴”对定身锁足目标造成的会心几率提高50%。",skill:"快雪时晴",icon:3403,firstChild:false,active:false},
 		{name:"乱洒青荷",desc:"重置【玉石俱焚】调息时间，效果期间施展的下一个【阳明指】同时附带【钟林毓秀】【兰摧玉折】持续伤害效果。",skill:"乱洒青荷",icon:3001,firstChild:false,active:false}
 	],
 	8:[
 		{name:"旋落",desc:"“玉石俱焚”每吞噬一个持续伤害效果，调息时间降低1.5秒。",skill:"玉石俱焚",icon:410,firstChild:false,active:false},
 		{name:"雪弃",desc:"“快雪时晴”若只命中一个目标，伤害提高20%。",skill:"快雪时晴",icon:2999,firstChild:false,active:false},
-		{name:"金屋",desc:"施展“太阴指”后，受到的伤害降低30%，持续6秒。",skill:"太阴指",icon:4546,firstChild:false,active:false},
+		{name:"金屋",desc:"施展“太阴指”后，移动速度提高30%，受到的伤害降低30%，持续8秒。。",skill:"太阴指",icon:4546,firstChild:false,active:false},
 		{name:"少明指",desc:"少明指",skill:"少明指",icon:1516,firstChild:false,active:false}
 	],
 	9:[
@@ -66,7 +66,7 @@ var whOptions = {
 	12:[
 		{name:"涓流",desc:"施展伤害招式命中气血值低于35%的目标，自身会心几率提高20%，会心效果提高20%，每次造成伤害，该效果降低2%。",skill:"",icon:7468,firstChild:false,active:false},
 		{name:"同宿",desc:"对友方目标施展“毫针”，被攻击后消失的层数效果会再次作用到释放者本身。",skill:"毫针",icon:7474,firstChild:false,active:false},
-		{name:"池月",desc:"“太阴指”调息时间降低5秒，解除自身受到的减速和锁足效果。",skill:"太阴指",icon:7234,firstChild:false,active:false},
+		{name:"月影",desc:"受到伤害导致自身气血值低于40%，立刻重置“星楼月影”调息时间，该效果最多每90秒触发一次。",skill:"星楼月影",icon:3014,firstChild:false,active:false},
 		{name:"南风吐月",desc:"南风吐月",skill:"南风吐月",icon:7510,firstChild:false,active:false}
 	]
 };
