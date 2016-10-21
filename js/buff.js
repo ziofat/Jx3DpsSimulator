@@ -31,7 +31,7 @@ app.service('Buff', ['$rootScope','Utils', function($rootScope,Utils){
 				strain: parseFloat(self.attributes.strain) + (this.extraAttr.strainAddBase + self.extra.strainAddBase)/25.6835 + this.extraAttr.strainAddPercent + self.extra.strainAddPercent,
 				haste: parseInt(self.attributes.haste),
 				extraHaste: parseInt(self.extra.haste),
-				overcome: parseInt(self.attributes.overcome) + (self.attributes.overcome - self.attributes.spunk * 0.34) * (this.extraAttr.overcomeAddPercent/100 + self.extra.overcomeAddPercent) + parseInt(this.extraAttr.overcomeAddBase) + parseInt(self.extra.overcomeAddBase),
+				overcome: parseInt(self.attributes.overcome) + (self.attributes.overcome - self.attributes.spunk * 0.34) * (this.extraAttr.overcomeAddPercent/100 + self.extra.overcomeAddPercent/100) + parseInt(this.extraAttr.overcomeAddBase) + parseInt(self.extra.overcomeAddBase),
 				damageAddPercent: this.extraAttr.damage + parseInt(self.extra.damage)
 			};
 			var damage = 0;
